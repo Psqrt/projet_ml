@@ -1,0 +1,303 @@
+---
+title: "1_pretraitement"
+author: "Psqrt"
+date: "13/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Importation des packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+```
+
+# Importation des données
+
+```{r, warning=F, message=F}
+train = read_csv(file = "./../data/Base_train.csv") %>% as.data.frame()
+test = read_csv(file = "./../data/Base_test.csv") %>% as.data.frame()
+```
+
+On vérifie dans un premier temps que la construction de l'échantillon test ne suit pas une logique par rapport à l'identifiant, laissant de l'information pour les modèles.
+
+```{r}
+train %>% 
+    bind_rows(test, .id = "dataset") %>% 
+    ggplot() +
+    aes(x = id, color = dataset) +
+    geom_density()
+```
+
+L'échantillonnage a été fait de façon uniforme sur les observations.
+
+
+
+
+# Prétraitement des données
+
+## Traitement des valeurs manquantes
+
+```{r}
+# Séparation variables quanti/quali par rapport au profilage Python
+variables = colnames(train)[2:length(colnames(train))]
+variables_quanti = c("ps_reg_03", "ps_car_12", "ps_car_13", "ps_car_14", "ps_car_15")
+variables_quali = variables[!(variables %in% variables_quanti)]
+
+# fusion train/test pour les modifications
+# reformatage des types de variables
+data = bind_rows("train" = train, "test" = test, .id = "dataset") %>% 
+    mutate_at(variables_quali, as.factor)
+
+# liste des variables ayant des valeurs manquantes
+col_na = colnames(data[colSums(is.na(data)) > 0])
+
+# représentation des variables présentant des observations manquantes
+gg_miss_var(data %>% select(dataset, col_na), 
+            facet = dataset, 
+            show_pct = T)
+```
+
+On note 5 variables ayant un nombre significatif de valeurs manquantes : `ps_car_03_cat`, `ps_car_05_cat`, `ps_reg_03`, `ps_car_14` et `ps_car_07_cat`. Parmi elles, trois variables sont qualitatives et deux sont quantitatives.
+
+* La variable `ps_car_03_cat` contient trop de valeurs manquantes (en large majorité), il serait imprudent de tenter une imputation. Avant de mettre de côté cette variable, on peut vérifier le fait d'avoir une valeur manquante a une logique (information). Pour cela, on peut passer par une table de contingence, en croisant cette variable avec la `target`.
+
+```{r}
+train %>% 
+    mutate(ps_car_03_cat_isna = factor(if_else(is.na(ps_car_03_cat), "1", "0"))) %>% 
+    fun_crosstable("ps_car_03_cat_isna", "target")
+```
+
+L'écart de pourcentage (3.3% contre 4.5%) semble apporter une esquisse d'information. Cette nouvelle variable est gardée pour l'instant et on vérifiera son importance à travers une forêt aléatoire par la suite. La variable initiale `ps_car_03_cat` est supprimée.
+
+
+
+* On vérifie de même pour la variable `ps_car_05_cat`.
+
+```{r}
+train %>% 
+    mutate(ps_car_05_cat_isna = factor(if_else(is.na(ps_car_05_cat), "1", "0"))) %>% 
+    fun_crosstable("ps_car_05_cat_isna", "target")
+```
+
+Dans ce cas-ci, l'information est beaucoup plus réduite (écart de 0.8%). On garde de même bien qu'on est probablement sûre qu'elle ne sera pas retenue par une sélection par importance dans une forêt aléatoire.
+
+
+
+* La variable `ps_reg_03` est continue. Son grand nombre de valeurs manquantes dissuade une imputation mais il serait dommage de la supprimer, surtout si elle contient de l'information pertinente à notre problématique. On vérifie dans un premier temps si cette variable permet de discriminer la `target` à travers une différence de distribution.
+
+```{r}
+data %>% 
+    filter(dataset == "train") %>% 
+    ggplot() +
+    aes(x = ps_reg_03, color = target) +
+    geom_density()
+```
+
+De façon formelle, on peut utiliser le test de Kolmogorov-Smirnov pour vérifier si les deux échantillons sont étalés selon une même distribution.
+
+```{r}
+dgof::ks.test(train[train$target == 0, "ps_reg_03"],
+              train[train$target == 1, "ps_reg_03"])
+```
+
+Le support graphique et le test de Kolmogorov-Smirnov montrent que les distributions sont différentes. On peut tester une imputation par les plus proches voisins. La valeur affectée sera alors la médiane des voisins.
+
+Vérifions que l'absence de valeur n'ait pas une information statistique.
+
+```{r}
+train %>% 
+    mutate(ps_reg_03_isna = factor(if_else(is.na(ps_reg_03), "1", "0"))) %>% 
+    fun_crosstable("ps_reg_03_isna", "target")
+```
+
+
+On garde de même bien qu'on est probablement sûre qu'elle ne sera pas retenue par une sélection par importance dans une forêt aléatoire. On imputera la variable initiale.
+
+
+
+
+
+* La variable `ps_car_14` est continue, on applique les mêmes tests que précédemment.
+
+```{r}
+data %>% 
+    filter(dataset == "train") %>% 
+    ggplot() +
+    aes(x = ps_car_14, color = target) +
+    geom_density()
+```
+
+```{r}
+dgof::ks.test(train[train$target == 0, "ps_car_14"],
+              train[train$target == 1, "ps_car_14"])
+```
+
+Le support graphique et le test de Kolmogorov-Smirnov montrent que les distributions sont différentes. On peut tester une imputation par les plus proches voisins. La valeur affectée sera alors la médiane des voisins.
+
+Vérifions que l'absence de valeur n'ait pas une information statistique.
+
+```{r}
+train %>% 
+    mutate(ps_car_14_isna = factor(if_else(is.na(ps_car_14), "1", "0"))) %>% 
+    fun_crosstable("ps_car_14_isna", "target")
+```
+
+
+On garde de même bien qu'on est probablement sûre qu'elle ne sera pas retenue par une sélection par importance dans une forêt aléatoire. On garde la variable initiale pour l'imputer par la suite.
+
+
+On fera de même pour toutes les autres variables à faible taux de NA : `ps_car_07_cat`, `ps_ind_05_cat`, `ps_car_09_cat`, `ps_ind_02_cat`, `ps_car_01_cat`, `ps_ind_04_cat`, `ps_car_11`, `ps_car_02_cat`, `ps_car_12`. Le faible nombre de valeurs manquantes permet d'imputer sans grande conséquence.
+
+En conclusion à ce qui a été dit précédemment, on va construire des variables dichotomiques par rapport à l'absence ou non d'une valeur pour les variables traitées.
+
+```{r}
+data_new_columns = data %>% 
+    group_by(dataset) %>% 
+    mutate(ps_car_03_cat_isna = factor(if_else(is.na(ps_car_03_cat), "1", "0"))) %>% 
+    mutate(ps_car_05_cat_isna = factor(if_else(is.na(ps_car_05_cat), "1", "0"))) %>% 
+    mutate(ps_reg_03_isna = factor(if_else(is.na(ps_reg_03), "1", "0"))) %>% 
+    mutate(ps_car_14_isna = factor(if_else(is.na(ps_car_14), "1", "0"))) %>%
+    ungroup() %>% 
+    select(id, ps_car_03_cat_isna, ps_car_05_cat_isna, ps_reg_03_isna, ps_car_14_isna)
+
+data = data %>% 
+    select(-ps_car_03_cat, -ps_car_05_cat)
+```
+
+
+
+
+## Imputation
+
+Dans un premier temps, on impute des valeurs pour les variables continues à partir de régressions linéaires. La variable à imputer joue le rôle de variable à expliquer tandis que les autres variables sont les régresseurs. Pour chaque variable à traiter, on retire les métadonnées (dataset et id) et la variable cible (qui est supposée inconnue pour l'échantillon test). De plus, on retire certaines variables qui posent un problème d'asymétrie d'information (les lignes nécessitant une imputation ont des modalités de variables catégorielles qui n'existent pas dans l'échantillon sans valeurs manquantes ayant servi à régresser le modèle).
+
+**Note** : Les NA de `ps_car_14` sont parfaitement corrélées avec la modalité `80` de `ps_car_11_cat`. Idem pour 25.
+
+Les valeurs imputées sont les valeurs estimées. L'estimation peut échouer pour certaines lignes, elles seront imputées dans l'étape suivante.
+
+```{r}
+data_imp = data
+var_concernees = c("ps_reg_03", "ps_car_14", "ps_car_12")
+
+data_imp = imputation_lm(data = data_imp,
+                         variable_impute = "ps_reg_03",
+                         variable_removed = c("dataset", "id", "target", "ps_car_14", "ps_calc_10", "ps_calc_11"),
+                         id_join = "id")
+
+data_imp = imputation_lm(data = data_imp,
+                         variable_impute = "ps_car_14",
+                         variable_removed = c("dataset", "id", "target", "ps_car_11_cat"),
+                         id_join = "id")
+
+data_imp = imputation_lm(data = data_imp,
+                         variable_impute = "ps_car_12",
+                         variable_removed = c("dataset", "id", "target", "ps_car_11_cat"),
+                         id_join = "id")
+```
+
+On vérifie la répartition des valeurs manquantes après cette première étape d'imputations.
+
+```{r}
+col_na = colnames(data_imp[colSums(is.na(data_imp)) > 0])
+
+gg_miss_var(data_imp %>% select(dataset, col_na), 
+            facet = dataset, 
+            show_pct = T)
+```
+
+On peut également vérifier que l'imputation n'a pas perturbé de manière importante les distributions.
+
+```{r}
+gg_df = bind_rows("initial" = data,
+                  "imputé" = data_imp,
+                  .id = "étape")
+
+liste_gg = list()
+for (i in c(1:length(var_concernees))) {
+    gg = gg_df %>% 
+        ggplot() +
+        aes_string(x = var_concernees[i], color = "étape") +
+        geom_density()
+    liste_gg[[i]] = gg
+}
+
+ggarrange(plotlist = liste_gg, ncol = 2, nrow = 2, common.legend = T)
+
+rm(gg_df)
+```
+
+Les distributions restent relativement identiques, bien que l'imputation sur `ps_reg_03` a accentué le pic de la distribution en défaveur des autres valeurs.
+
+Par la suite, les imputations se feront à partir de forêts aléatoires (qui permettent de prendre en compte des cibles continues ou catégorielles).
+
+```{r}
+set.seed(1234)
+for (var_cible in col_na){
+    print(var_cible)
+    data_imp = imputation_rf(data_imp, var_cible, "id")
+}
+```
+
+De même, on vérifie qu'il n'y a plus de valeurs manquantes et on trace les distributions.
+
+```{r}
+sum(is.na(data_imp))
+```
+
+```{r}
+gg_df = bind_rows("initial" = data,
+                  "imputé" = data_imp,
+                  .id = "étape")
+
+liste_gg = list()
+for (i in c(1:length(col_na))) {
+    
+    class_var = class(data_imp[[get("col_na")[i]]])    
+    
+    if (class_var == "factor"){
+        gg = gg_df %>% 
+            ggplot() +
+            aes_string(x = col_na[i], fill = "étape") + 
+            geom_bar(position = "dodge")
+    } else {
+        gg = gg_df %>% 
+            ggplot() +
+            aes_string(x = col_na[i], color = "étape") + 
+            geom_density()
+    }
+    liste_gg[[i]] = gg
+}
+
+ggarrange(plotlist = liste_gg, ncol = 4, nrow = 3, common.legend = T)
+
+rm(gg_df)
+gc()
+```
+
+## Exportation
+
+Avant d'exporter, on se souvient qu'il faut ajouter les variables sur la présence de NA ou non.
+
+```{r}
+data_imp = data_imp %>% 
+    left_join(data_new_columns, by = "id")
+```
+
+
+On exporte la base sans valeurs manquantes.
+
+```{r}
+type_col = sapply(data_imp, class)
+
+saveRDS(object = type_col,
+      file = "./../data/data_imp_type_col.rds")
+write.csv(x = data_imp,
+          file = "./../data/data_imp.csv",
+          quote = T,
+          row.names = F)
+```
+

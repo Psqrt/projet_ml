@@ -1,0 +1,78 @@
+---
+title: "2_selection_variable"
+author: "Psqrt"
+date: "15/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+```
+
+```{r}
+type_col = readRDS("./../data/data_imp_type_col.rds")
+data_imp = data.table::fread(file = "./../data/data_imp.csv", colClasses = type_col) %>% as.data.frame()
+```
+
+
+## Forêt aléatoire pour sélection de variables
+
+
+```{r}
+rf_selection = ranger(target ~ .,
+                      data = data_imp %>% filter(dataset == "train") %>% select(-dataset, -id),
+                      num.trees = 500,
+                      importance = "impurity")
+
+fun_imp_ggplot_split(rf_selection)
+```
+
+On ne garde que les variables importantes (au delà de 500).
+
+```{r}
+var_imp = names(rf_selection$variable.importance[rf_selection$variable.importance > 500])
+
+data_sel = data_imp %>% 
+    select(dataset, id, target, var_imp)
+```
+
+
+## Visualisation des distributions
+
+```{r}
+liste_gg = list()
+for (i in c(4:ncol(data_sel))) {
+    
+    class_var = class(data_sel[[i]])    
+    
+    if (class_var == "factor"){
+        gg = data_sel %>% 
+            filter(dataset == "train") %>% 
+            ggplot() +
+            aes_string(x = colnames(data_sel)[i]) + 
+            geom_bar() +
+            ylab(NULL) +
+            theme(axis.text = element_blank())
+    } else {
+        gg = data_sel %>% 
+            filter(dataset == "train") %>% 
+            ggplot() +
+            aes_string(x = colnames(data_sel)[i]) + 
+            geom_density() +
+            ylab(NULL) +
+            theme(axis.text = element_blank())
+    }
+    liste_gg[[i]] = gg
+}
+
+liste_gg = liste_gg[4:length(liste_gg)]
+
+ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
+```
+
