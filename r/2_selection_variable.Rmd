@@ -25,6 +25,7 @@ data_imp = data.table::fread(file = "./../data/data_imp.csv", colClasses = type_
 
 
 ```{r}
+set.seed(1156)
 rf_selection = ranger(target ~ .,
                       data = data_imp %>% filter(dataset == "train") %>% select(-dataset, -id),
                       num.trees = 500,
@@ -76,3 +77,17 @@ liste_gg = liste_gg[4:length(liste_gg)]
 ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
 ```
 
+## Exportation
+
+On exporte la base avec les variables retenues.
+
+```{r}
+type_col = sapply(data_sel, class)
+
+saveRDS(object = type_col,
+      file = "./../data/data_sel_type_col.rds")
+write.csv(x = data_sel,
+          file = "./../data/data_sel.csv",
+          quote = T,
+          row.names = F)
+```
