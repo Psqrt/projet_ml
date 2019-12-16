@@ -21,8 +21,6 @@ data_imp = data.table::fread(file = "./../data/data_imp.csv", colClasses = type_
 ```
 
 
-
-
 ## Forêt aléatoire pour sélection de variables
 
 
