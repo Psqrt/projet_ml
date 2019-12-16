@@ -26,6 +26,16 @@ data_sel = data.table::fread(file = "./../data/data_sel.csv", colClasses = type_
 
 ## Tables croisées avec la target
 
+```{r}
+liste_var_factor = type_col[type_col == "factor"]
+```
+
+```{r}
+for (var in names(liste_var_factor)[2:length(liste_var_factor)]){
+    print(gg_contingence_freq(get("var")))
+}
+```
+
 
 
 ## Transformation des variables continues

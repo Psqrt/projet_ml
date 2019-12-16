@@ -5,11 +5,11 @@
 ```
 .
 ├── data                                  ### Dossier contenant les bases (initiales ou exportées)
-│   ├── Base_test.csv
-│   ├── Base_train.csv
-│   ├── data_imp.csv
+│   ├── Base_test.csv                     ### Base test initiale
+│   ├── Base_train.csv                    ### Base train initiale
+│   ├── data_imp.csv                      ### Base test + train imputée (sans NA)
 │   ├── data_imp_type_col.rds
-│   ├── data_sel.csv
+│   ├── data_sel.csv                      ### Base test + train après sélection (sans NA)
 │   └── data_sel_type_col.rds
 ├── output                                ### Dossier contenant les sorties en tout genre (hors données)
 │   ├── profile_report_test.html
