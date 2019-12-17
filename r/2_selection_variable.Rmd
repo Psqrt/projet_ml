@@ -76,3 +76,11 @@ liste_gg = liste_gg[4:length(liste_gg)]
 ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
 ```
 
+
+## AFDM
+
+```{r}
+library("FactoMineR") 
+library("factoextra") 
+```
+
