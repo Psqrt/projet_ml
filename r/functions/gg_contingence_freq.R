@@ -21,7 +21,7 @@ gg_contingence_freq = function(var_etudiee){
         inner_join(df2, by = "var") %>% 
         mutate(pct_col = round(n/ncol, 4),
                pct_tot = round(ncol/sum(ncol, na.rm = T), 4)) %>% 
-        # select(-n, -ncol) %>%
+        select(-n, -ncol) %>%
         ungroup() %>% 
         replace_na(list(pct_col = 0, pct_tot = 0))
     
