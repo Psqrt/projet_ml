@@ -45,7 +45,7 @@ head(eig_val)
 ```
 
 ```{r}
-fviz_famd_var(res_famd,repel = F)
+plot(res_famd$quali.var$coord)
 ```
 
 
