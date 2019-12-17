@@ -79,13 +79,6 @@ ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
 
 <<<<<<< HEAD
 
-## AFDM
-
-```{r}
-library("FactoMineR") 
-library("factoextra") 
-```
-
 =======
 ## Exportation
 
