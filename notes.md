@@ -38,3 +38,9 @@ Pour paramétrer les modèles, on passe par la validation K-folds. Dans la base 
 
 Par exemple, une forêt aléatoire prend en paramètre le nombre d'arbres et le nombre de variables pour chaque noeud. On peut construire une grille à deux dimensions : une première qui fait varier le nombre d'arbres et l'autre pour le nombre de variables pour chaque noeud.
 On ajuste une forêt aléatoire sur l'échantillon A pour chaque couple d'hyperparamètres et avec B, on calcule un critère de validation (exemple : précision). On retiendra alors le couple donnant les meilleurs résultats. Sur Python, des fonctions existent avec le module scikit-learn (grid.search).
+
+## Séance 3
+
+Le ratio de target == 1 dans dapp doit être le même que le ratio dans dtest
+
+Le rapport scientifique doit insister sur les initiatives et innovations, pas sur les méthodes standards.
