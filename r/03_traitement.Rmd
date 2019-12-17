@@ -53,6 +53,9 @@ fviz_famd_var(res_famd,repel = F)
 
 ```{r}
 liste_var_factor = type_col[type_col == "factor"]
+levels(data_sel$ps_calc_01) = c(0:9)
+levels(data_sel$ps_calc_02) = c(0:9)
+levels(data_sel$ps_calc_03) = c(0:9)
 ```
 
 ```{r}
@@ -60,6 +63,8 @@ for (var in names(liste_var_factor)[2:length(liste_var_factor)]){
     print(gg_contingence_freq(get("var")))
 }
 ```
+
+
 
 
 
