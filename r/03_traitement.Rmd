@@ -23,26 +23,18 @@ data_sel = data.table::fread(file = "./../data/data_sel.csv", colClasses = type_
 ## AFDM
 
 ```{r}
-    library("FactoMineR") 
-library("factoextra")
-```
-
-```{r}
 df<- data_sel %>% filter(dataset=="train")
-res_famd <- FAMD(df[-c(1:3)], graph = FALSE)
-saveRDS(object = res_famd,
-        file = "./../data/res_famd.rds")
+if (0) {
+    res_famd <- FAMD(df[-c(1:3)], graph = FALSE)
+    saveRDS(object = res_famd,
+            file = "./../data/res_famd.rds")
+}
 ```
 
 ```{r}
 res_famd<-readRDS("./../data/res_famd.rds")
 ```
 
-
-```{r}
-library(glue)
-library(ggrepel)
-```
 
 ```{r}
 coord<-res_famd$quali.var$coord %>% as.data.frame()
@@ -79,9 +71,6 @@ for(var in liste_var_factor) {
 
 ```{r}
 liste_var_factor = type_col[type_col == "factor"]
-levels(data_sel$ps_calc_01) = c(0:9)
-levels(data_sel$ps_calc_02) = c(0:9)
-levels(data_sel$ps_calc_03) = c(0:9)
 ```
 
 ```{r}
@@ -91,32 +80,6 @@ for (var in names(liste_var_factor)[2:length(liste_var_factor)]){
 ```
 
 Remarque : régression logistique sur ps_car_11_cat, on récupère les beta qui serviront de "modalités" pour construire une variable continue (faire un join ensuite pour remplacer les modalités par les beta).
-
-```{r}
-levels(data_sel$ps_ind_01) = c("A", "B", "C", "D", "E", "F", "G", "G")
-levels(data_sel$ps_ind_03) = c("A", "A", "B", "C", "D", "E", "F", "G", "H", "I", "I", "I")
-levels(data_sel$ps_ind_15) = c("A", "B", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M")
-levels(data_sel$ps_reg_01) = c("F", "A", "A", "B", "C", "D", "E", "F", "G", "H")
-levels(data_sel$ps_reg_02) = c("A", "B", "C", "D", "E", "F", "G", rep("H", 12))
-levels(data_sel$ps_car_06_cat) = c("A", "B", "C", "D", "E", "C", "D", "B", "E", "F", "G", "C", "B", "H", "B", "E", "E")
-levels(data_sel$ps_calc_01) = c("A", "A", "B", "C", "D", "D")
-levels(data_sel$ps_calc_05) = c("A", "B", "C", "D", "E", "E", "E")
-levels(data_sel$ps_calc_06) = c("A", "A", "A", "A", "A", "A", "A", "B", "C", "D", "E")
-levels(data_sel$ps_calc_07) = c("A", "A", "B", "C", "D", "E", "E", "E", "E", "E")
-levels(data_sel$ps_calc_08) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "E", "E")
-levels(data_sel$ps_calc_09) = c("A", "B", "C", "D", "E", "E", "E", "E")
-levels(data_sel$ps_calc_10) = c("A", "A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 13))
-levels(data_sel$ps_calc_11) = c("A", "A", "A", "B", "C", "D", "E", "F", "G", rep("H", 11))
-levels(data_sel$ps_calc_12) = c("A", "B", "C", "D", rep("E", 7))
-levels(data_sel$ps_calc_13) = c("A", "B", "C", "D", "E", "F", rep("G", 8))
-levels(data_sel$ps_calc_14) = c("A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 12))
-levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "D", "E", "F")
-# 13, 15, 8, 2 === B
-# 5, 9, 16, 17 === E
-# 3, 6, 7, 12 === C
-
-```
-
 
 * `ps_ind_01` : modalité 6 vers 4, modalité 7 vers 3 ou 5
 * `ps_ind_03` : modalité 0 vers ? (peut être la garder), modalité 9 vers 1, modalité 10 vers 8, modalité 11 vers 8
@@ -138,16 +101,33 @@ levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", 
 * `ps_calc_14` : modalités 0 à 3 ensemble, modalités 12 à 23 ensemble
 * `ps_car_01_cat` : modalités 0 à 5 ensemble, modalités 8 et 9 ensemble
 
+
 ```{r}
-
-
-toto = data_sel$ps_reg_01
-toto
-levels(toto)[1:2] = "A"
-toto
+levels(data_sel$ps_ind_01) = c("A", "B", "C", "D", "E", "F", "G", "G")
+levels(data_sel$ps_ind_03) = c("A", "A", "B", "C", "D", "E", "F", "G", "H", "I", "I", "I")
+levels(data_sel$ps_ind_15) = c("A", "B", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M")
+levels(data_sel$ps_reg_01) = c("F", "A", "A", "B", "C", "D", "E", "F", "G", "H")
+levels(data_sel$ps_reg_02) = c("A", "B", "C", "D", "E", "F", "G", rep("H", 12))
+levels(data_sel$ps_car_06_cat) = c("A", "B", "C", "D", "E", "F", "D", "D", "C", "F", "G", "H", "D", "C", "I", "C", "F", "F")
+levels(data_sel$ps_calc_04) = c("A", "A", "B", "C", "D", "D")
+levels(data_sel$ps_calc_05) = c("A", "B", "C", "D", "E", "E", "E")
+levels(data_sel$ps_calc_06) = c("A", "A", "A", "A", "A", "A", "A", "B", "C", "D", "E")
+levels(data_sel$ps_calc_07) = c("A", "A", "B", "C", "D", "E", "E", "E", "E", "E")
+levels(data_sel$ps_calc_08) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "E", "E")
+levels(data_sel$ps_calc_09) = c("A", "B", "C", "D", "E", "E", "E", "E")
+levels(data_sel$ps_calc_10) = c("A", "A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 13))
+levels(data_sel$ps_calc_11) = c("A", "A", "A", "B", "C", "D", "E", "F", "G", rep("H", 11))
+levels(data_sel$ps_calc_12) = c("A", "B", "C", "D", rep("E", 7))
+levels(data_sel$ps_calc_13) = c("A", "B", "C", "D", "E", "F", rep("G", 8))
+levels(data_sel$ps_calc_14) = c("A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 12))
+levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "D", "E", "F")
 ```
 
 
-
-
 ## Transformation des variables continues
+
+
+
+## Exportation
+
+Après avoir transformé les deux échantillons, on peut les rediviser selon la colonne "dataset". On exportera deux bases dans ce cas (ne pas oublier de récupérer le type des colonnes et exporter ça également).

@@ -12,6 +12,11 @@ library(gmodels) # CrossTable
 library(dgof) # ks test
 library(data.table) # import
 # library(DMwR) # knn imputation
+library(FactoMineR) 
+library(factoextra)
+library(glue)
+library(ggrepel)
+
 theme_set(theme_light())
 
 # fonctions externes ############################
