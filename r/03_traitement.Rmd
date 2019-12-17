@@ -40,12 +40,39 @@ res_famd<-readRDS("./../data/res_famd.rds")
 
 
 ```{r}
-eig_val<-get_eigenvalue(res_famd)
-head(eig_val)
+library(glue)
+library(ggrepel)
 ```
 
 ```{r}
-plot(res_famd$quali.var$coord)
+coord<-res_famd$quali.var$coord %>% as.data.frame()
+liste_var_factor = type_col[type_col == "factor"]
+liste_var_factor<-names(liste_var_factor[-1])
+name<-c()
+
+for (var in liste_var_factor) {
+    df<-data_sel %>% filter(dataset=="train") %>% select(var) 
+    colnames(df)<-"col"
+    n<-length(levels(df$col))
+    name<-c(name,rep(var,n))
+}
+name <-name[-c(239,302)]
+# On retire une de chaque a cause de modalite non presente dans train (ps_calc_06 et ps_calc_11)
+coord<-cbind.data.frame(name,coord) 
+
+modalite<-data.frame("modalite"=rownames(coord), stringsAsFactors = FALSE) %>%
+    mutate(nb=str_count(modalite, pattern = "\\."), clean = case_when(nb == 0 ~ gsub("X","",modalite),
+                                                                    nb == 1 ~ str_extract(modalite, regex("(?<=X)[0-9]*")),
+                                                                    nb == 2 ~ str_extract(modalite, regex("(?<=X)[0-9]*\\.[0-9]*"))))
+coord<-cbind.data.frame(coord,"modalite"=modalite$clean)
+coord$modalite<-as.character(coord$modalite)
+coord$modalite[which(name=="ps_reg_01")]<-seq(0,0.9,0.1)
+coord$modalite[which(name=="ps_reg_02")]<-seq(0,1.8,0.1)
+for(var in liste_var_factor) {
+df<- coord %>% filter(name==var) %>% select(-name)
+print(gg_proj_ind(df,1,2) + geom_text_repel(aes(label=modalite)) +ggtitle(var))
+}
+
 ```
 
 
