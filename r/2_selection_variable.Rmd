@@ -77,6 +77,16 @@ liste_gg = liste_gg[4:length(liste_gg)]
 ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
 ```
 
+<<<<<<< HEAD
+
+## AFDM
+
+```{r}
+library("FactoMineR") 
+library("factoextra") 
+```
+
+=======
 ## Exportation
 
 On exporte la base avec les variables retenues.
@@ -91,3 +101,4 @@ write.csv(x = data_sel,
           quote = T,
           row.names = F)
 ```
+>>>>>>> 92886b5b74b5765001271e1cacfe3fd4e005cb9d
