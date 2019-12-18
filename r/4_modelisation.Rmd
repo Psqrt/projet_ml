@@ -1,0 +1,22 @@
+---
+title: "4_modelisation"
+author: "Psqrt"
+date: "16/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+```
+
+```{r}
+type_col = readRDS("./../data/type_col.rds")
+train = data.table::fread(file = "./../data/train.csv", colClasses = type_col) %>% as.data.frame()
+test = data.table::fread(file = "./../data/test.csv", colClasses = type_col) %>% as.data.frame()
+```
