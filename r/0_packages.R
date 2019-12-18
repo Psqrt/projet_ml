@@ -16,6 +16,8 @@ library(FactoMineR)
 library(factoextra)
 library(glue)
 library(ggrepel)
+library(ModelMetrics)
+library(PRROC)
 
 theme_set(theme_light())
 
