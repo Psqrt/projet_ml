@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, message=F, warning=F}
 source("./0_packages.R")
+library(DMwR)
 ```
 
 ```{r}
@@ -20,3 +21,24 @@ type_col = readRDS("./../data/type_col.rds")
 train = data.table::fread(file = "./../data/train.csv", colClasses = type_col) %>% as.data.frame()
 test = data.table::fread(file = "./../data/test.csv", colClasses = type_col) %>% as.data.frame()
 ```
+
+
+```{r}
+set.seed(1234)
+
+train_mix <- SMOTE(target ~ .-id, train, perc.over = 100, perc.under=200)
+table(train_mix$target)
+
+n<-table(train$target)[1]/table(train$target)[2]
+train_weigth <- train %>% mutate(weight = if_else(target==1,n,1))
+train_weight %>% group_by(target) %>% summarise(n=sum(weight))
+
+df<- train %>% filter(target==0)
+n_1<-table(train$target)[2]
+sampling<-sample(df$id,n_1,replace = F)
+df_0<- train %>% filter(id %in% sampling)
+df_1<- train %>% filter(target==1)
+train_down <- rbind.data.frame(df_0,df_1)
+table(train_down$target)
+```
+
