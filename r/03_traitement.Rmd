@@ -31,12 +31,9 @@ if (0) {
 }
 ```
 
+
 ```{r}
 res_famd<-readRDS("./../data/res_famd.rds")
-```
-
-
-```{r}
 coord<-res_famd$quali.var$coord %>% as.data.frame()
 liste_var_factor = type_col[type_col == "factor"]
 liste_var_factor<-names(liste_var_factor[-1])
@@ -124,6 +121,24 @@ levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", 
 ```
 
 
+## Régression logistique sur variable à 104 modalité
+
+ 
+```{r}
+df <- data_sel %>% filter(dataset=="train")
+model<-glm(data = df, target ~ ps_car_11_cat, family = binomial(link = logit))
+res<-summary(model)
+df<-cbind.data.frame(ps_car_11_cat=gsub("ps_car_11_cat","",rownames(res$coefficients)),res$coefficients)
+df<- df %>% select(ps_car_11_cat,Estimate)
+df$ps_car_11_cat<-as.factor(df$ps_car_11_cat)
+data_sel<- left_join(data_sel,df,"ps_car_11_cat")
+data_sel$ps_car_11_cat<-data_sel$Estimate
+data_sel <- data_sel %>% select(-Estimate)
+ggplot(data_sel, aes(ps_car_11_cat,color=target))  +
+  geom_density() +ggtitle("ps_car_11_cat")
+```
+
+
 ## Transformation des variables continues
 
 
@@ -131,3 +146,25 @@ levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", 
 ## Exportation
 
 Après avoir transformé les deux échantillons, on peut les rediviser selon la colonne "dataset". On exportera deux bases dans ce cas (ne pas oublier de récupérer le type des colonnes et exporter ça également).
+
+
+```{r}
+train<-data_sel %>% filter(dataset=="train") %>% select(-dataset)
+test<-data_sel %>% filter(dataset=="test") %>% select(-dataset)
+
+type_col = sapply(train, class)
+
+saveRDS(object = type_col,
+      file = "./../data/type_col.rds")
+
+
+write.csv(x = train,
+          file = "./../data/train.csv",
+          quote = T,
+          row.names = F)
+write.csv(x = test,
+          file = "./../data/test.csv",
+          quote = T,
+          row.names = F)
+```
+
