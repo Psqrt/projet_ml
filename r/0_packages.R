@@ -11,13 +11,14 @@ library(naniar) # NA treatment
 library(gmodels) # CrossTable
 library(dgof) # ks test
 library(data.table) # import
-# library(DMwR) # knn imputation
 library(FactoMineR) 
 library(factoextra)
 library(glue)
 library(ggrepel)
 library(ModelMetrics)
 library(PRROC)
+library(DMwR)
+library(plotROC)
 
 theme_set(theme_light())
 

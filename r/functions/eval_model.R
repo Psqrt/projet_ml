@@ -33,7 +33,7 @@ eval_model = function(modele, test_data, modalite_pos, modalite_neg) {
     valeur_aupr = aucpr(test_data$target, test_data$target_pred)
     
     return(list(importance = imp,
-                score = scores,
+                score = scores$score,
                 pred = test_data$target_pred,
                 confusion_matrix = conf,
                 auc = valeur_auc,
