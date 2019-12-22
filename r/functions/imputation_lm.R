@@ -1,3 +1,4 @@
+# imputation des NA par régression linéaire
 imputation_lm = function(data, variable_impute, variable_removed, id_join) {
     formule = formula(paste(get("variable_impute"), "~ .", sep = ""))
     lm_model = lm(formule,

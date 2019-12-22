@@ -1,3 +1,5 @@
+# Représentation graphique des tables de contingence (non généralisable à d'autres projets)
+
 gg_contingence_freq = function(var_etudiee){
     
     df1 = data_sel %>% 

@@ -2,16 +2,31 @@
 fun_imp_ggplot_split = function(model){
   # model: model used to plot variable importances
   
-  if (class(model)[1] == "ranger"){
-    imp_df = model$variable.importance %>% 
-      data.frame("Overall" = .) %>% 
-      rownames_to_column() %>% 
-      rename(variable = rowname) %>% 
-      arrange(-Overall)
+  # if (class(model)[1] == "ranger"){
+  #   imp_df = model$variable.importance %>% 
+  #     data.frame("Overall" = .) %>% 
+  #     rownames_to_column() %>% 
+  #     rename(variable = rowname) %>% 
+  #     arrange(-Overall)
+  # } else {
+  #   imp_df = varImp(model) %>%
+  #     rownames_to_column() %>% 
+  #     rename(variable = rowname) %>% 
+  #     arrange(-Overall)
+  # }
+  
+  if (model$method == "gbm"){
+    pdf(file = NULL)
+    imp_df = summary(model)
+    dev.off()
+    colnames(imp_df) = c("variable", "Overall")
   } else {
-    imp_df = varImp(model) %>%
-      rownames_to_column() %>% 
-      rename(variable = rowname) %>% 
+    imp_df = varImp(model)$importance[1] %>% 
+      rownames_to_column(var = "variable")
+    
+    colnames(imp_df)[2] = "Overall"
+    
+    imp_df = imp_df %>% 
       arrange(-Overall)
   }
   

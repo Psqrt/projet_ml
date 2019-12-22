@@ -19,6 +19,15 @@ library(ModelMetrics)
 library(PRROC)
 library(DMwR)
 library(plotROC)
+library(klaR)
+library(gbm)
+library(vip) #useless I think
+library(oddsratio)
+library(kernlab)
+library(MLmetrics)
+library(mlbench)
+library(rpart)
+library(ada)
 
 theme_set(theme_light())
 

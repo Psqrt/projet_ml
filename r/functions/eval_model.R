@@ -1,41 +1,139 @@
-eval_model = function(modele, test_data, modalite_pos, modalite_neg) {
+# Fonction permettant d'évaluer les performances d'un modèle :
+# Les inputs sont :
+#   - modele_caret : objet `train` issu d'un apprentissage par caret
+#   - modalite_pos : modalité de la classe positive (chaîne de caractères)
+#   - modalite_neg : modalité de la classe négative (chaîne de caractères)
+#   - stacking : le modèle entraîné est-il un modèle de stacking ? (booléen)
+# Les outputs sont :
+#   - Graphique de l'importance des variables
+#   - Table des prédictions (identifiant, score, prédiction, ...)
+#   - Deux tables permettant de tracer les courbes ROC et PR
+#   - Matrice de confusion
+#   - Représentation visuelle de la matrice de confusion
+#   - Métriques de performance
+#   - Aires sous les courbes (ROC, PR)
+#   - Courbes ROC et PR
+
+eval_model = function(modele_caret, modalite_pos, modalite_neg, stacking = F) {
     
-    # (1) : importance
-    imp = fun_imp_ggplot_split(modele)
-    
-    # (2) : score
-    if (class(modele)[1] == "ranger"){
-        scores = predict(object = modele,
-                         data = test_data)$predictions %>% 
-            data.frame("target_pred" = .)
-        test_data = test_data %>% 
-            bind_cols(target_pred = scores)
+    if (stacking == TRUE){
+        learner = paste("stacking_", modele_caret$method, sep = "")
     } else {
-        scores = predict(object = modele, 
-                         newdata = test_data,
-                         type = "response") %>%
-            data.frame("score" = .)
-        test_data = test_data %>% 
-            bind_cols(score = scores) %>% 
-            mutate(target_pred = factor(if_else(score > 0.5, modalite_pos, modalite_neg)))
+        learner = modele_caret$method
     }
     
-    # (3) : confusion matrix
-    conf = caret::confusionMatrix(data = test_data$target_pred, 
-                                  reference = test_data$target, 
+    # (1) : importance
+    imp = fun_imp_ggplot_split(modele_caret)
+    
+    # (2) : table des prédictions
+    tuning = modele_caret$bestTune
+    
+    if (tuning[1, 1] != "none"){
+        for (i in 1:ncol(tuning)){
+            modele_caret$pred = modele_caret$pred %>% 
+                filter(get(colnames(tuning)[i]) == tuning[i][[1]])
+        }
+    }
+    
+    df_recap = modele_caret$pred
+    
+    
+    # (3) areas
+    fg = df_recap[df_recap$obs == modalite_pos, modalite_pos]
+    bg = df_recap[df_recap$obs == modalite_neg, modalite_pos]
+    
+    roc = PRROC::roc.curve(scores.class0 = fg,
+                           scores.class1 = bg,
+                           curve = T)
+    auc_roc = roc$auc
+    
+    pr = PRROC::pr.curve(scores.class0 = fg,
+                         scores.class1 = bg,
+                         curve = T)
+    auc_pr = pr$auc.davis.goadrich
+    
+    # (4) : confusion matrix
+    conf = caret::confusionMatrix(data = df_recap$pred, 
+                                  reference = df_recap$obs, 
                                   positive = modalite_pos, 
                                   mode = "everything")
     
-    # (4) : AUC
-    valeur_auc = auc(predicted = test_data$target_pred, actual = test_data$target)
+    # (5) : confusion matrix important metrics
+    conf_metrics = data.frame(model = learner,
+                              accuracy = conf$overall["Accuracy"][[1]],
+                              sensitivity = conf$byClass["Sensitivity"][[1]],
+                              specificity = conf$byClass["Specificity"][[1]],
+                              precision = conf$byClass["Precision"][[1]],
+                              recall = conf$byClass["Recall"][[1]],
+                              f1 = conf$byClass["F1"][[1]],
+                              aucroc = auc_roc,
+                              aucpr = auc_pr,
+                              stringsAsFactors = F)
     
-    # (5) : AUPR
-    valeur_aupr = aucpr(test_data$target, test_data$target_pred)
+    # (6) : confusion matrix viz
+    par(mar = c(1, 1, 1, 1), mfrow = c(1,1))
+    fourfoldplot(conf$table,
+                 color = c("#B22222", "#2E8B57"),
+                 conf.level = 0,
+                 margin = 1,
+                 std = "margin",
+                 main = learner) +
+        text(1.2, 1.3, colnames(conf_metrics)[2], cex = 1, adj = 0) +
+        text(1.2, 1.2, colnames(conf_metrics)[3], cex = 1, adj = 0) +
+        text(1.2, 1.1, colnames(conf_metrics)[4], cex = 1, adj = 0) +
+        text(1.2, 1.0, colnames(conf_metrics)[5], cex = 1, adj = 0) +
+        text(1.2, 0.9, colnames(conf_metrics)[6], cex = 1, adj = 0) +
+        text(1.2, 0.8, colnames(conf_metrics)[7], cex = 1, adj = 0) +
+        text(1.7, 1.3, round(conf_metrics[1, 2], 2), cex = 1, adj = 0) +
+        text(1.7, 1.2, round(conf_metrics[1, 3], 2), cex = 1, adj = 0) +
+        text(1.7, 1.1, round(conf_metrics[1, 4], 2), cex = 1, adj = 0) +
+        text(1.7, 1.0, round(conf_metrics[1, 5], 2), cex = 1, adj = 0) +
+        text(1.7, 0.9, round(conf_metrics[1, 6], 2), cex = 1, adj = 0) +
+        text(1.7, 0.8, round(conf_metrics[1, 7], 2), cex = 1, adj = 0)
+    conf_viz = recordPlot()
+    
+    
+    
+    # (6) curves
+    roc_data = roc$curve %>% 
+        data.frame() %>% 
+        rename(FPR = X1, TPR = X2, threshold = X3) %>% 
+        mutate(methode = learner)
+    
+    roc_curve = roc_data %>% 
+        ggplot() +
+        aes(x = FPR, y = TPR, color = threshold) +
+        geom_line(size = 1.5) +
+        xlab("1 - Specificity") +
+        ylab("Sensitivity") +
+        ggtitle("ROC Curve") +
+        scale_color_gradient2(mid = "orange", high = "red")
+    
+    pr_data = pr$curve %>% 
+        data.frame() %>% 
+        rename(Recall = X1, Precision = X2, threshold = X3) %>% 
+        mutate(methode = learner)
+    
+    pr_curve = pr_data %>% 
+        ggplot() +
+        aes(x = Recall, y = Precision, color = threshold) +
+        geom_line(size = 1.5) +
+        ggtitle("PR Curve") +
+        scale_color_gradient2(mid = "orange", high = "red")
+    
+    curves = ggarrange(roc_curve, pr_curve,
+                       nrow = 1, 
+                       common.legend = T, 
+                       legend = "bottom")
     
     return(list(importance = imp,
-                score = scores$score,
-                pred = test_data$target_pred,
+                df_recap = df_recap,
+                df_roc = roc_data,
+                df_pr = pr_data,
                 confusion_matrix = conf,
-                auc = valeur_auc,
-                valeur_aupr = valeur_aupr))
+                confusion_viz = conf_viz,
+                conf_metrics = conf_metrics,
+                auc_roc = auc_roc,
+                auc_pr = auc_pr,
+                curves = curves))
 }

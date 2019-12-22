@@ -1,3 +1,4 @@
+# Imputation des NA par forêt aléatoire
 imputation_rf = function(data, variable_impute, id_join) {
     var_a_retirer = c(colnames(data)[colSums(is.na(data)) > 0])
     ind = var_a_retirer %in% variable_impute
