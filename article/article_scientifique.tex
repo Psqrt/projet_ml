@@ -1,0 +1,95 @@
+\documentclass[french]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,top=3cm,bottom=2cm,left=1.5cm,right=1.5cm,headheight=60pt]{geometry}
+\usepackage{babel} % gestion de la langue
+\usepackage{graphicx} % gestion des images
+\usepackage{lipsum} % remplissage de texte
+%\usepackage[parfill]{parskip} % pas d'indentation en début de paragraphe
+\usepackage{libertine} % police d'écriture
+\usepackage{multicol} % double colonne
+\usepackage{fancyhdr} % gestion des en-têtes / pieds de page
+\usepackage{fourier-orns}
+\usepackage{pgfornament}
+% ============ HEADER / FOOTER =======================
+\fancypagestyle{hdr-normal}{
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+    \fancyhead[L]{\bsc{Machine Learning} \\[-5pt] \vhrulefill{1pt} \hspace{70pt} \ \\ 2019}%
+    \fancyhead[C]{\bsc{Université de Rennes 1} \\[-5pt] \ \\ \bsc{UFR Sciences Économiques}}%
+    \fancyhead[R]{\raisebox{-0.15\height}{\includegraphics[scale=0.1]{img/logo_r1n.png}}}
+    \fancyfoot[L]{}
+    \fancyfoot[C]{}
+    \fancyfoot[R]{\bf\thepage}
+}
+\pagestyle{hdr-normal} % application en-têtes/pieds de page à l'ensemble du document
+
+% ============ DEFINITIONS ===========================
+\renewcommand{\thempfootnote}{\arabic{mpfootnote}} % numérotation numérique des notes dans minipage
+\makeatletter % épaisseur du vhrulefill
+   \def\vhrulefill#1{\leavevmode\leaders\hrule\@height#1\hfill \kern\z@}
+\makeatother
+\renewenvironment{abstract} % édit du abstract/résumé
+ {\par\noindent\textbf{\abstractname}\ \ignorespaces\\}
+ {\par\medskip}
+\renewcommand{\footnoterule}{\kern -3pt \hrule height 0pt \kern 2pt} % suppression ligne notes
+
+
+\begin{document}
+
+\noindent\begin{minipage}{\textwidth}
+
+\ \\[20pt]
+
+{\LARGE \bf Article title} \\
+
+{\large \bf Author Name\footnote{Department One, Institution One, City One, Country One}, 
+            Author Name\footnote{Department Two, Institution Two, City Two, Country Two}, 
+            Author Name\footnote{Department Three, Institution Three, City Three, Country Three}}
+
+
+
+\end{minipage}
+
+\
+
+\noindent E-mail: xxx@xxx.xx
+
+\null
+
+\begin{abstract}
+\lipsum[14]
+\end{abstract}
+
+\noindent Mots-clés : mot, mot, mot
+
+\
+
+\noindent \vhrulefill{1.5pt} ~\pgfornament[height = 0.6cm,symmetry=h]{84} ~ \vhrulefill{1.5pt}
+
+
+\begin{multicols}{2}
+\section{Section heading}
+
+\lipsum[1-2]
+
+\subsection{Subsection heading}
+
+\lipsum[3-4]
+
+\subsubsection{Subsubsection heading}
+
+\lipsum[5-12]
+
+
+
+
+% références
+\nocite{*}
+\bibliographystyle{acm}
+\bibliography{biblio}
+
+\end{multicols}
+
+\end{document}
+
