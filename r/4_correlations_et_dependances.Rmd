@@ -1,0 +1,114 @@
+---
+title: "4_correlations_et_dependances"
+author: "Psqrt"
+date: "27/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+```
+
+## Importations
+
+```{r}
+load("./../data/bases_pour_modelisation.RData")
+```
+
+## Étude des corrélations entre variables explicatives continues
+
+```{r}
+var_num = names(train)[sapply(train, class) == "numeric"][-1]
+var_fac = names(train)[sapply(train, class) == "factor"][-1]
+
+train %>% 
+    select(var_num) %>% 
+    cor() %>% 
+    corrplot(method = "number",
+             type = "upper",
+             tl.cex = 0.8,
+             tl.srt = 45,
+             tl.col = "black")
+```
+
+## Étude ANOVA entre variables explicatives continues et la target
+
+```{r}
+var_num
+for (i in var_num){
+    print(i)
+    print(summary(aov(get(i) ~ target,
+                data = train)))
+}
+```
+
+
+
+
+
+
+
+## Étude des dépendances (chi2, V de Cramer) entre la target et les variables explicatives catégorielles
+
+```{r}
+cramer = data.frame(NA, length(var_fac), 3)
+
+for (i in (1:length(var_fac))){
+    tab = table(train[,var_fac[i]], train$target)
+    chisq_results = chisq.test(tab)
+    cramer[i, 1] = var_fac[i]
+    cramer[i, 2] = round(sqrt(chisq_results$statistic/(nrow(train))), 3)
+    cramer[i, 3] = signif(chisq_results$p.value, 3)
+}
+colnames(cramer) = c("variable", "cramerv", "pvalue_chi2")
+cramer %>% 
+    arrange(-cramerv) %>% 
+    ggplot() +
+    aes(x = reorder(variable, -cramerv),
+        y = cramerv,
+        fill = -cramerv) +
+    geom_bar(stat = "identity",
+             show.legend = F) +
+    xlab("Feature") +
+    ylab("Cramer's V") +
+    ggtitle("Cramer's V against the explained response") +
+    theme(axis.text.x = element_text(angle = 45,
+                                     hjust = 1)) +
+    scale_fill_gradient(high = "pink",
+                        low = "darkred")
+```
+
+## Étude des dépendances (chi2, V de Cramer) entre variables explicatives catégorielles
+
+```{r}
+cramer = matrix(NA, length(var_fac), length(var_fac))
+
+for (i in (1:length(var_fac))){
+    for (j in (1:length(var_fac))){
+        tab = table(train[, var_fac[i]], train[, var_fac[j]])
+        chisq_results = chisq.test(tab)
+        cramer[i, j] = sqrt(chisq_results$statistic/(nrow(train) * (min(dim(tab)) -1)))
+    }
+}
+
+cramer = round(cramer, 3)
+colnames(cramer) = var_fac
+rownames(cramer) = var_fac
+
+corrplot(cramer,
+         method = "shade",
+         type = "upper",
+         diag = F,
+         tl.srt = 45, 
+         tl.col = "black",
+         tl.cex = 0.6, 
+         addCoef.col = "darkgreen", 
+         addCoefasPercent = T)
+```
+

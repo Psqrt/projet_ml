@@ -15,11 +15,21 @@ fun_imp_ggplot_split = function(model){
   #     arrange(-Overall)
   # }
   
+  if (!("method" %in% names(model))){
+    model$method = "inexistant"
+  }
+  
   if (model$method == "gbm"){
     pdf(file = NULL)
     imp_df = summary(model)
     dev.off()
     colnames(imp_df) = c("variable", "Overall")
+  } else if (class(model)[1] == "ranger"){
+    imp_df = model$variable.importance %>%
+      data.frame("Overall" = .) %>%
+      rownames_to_column() %>%
+      rename(variable = rowname) %>%
+      arrange(-Overall)
   } else {
     imp_df = varImp(model)$importance[1] %>% 
       rownames_to_column(var = "variable")

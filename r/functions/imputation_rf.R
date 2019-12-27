@@ -6,7 +6,7 @@ imputation_rf = function(data, variable_impute, id_join) {
     formule = formula(paste(get("variable_impute"), "~ . -dataset -id -target", sep = ""))
     rf_model = ranger(formula = formule,
                 data = data[complete.cases(data) & data$dataset == "train",] %>% select(-var_a_retirer),
-                num.trees = 300)
+                num.trees = 200)
     
     lignes_a_imputer = data[is.na(data[get("variable_impute")]),] %>% data.frame()
     

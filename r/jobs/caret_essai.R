@@ -37,19 +37,20 @@ modelLookup("rpart")
 #                              summaryFunction = prSummary,
 #                              classProbs = T)
 tune_control <- trainControl(method = "cv",
-                             number = 10,
-                             summaryFunction = prSummary,
+                             number = 5,
+                             summaryFunction = twoClassSummary,
                              classProbs = T,
-                             savePredictions = T)
+                             savePredictions = T,
+                             sampling = "smote")
 
 tune_grid = expand.grid(
-    cp = seq(from = 0, to = 0.4, by = 0.01)
+    cp = seq(from = 0, to = 0.7, by = 0.01)
 )
 
 rpart = train(
     target ~ .,
     data = train,
-    metric = "F",
+    metric = "ROC",
     trControl = tune_control,
     tuneGrid = tune_grid,
     method = "rpart"
@@ -57,7 +58,7 @@ rpart = train(
 
 ggplot(rpart)
 
-toto_rpart = eval_model(rpart, "spam", "nonspam")
+toto_rpart = eval_model(rpart, "Class2", "Class1")
 
 
 ### RÉGRESSION LOGISTIQUE ####
@@ -113,6 +114,7 @@ tune_grid = expand.grid(
     nu = 0.1
 )
 
+
 ada = train(
     target ~ .,
     data = train,
@@ -125,135 +127,135 @@ ada = train(
 ggplot(ada)
 
 
-toto_ada = eval_model(ada, "spam", "nonspam")
+toto_ada = eval_model(ada, "yes", "no")
 
 
 ### XGBoost tree ####
-
-modelLookup("xgbTree")
-
-
-tune_grid = expand.grid(
-    nrounds = seq(200, 600, 50),
-    eta = c(0.025, 0.05, 0.1, 0.3),
-    max_depth = c(2, 3, 4, 5, 6),
-    gamma = 0,
-    colsample_bytree = 1,
-    min_child_weight = 1,
-    subsample = 1
-)
-
-# 1st
-xgbtree = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "xgbTree",
-)
-
-ggplot(xgbtree)
-
-tune_grid = expand.grid(
-    nrounds = seq(from = 50, to = 600, by = 50),
-    eta = xgbtree$bestTune$eta,
-    max_depth = ifelse(xgbtree$bestTune$max_depth == 2,
-                       c(xgbtree$bestTune$max_depth:4),
-                       (xgbtree$bestTune$max_depth - 1):(xgbtree$bestTune$max_depth + 1)),
-    gamma = 0,
-    colsample_bytree = 1,
-    min_child_weight = c(1, 2, 3),
-    subsample = 1
-)
-
-# 2nd
-xgbtree = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "xgbTree",
-)
-
-ggplot(xgbtree)
-
-
-tune_grid = expand.grid(
-    nrounds = seq(from = 50, to = 600, by = 50),
-    eta = xgbtree$bestTune$eta,
-    max_depth = xgbtree$bestTune$max_depth,
-    gamma = 0,
-    colsample_bytree = c(0.4, 0.6, 0.8, 1.0),
-    min_child_weight = xgbtree$bestTune$min_child_weight,
-    subsample = c(0.5, 0.75, 1.0)
-)
-
-# 3rd
-xgbtree = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "xgbTree",
-)
-
-ggplot(xgbtree)
-
-
-
-
-tune_grid = expand.grid(
-    nrounds = seq(from = 50, to = 600, by = 50),
-    eta = xgbtree$bestTune$eta,
-    max_depth = xgbtree$bestTune$max_depth,
-    gamma = c(0, 0.05, 0.1, 0.5, 0.7, 0.9, 1.0),
-    colsample_bytree = xgbtree$bestTune$colsample_bytree,
-    min_child_weight = xgbtree$bestTune$min_child_weight,
-    subsample = xgbtree$bestTune$subsample
-)
-
-# 4th
-xgbtree = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "xgbTree",
-)
-
-ggplot(xgbtree)
-
-
-
-
-
-
-
-
-tune_grid = expand.grid(
-    nrounds = seq(from = 100, to = 2000, by = 100),
-    eta = c(0.01, 0.015, 0.025, 0.05, 0.1),
-    max_depth = xgbtree$bestTune$max_depth,
-    gamma = xgbtree$bestTune$gamma,
-    colsample_bytree = xgbtree$bestTune$colsample_bytree,
-    min_child_weight = xgbtree$bestTune$min_child_weight,
-    subsample = xgbtree$bestTune$subsample
-)
-
-
-# 5th
-xgbtree = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "xgbTree",
-)
+    
+    modelLookup("xgbTree")
+    
+    
+    tune_grid = expand.grid(
+        nrounds = seq(200, 600, 50),
+        eta = c(0.025, 0.05, 0.1, 0.3),
+        max_depth = c(2, 3, 4, 5, 6),
+        gamma = 0,
+        colsample_bytree = 1,
+        min_child_weight = 1,
+        subsample = 1
+    )
+    
+    # 1st
+    xgbtree = train(
+        target ~ . - id,
+        data = train_smote,
+        metric = "F",
+        trControl = tune_control,
+        tuneGrid = tune_grid,
+        method = "xgbTree",
+    )
+    
+    ggplot(xgbtree)
+    
+    tune_grid = expand.grid(
+        nrounds = seq(from = 50, to = 600, by = 50),
+        eta = xgbtree$bestTune$eta,
+        max_depth = ifelse(xgbtree$bestTune$max_depth == 2,
+                           c(xgbtree$bestTune$max_depth:4),
+                           (xgbtree$bestTune$max_depth - 1):(xgbtree$bestTune$max_depth + 1)),
+        gamma = 0,
+        colsample_bytree = 1,
+        min_child_weight = c(1, 2, 3),
+        subsample = 1
+    )
+    
+    # 2nd
+    xgbtree = train(
+        target ~ . - id,
+        data = train_smote,
+        metric = "F",
+        trControl = tune_control,
+        tuneGrid = tune_grid,
+        method = "xgbTree",
+    )
+    
+    ggplot(xgbtree)
+    
+    
+    tune_grid = expand.grid(
+        nrounds = seq(from = 50, to = 600, by = 50),
+        eta = xgbtree$bestTune$eta,
+        max_depth = xgbtree$bestTune$max_depth,
+        gamma = 0,
+        colsample_bytree = c(0.4, 0.6, 0.8, 1.0),
+        min_child_weight = xgbtree$bestTune$min_child_weight,
+        subsample = c(0.5, 0.75, 1.0)
+    )
+    
+    # 3rd
+    xgbtree = train(
+        target ~ . - id,
+        data = train_smote,
+        metric = "F",
+        trControl = tune_control,
+        tuneGrid = tune_grid,
+        method = "xgbTree",
+    )
+    
+    ggplot(xgbtree)
+    
+    
+    
+    
+    tune_grid = expand.grid(
+        nrounds = seq(from = 50, to = 600, by = 50),
+        eta = xgbtree$bestTune$eta,
+        max_depth = xgbtree$bestTune$max_depth,
+        gamma = c(0, 0.05, 0.1, 0.5, 0.7, 0.9, 1.0),
+        colsample_bytree = xgbtree$bestTune$colsample_bytree,
+        min_child_weight = xgbtree$bestTune$min_child_weight,
+        subsample = xgbtree$bestTune$subsample
+    )
+    
+    # 4th
+    xgbtree = train(
+        target ~ . - id,
+        data = train_smote,
+        metric = "F",
+        trControl = tune_control,
+        tuneGrid = tune_grid,
+        method = "xgbTree",
+    )
+    
+    ggplot(xgbtree)
+    
+    
+    
+    
+    
+    
+    
+    
+    tune_grid = expand.grid(
+        nrounds = seq(from = 100, to = 2000, by = 100),
+        eta = c(0.01, 0.015, 0.025, 0.05, 0.1),
+        max_depth = xgbtree$bestTune$max_depth,
+        gamma = xgbtree$bestTune$gamma,
+        colsample_bytree = xgbtree$bestTune$colsample_bytree,
+        min_child_weight = xgbtree$bestTune$min_child_weight,
+        subsample = xgbtree$bestTune$subsample
+    )
+    
+    
+    # 5th
+    xgbtree = train(
+        target ~ . - id,
+        data = train_smote,
+        metric = "F",
+        trControl = tune_control,
+        tuneGrid = tune_grid,
+        method = "xgbTree",
+    )
 
 ggplot(xgbtree)
 
@@ -274,8 +276,8 @@ tune_grid = expand.grid(
 )
 
 elastic = train(
-    target ~ .,
-    data = train,
+    target ~ . -id,
+    data = train_smote,
     metric = "F",
     trControl = tune_control,
     tuneGrid = tune_grid,
@@ -287,29 +289,29 @@ ggplot(elastic)
 
 
 
-### naif bayes ####
-
-modelLookup("nb")
-
-tune_grid = expand.grid(
-    fL = ,
-    usekernel = ,
-    adjust =
-)
-
-nbayes = train(
-    target ~ .,
-    data = train,
-    metric = "F",
-    trControl = tune_control,
-    tuneGrid = tune_grid,
-    method = "glmnet",
-)
-
-ggplot(nbayes)
-
-
-toto_nbayes = eval_model(nbayes, "spam", "nonspam")
+# ### naif bayes ####
+# 
+# modelLookup("nb")
+# 
+# tune_grid = expand.grid(
+#     fL = ,
+#     usekernel = ,
+#     adjust =
+# )
+# 
+# nbayes = train(
+#     target ~ .,
+#     data = train,
+#     metric = "F",
+#     trControl = tune_control,
+#     tuneGrid = tune_grid,
+#     method = "glmnet",
+# )
+# 
+# ggplot(nbayes)
+# 
+# 
+# toto_nbayes = eval_model(nbayes, "spam", "nonspam")
 
 
 ### KNN ####
@@ -322,8 +324,8 @@ tune_grid = expand.grid(
 )
 
 kppv = train(
-    target ~ .,
-    data = train,
+    target ~ . - id,
+    data = train_smote,
     metric = "F",
     trControl = tune_control,
     tuneGrid = tune_grid,
@@ -341,8 +343,8 @@ toto_kppv = eval_model(kppv, "spam", "nonspam")
 modelLookup("lda")
 
 lda_model = train(
-    target ~ .,
-    data = train,
+    target ~ . - id,
+    data = train_smote,
     metric = "F",
     trControl = tune_control,
     method = "lda",
@@ -406,8 +408,8 @@ tune_grid = expand.grid(
 )
 
 gbm_model = train(
-    target ~ .,
-    data = train,
+    target ~ . - id,
+    data = train_smote,
     metric = "F",
     trControl = tune_control,
     tuneGrid = tune_grid,
@@ -430,8 +432,8 @@ tune_grid = expand.grid(
 )
 
 svm_rad = train(
-    target ~ .,
-    data = train,
+    target ~ . - id,
+    data = train_smote,
     metric = "F",
     trControl = tune_control,
     tuneGrid = tune_grid,

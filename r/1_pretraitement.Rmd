@@ -43,8 +43,19 @@ L'échantillonnage a été fait de façon uniforme sur les observations.
 
 ```{r}
 # Séparation variables quanti/quali par rapport au profilage Python
+# On note que `ps_car_15` prend des valeurs de racines carrés. On la retransforme pour avoir des entiers
+# Il semblerait que la variable soit une variable de comptage, pour éviter d'éventuelles valeurs inconnues par les algorithmes d'apprentissage, on transforme en variable catégorielle et la valeur maximale couvrera toutes les valeurs supérieures
+train = train %>% 
+  mutate(ps_car_15 = round(ps_car_15**2, 0)) %>% 
+  mutate(ps_car_15 = if_else(ps_car_15 >= max(train$ps_car_15), max(train$ps_car_15), ps_car_15))
+
+# on prend bien le soin de faire les mêmes transformations dans train et test
+test = test %>% 
+  mutate(ps_car_15 = round(ps_car_15**2, 0)) %>% 
+  mutate(ps_car_15 = if_else(ps_car_15 >= max(train$ps_car_15), max(train$ps_car_15), ps_car_15))
+
 variables = colnames(train)[2:length(colnames(train))]
-variables_quanti = c("ps_reg_03", "ps_car_12", "ps_car_13", "ps_car_14", "ps_car_15")
+variables_quanti = c("ps_reg_03", "ps_car_12", "ps_car_13", "ps_car_14")
 variables_quali = variables[!(variables %in% variables_quanti)]
 
 # fusion train/test pour les modifications

@@ -35,6 +35,9 @@ test_model = function(modele_caret, test_data, modalite_pos, modalite_neg, stack
         bind_cols(score = scores) %>% 
         mutate(target_pred = factor(if_else(score > 0.5, modalite_pos, modalite_neg)))
     
+    zz = test_data %>% 
+        select(target, target_pred, score)
+    
     # (3) : confusion matrix
     conf = caret::confusionMatrix(data = test_data$target_pred, 
                                   reference = test_data$target, 
@@ -117,6 +120,7 @@ test_model = function(modele_caret, test_data, modalite_pos, modalite_neg, stack
     return(list(importance = imp,
                 score = scores$score,
                 pred = test_data$target_pred,
+                zz = zz,
                 confusion_matrix = conf,
                 confusion_viz = conf_viz,
                 conf_metrics = conf_metrics,
