@@ -4,6 +4,8 @@ imputation_rf = function(data, variable_impute, id_join) {
     ind = var_a_retirer %in% variable_impute
     var_a_retirer = var_a_retirer[!ind]
     formule = formula(paste(get("variable_impute"), "~ . -dataset -id -target", sep = ""))
+    
+    ## Le modèle est bien construit sur l'échantillon d'apprentissage (pas de contamination)
     rf_model = ranger(formula = formule,
                 data = data[complete.cases(data) & data$dataset == "train",] %>% select(-var_a_retirer),
                 num.trees = 200)

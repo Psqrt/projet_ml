@@ -1,12 +1,22 @@
 ---
-title: "4_correlations_et_dependances"
-author: "Psqrt"
-date: "27/12/2019"
-output: html_document
+title: "Études des corrélations et dépendances"
+date: "Étape 4"
+output:
+  rmdformats::readthedown:
+    highlight: kate
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+               prompt=FALSE,
+               tidy=FALSE,
+               comment=NA)
+opts_knit$set(width=75)
 ```
 
 ## Packages et fonctions externes
@@ -18,7 +28,10 @@ source("./0_packages.R")
 ## Importations
 
 ```{r}
-load("./../data/bases_pour_modelisation.RData")
+type_col = readRDS("./../data/data_sel_type_col.rds")
+type_col = type_col[-1]
+train = fread(file = "./../data/train.csv", colClasses = type_col) %>% as.data.frame()
+test = fread(file = "./../data/test.csv", colClasses = type_col) %>% as.data.frame()
 ```
 
 ## Étude des corrélations entre variables explicatives continues
@@ -40,14 +53,22 @@ train %>%
 ## Étude ANOVA entre variables explicatives continues et la target
 
 ```{r}
-var_num
+df_recap_anova = data.frame("variable" = var_num, "pvalue" = NA, stringsAsFactors = F)
 for (i in var_num){
     print(i)
-    print(summary(aov(get(i) ~ target,
-                data = train)))
+    aov_result = summary(aov(get(i) ~ target,
+                data = train))
+    print(aov_result)
+    df_recap_anova[which(df_recap_anova$variable == i), "pvalue"] = aov_result[[1]][["Pr(>F)"]][1]
 }
+df_recap_anova %>% arrange(-pvalue)
 ```
 
+On note que 6 variables ne passent pas l'ANOVA. Ce sont essentiellement des variables type `calc` : `ps_calc_11`, `ps_calc_14`, `ps_calc_02`, `ps_calc_10`, `ps_car_11` et `ps_calc_03`. Ces variables sont écartées pour la suite.
+
+```{r}
+var_poubelle = df_recap_anova[df_recap_anova$pvalue > 0.05, "variable"]
+```
 
 
 
@@ -87,21 +108,21 @@ cramer %>%
 ## Étude des dépendances (chi2, V de Cramer) entre variables explicatives catégorielles
 
 ```{r}
-cramer = matrix(NA, length(var_fac), length(var_fac))
+cramer_cross = matrix(NA, length(var_fac), length(var_fac))
 
 for (i in (1:length(var_fac))){
     for (j in (1:length(var_fac))){
         tab = table(train[, var_fac[i]], train[, var_fac[j]])
         chisq_results = chisq.test(tab)
-        cramer[i, j] = sqrt(chisq_results$statistic/(nrow(train) * (min(dim(tab)) -1)))
+        cramer_cross[i, j] = sqrt(chisq_results$statistic/(nrow(train) * (min(dim(tab)) -1)))
     }
 }
 
-cramer = round(cramer, 3)
-colnames(cramer) = var_fac
-rownames(cramer) = var_fac
+cramer_cross = round(cramer_cross, 3)
+colnames(cramer_cross) = var_fac
+rownames(cramer_cross) = var_fac
 
-corrplot(cramer,
+corrplot(cramer_cross,
          method = "shade",
          type = "upper",
          diag = F,
@@ -110,5 +131,27 @@ corrplot(cramer,
          tl.cex = 0.6, 
          addCoef.col = "darkgreen", 
          addCoefasPercent = T)
+```
+
+Les variables catégorielles ne présentent pas de problème.
+
+```{r}
+train = train %>% 
+    select(-var_poubelle)
+
+test = test %>% 
+    select(-var_poubelle)
+```
+
+Au final, on retient 29 variables pour la construction des modèles.
+
+## Exportations
+
+```{r, eval = F}
+levels(train$target) = c("no", "yes")
+levels(test$target) = c("no", "yes")
+type_col = sapply(train, class)
+save(train, test, type_col,
+     file = "./../data/bases_29features.RData")
 ```
 

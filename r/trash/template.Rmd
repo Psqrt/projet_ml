@@ -1,0 +1,107 @@
+---
+title: "Benchmark"
+date: "Étape 1"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+---
+
+
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+               cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA)
+opts_knit$set(width=75)
+```
+
+# Importation des packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+select = dplyr::select
+```
+
+# Importation des données brutes
+
+```{r, warning=F, message=F}
+df_train = fread(file = "./../data/Base_train.csv") %>% as.data.frame()
+df_test  = fread(file = "./../data/Base_test.csv")  %>% as.data.frame()
+```
+
+# Préparation des bases pour la modélisation
+
+* XGBM a besoin d'être alimenté par un df des régresseurs (`train_X`) et d'un vecteur de réponses en facteurs (`train_Y`). Les labels à prédire ne doivent pas commencer par un chiffre (pour des soucis de restrictions de noms de colonnes). On recode `0` par `no` et `1` par `yes`.
+* LGBM a besoin d'être alimenté par un objet de type `lgb.Dataset` contenant les régresseurs et les réponses (`train_XY_lgb`). Les régresseurs comme les réponses doivent être en format numérique, la fonction `lgb.prepare` s'occupe de la conversion.
+* Le calcul du coefficient de Gini normalisé doit se faire avec des valeurs numériques, d'où `train_Y_num` et `test_Y_num`.
+* Les df `train_id` et `test_id` conservent les identifiants au cas où.
+* Une phase de gestion de mémoire termine la préparation des données pour éviter la saturation de la mémoire vive pendant le tuning des modèles.
+
+```{r}
+# XGBM
+train_id        = df_train %>% select(id)
+train_X         = df_train %>% select(-target, -id)
+train_Y         = factor(df_train$target)
+levels(train_Y) = c("no", "yes")
+train_Y_num     = df_train$target # servira à calculer le coefficient de Gini
+
+test_id         = df_test %>% select(id)
+test_X          = df_test %>% select(-target, -id)
+test_Y          = factor(df_test$target)
+levels(test_Y)  = c("no", "yes")
+test_Y_num      = df_test$target # servira à calculer le coefficient de Gini
+
+# LGBM
+train_X_lgb  = as.matrix(lgb.prepare(train_X))
+train_Y_lgb  = as.matrix(lgb.prepare(df_train %>% select(target)))
+
+test_X_lgb   = as.matrix(lgb.prepare(test_X))
+test_Y_lgb   = as.matrix(lgb.prepare(df_test %>% select(target)))
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+
+# Gestion mémoire -- suppression des bases initiales puis garbage collection.
+rm(df_train)
+rm(df_test)
+gc()
+```
+
+# Benchmark 1 - XGBM
+
+## Overview
+
+Quels paramètres sont à régler pour optimiser le modèle ?
+
+```{r}
+modelLookup("xgbTree")
+```
+
+## Tuning
+
+La validation passe par un 5-folds cross validation. Pas plus, pas moins pour des raisons de mémoire disponible et de temps de calcul.
+
+```{r}
+tune_control <- trainControl(method          = "cv",        # validation method
+                             number          = 5,           # number of CV folds
+                             summaryFunction = giniSummary, # summary for evaluation
+                             classProbs      = T,           # compute probabilities
+                             savePredictions = T,           # keep predictions in object
+                             verboseIter     = T            # enable verbose
+)
+
+tune_grid = expand.grid(
+    nrounds          = seq(50, 300, 50), # number of boosting iterations
+    eta              = c(0.05, 0.1),     # shrinkage rate
+    max_depth        = c(4, 5, 6),       # max tree depth
+    gamma            = 0,                # minimum loss reduction
+    colsample_bytree = 0.7,              # subsample ratio of columns
+    min_child_weight = 0,                # minimum sum of instance weight
+    subsample        = 0.8               # subsample percentage
+)
+```

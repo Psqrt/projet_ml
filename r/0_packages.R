@@ -29,8 +29,11 @@ library(mlbench)
 library(rpart)
 library(ada)
 library(corrplot)
-
+library(xgboost)
+library(doMC)
+library(lightgbm)
 select = dplyr::select
+slice = dplyr::slice
 
 theme_set(theme_light())
 

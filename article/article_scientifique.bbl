@@ -1,84 +1,28 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{1}
 
-\bibitem{bayet1996eventail}
-{\sc Bayet, A.}
-\newblock L’{\'e}ventail des salaires et ses d{\'e}terminants.
-\newblock {\em Donn{\'e}es sociales\/} (1996).
+\bibitem{twds1}
+{\sc Abu-Rmileh, A.}
+\newblock The multiple faces of ‘feature importance’ in xgboost.
+\newblock Towards data science, 8 Février 2019.
 
-\bibitem{blinder1973wage}
-{\sc Blinder, A.~S.}
-\newblock Wage discrimination: reduced form and structural estimates.
-\newblock {\em Journal of Human resources\/} (1973), 436--455.
+\bibitem{hn1}
+{\sc Gandhi, R.}
+\newblock Boosting algorithms: Adaboost, gradient boosting and xgboost.
+\newblock Hacknernoon, 5 Mai 2018.
 
-\bibitem{cahuc2014labor}
-{\sc Cahuc, P., Carcillo, S., and Zylberberg, A.}
-\newblock {\em Labor economics}.
-\newblock MIT press, 2014.
+\bibitem{twds3}
+{\sc Hale, J.}
+\newblock Smarter ways to encode categorical data for machine learning.
+\newblock Towards data science, 11 Septembre 2018.
 
-\bibitem{de2004inegalites}
-{\sc de~Curraize, Y., and Hugounenq, R.}
-\newblock In{\'e}galit{\'e}s de salaires entre femmes et hommes et
-  discrimination.
-\newblock {\em Revue de l'OFCE}, 3 (2004), 193--224.
+\bibitem{twds2}
+{\sc {Juhi}}.
+\newblock Gini coefficient and lorenz curve explained.
+\newblock Towards data science, 6 Mars 2019.
 
-\bibitem{glaude1987structure}
-{\sc Glaude, M.}
-\newblock La structure des salaires en 1985.
-\newblock {\em Donn{\'e}es sociales\/} (1987), 159--171.
-
-\bibitem{hlavac2014oaxaca}
-{\sc Hlavac, M.}
-\newblock oaxaca: Blinder-oaxaca decomposition in r.
-
-\bibitem{mi2000rapport}
-{\sc Ministere de l'emploi et de~la solidarit{\'e}, .}
-\newblock Rapport d'activit{\'e} 2000.
-\newblock 94--99.
-
-\bibitem{oaxaca1973male}
-{\sc Oaxaca, R.}
-\newblock Male-female wage differentials in urban labor markets.
-\newblock {\em International economic review\/} (1973), 693--709.
-
-\bibitem{ob2011mesur}
-{\sc Observatoire~des in{\'e}galit{\'e}s, .}
-\newblock Mesurer les discriminations : m{\'e}thodes et r{\'e}sultats.
-\newblock {\em Les dossiers de l'Observatoire n5\/} (2011).
-
-\bibitem{perrot1998nouvelles}
-{\sc Perrot, A.}
-\newblock {\em Les nouvelles th{\'e}ories du march{\'e} du travail}.
-\newblock Collection rep{\`e}res. D{\'e}couverte, 1998.
-
-\bibitem{380479}
-{\sc Ponthieux, S., and Meurs, D.}
-\newblock Une mesure de la discrimination dans l'écart de salaire entre hommes
-  et femmes.
-\newblock {\em Economie et Statistique 337}, 1 (2000), 135--158.
-
-\bibitem{thiry1985discrimination}
-{\sc Thiry, B.}
-\newblock La discrimination salariale entre hommes et femmes sur le march{\'e}
-  du travail en france.
-\newblock In {\em Annales de l'INSEE\/} (1985), JSTOR, pp.~39--68.
-
-\bibitem{warrens2008similarity}
-{\sc Warrens, M.~J., et~al.}
-\newblock {\em Similarity coefficients for binary data: properties of
-  coefficients, coefficient matrices, multi-way metrics and multivariate
-  coefficients}.
-\newblock Psychometrics and Research Methodology Group, Leiden University
-  Institute~…, 2008.
-
-\bibitem{wooldridge2018introduction}
-{\sc Wooldridge, J.}
-\newblock {\em Introduction {\`a} l'{\'e}conom{\'e}trie: une approche moderne}.
-\newblock De Boeck Superieur, 2015.
-
-\bibitem{zhang2003properties}
-{\sc Zhang, B., and Srihari, S.~N.}
-\newblock Properties of binary vector dissimilarity measures.
-\newblock In {\em Proc. JCIS Int’l Conf. Computer Vision, Pattern
-  Recognition, and Image Processing\/} (2003), vol.~1.
+\bibitem{rb1}
+{\sc {Rstats on pi: predict/infer}}.
+\newblock Be aware of bias in rf variable importance metrics.
+\newblock R-bloggers, 19 Juin 2018.
 
 \end{thebibliography}

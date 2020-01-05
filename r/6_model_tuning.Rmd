@@ -1,0 +1,672 @@
+---
+title: "6_model_tuning"
+author: "Psqrt"
+date: "23/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+
+# library(doMC)
+# registerDoMC(cores = 8)
+```
+
+## Importations
+
+```{r}
+load("./../data/bases_29features.RData")
+
+train_id = train$id
+train_X = train %>% select(-id, -target)
+train_Y = train$target
+train_XY = train %>% select(-id)
+
+test_id = test$id
+test_X = test %>% select(-id, -target)
+test_Y = test$target %>% as.numeric()
+test_Y = test_Y - 1
+```
+
+## Exportations
+
+Repertoire qui contiendra les sauvegardes de modèles.
+
+```{r}
+path_exportation = file.path("/media/psqrt/SquareX/SAVE_MODELS/save_2020")
+path_exportation = file.path("/media/psqrt/DATA/save_models_2020")
+```
+
+
+
+## paramètres de validation
+
+Stratégie de validation : 5 folds CV.
+
+```{r}
+tune_control <- trainControl(method = "cv", 
+                             number = 5, 
+                             summaryFunction = giniSummary, 
+                             classProbs = T, 
+                             savePredictions = T, 
+                             verboseIter = T, 
+                             sampling = "none") # none, smote, down, up
+```
+
+
+### Arbre de décision
+
+```{r}
+
+set.seed(1234)
+modelLookup("rpart2")
+
+tune_grid = expand.grid(
+    maxdepth = 1:5
+)
+
+tree_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "rpart2"
+)
+
+save(tree_model, file = file.path(path_exportation, "tree_model.RData"))
+rm(tree_model)
+gc()
+
+```
+
+### Régression logistique
+
+```{r}
+
+set.seed(1234)
+modelLookup("glm")
+
+glm_binomial_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    method = "glm",
+    family = "binomial"
+)
+
+save(glm_binomial_model, file = file.path(path_exportation, "glm_binomial_model.RData"))
+rm(glm_binomial_model)
+gc()
+
+```
+
+### Forêt aléatoire (ranger)
+
+```{r}
+
+set.seed(1234)
+modelLookup("ranger")
+
+tune_grid = expand.grid(
+    mtry = c(3:(floor((ncol(train_XY)) * 0.8))),
+    splitrule = "gini",
+    min.node.size = 1
+)
+
+foret_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "ranger",
+    importance = "impurity"
+)
+
+save(foret_model, file = file.path(path_exportation, "foret_model.RData"))
+rm(foret_model)
+gc()
+
+```
+
+### AdaBoosting
+
+```{r}
+
+set.seed(1234)
+modelLookup("ada")
+
+tune_grid = expand.grid(
+    iter = 500,
+    maxdepth = 5,
+    nu = 0.1
+)
+
+ada_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "ada",
+)
+
+save(ada_model, file = file.path(path_exportation, "ada_model.RData"))
+rm(ada_model)
+gc()
+
+```
+
+### GLMnet
+
+```{r}
+
+set.seed(1234)
+modelLookup("glmnet")
+
+tune_grid = expand.grid(
+    alpha = seq(0, 1, 0.1),
+    lambda = seq(0, 3, 0.2)
+)
+
+glmnet_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "glmnet",
+)
+
+save(glmnet_model, file = file.path(path_exportation, "glmnet_model.RData"))
+rm(glmnet_model)
+gc()
+
+```
+
+### KNN
+
+```{r}
+
+set.seed(1234)
+modelLookup("knn")
+
+tune_grid = expand.grid(
+    k = 3
+)
+
+kppv_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "knn",
+)
+
+save(kppv_model, file = file.path(path_exportation, "kppv_model.RData"))
+rm(kppv_model)
+gc()
+
+```
+
+
+### LDA
+
+```{r}
+
+set.seed(1234)
+modelLookup("lda")
+
+lda_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    method = "lda",
+)
+
+
+save(lda_model, file = file.path(path_exportation, "lda_model.RData"))
+rm(lda_model)
+gc()
+
+```
+
+### Gradient boosting
+
+```{r}
+
+set.seed(1234)
+modelLookup("gbm")
+
+tune_grid = expand.grid(
+    n.trees = seq(300, 600, 100),
+    interaction.depth = seq(1, 6, 1),
+    shrinkage = 0.1,
+    n.minobsinnode = 1
+)
+
+gbm_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "gbm"
+)
+
+save(gbm_model, file = file.path(path_exportation, "gbm_model.RData"))
+rm(gbm_model)
+gc()
+
+```
+
+
+### SVM (radial kernel)
+
+```{r}
+
+set.seed(1234)
+modelLookup("svmRadial")
+
+tune_grid = expand.grid(
+    sigma = 1,
+    C = 1
+)
+
+svm_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "svmRadial",
+)
+
+save(svm_model, file = file.path(path_exportation, "svm_model.RData"))
+rm(svm_model)
+gc()
+
+```
+
+### XGBoosting
+
+```{r}
+
+set.seed(1234)
+modelLookup("xgbTree")
+
+tune_grid = expand.grid(
+    nrounds = seq(100, 500, 100),
+    eta = c(0.05, 0.1),
+    max_depth = c(4, 5, 6),
+    gamma = 0,
+    colsample_bytree = 0.7,
+    min_child_weight = 0,
+    subsample = 0.7
+)
+
+xgbtree_model = train(
+    target ~ .,
+    data = train_XY,
+    metric = "NormalizedGini",
+    trControl = tune_control,
+    tuneGrid = tune_grid,
+    method = "xgbTree",
+)
+
+save(xgbtree_model, file = file.path(path_exportation, "xgbtree_model.RData"))
+rm(xgbtree_model)
+gc()
+
+```
+
+### LGBM
+
+
+```{r}
+# LGBM
+train_X_lgb  = train %>% 
+    select(-id, -target) %>% 
+    lgb.prepare() %>% 
+    as.matrix()
+
+train_Y_lgb = train %>% 
+    select(target) %>% 
+    lgb.prepare() %>% 
+    as.matrix() - 1
+
+train_Y_num = as.numeric(train$target) - 1
+
+test_X_lgb   = test %>% 
+    select(-id, -target) %>% 
+    lgb.prepare() %>% 
+    as.matrix() 
+
+test_Y_lgb = test %>% 
+    select(target) %>% 
+    lgb.prepare() %>% 
+    as.matrix()
+
+test_Y_num = as.numeric(test$target) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+#### Up
+
+```{r, eval = F}
+set.seed(1234)
+params_lgb = list(
+    objective        = "binary", # type of exercise
+    metric           = "auc",    # metric to be evaluated
+    learning_rate    = 0.01,     # shrinkage rate
+    max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+    num_leaves       = 20,       # max number of leaves (nodes) in one tree
+    # is_unbalance     = T,        # is data unbalanced (disable this if using scale_pos_weight)
+    scale_pos_weight = 26,       # multiplication applied to every positive label weight (default: 1)
+    min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+    feature_fraction = 0.8,      # randomly select part of the features on each iteration
+    bagging_fraction = 0.8,      # randomly select part of the data without resampling
+    bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+    num_threads      = 6         # number of cpu cores (not threads) to use
+)
+
+up_lgb_cv = lgb.cv(
+    params                = params_lgb,         # hyperparameters
+    data                  = train_XY_lgb,       # lgb.Dataset object for training
+    eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+    nrounds               = 1000,               # maximum iterations
+    early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+    verbose               = 1,                  # enable verbose
+    eval_freq             = 50,                 # verbose every n iterations
+    nfold                 = 5                   # k-folds CV
+)
+
+up_lgb_model <- lgb.train(
+    params    = params_lgb,                        # hyperparameters
+    data      = train_XY_lgb,                      # lgb.Dataset object for training
+    valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+    eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+    nrounds   = up_lgb_cv$best_iter, # nrounds from CV
+    verbose   = 1,                                 # enable verbose
+    eval_freq = 50                                 # verbose every n iterations
+)
+```
+
+```{r}
+# save(up_lgb_cv, file = "./../data/up_lgb_cv.RData")
+# lgb.save(up_lgb_model, filename = "./../data/up_lgb_model.txt")
+load("./../data/up_lgb_cv.RData")
+up_lgb_model = lgb.load("./../data/up_lgb_model.txt")
+```
+
+```{r}
+up_lgb_train_preds          = predict(up_lgb_model, train_X_lgb)
+up_lgb_test_preds           = predict(up_lgb_model, test_X_lgb)
+up_lgb_train_ngini          = normalizedGini(train_Y_num, up_lgb_train_preds)
+up_lgb_test_ngini           = normalizedGini(test_Y_num, up_lgb_test_preds)
+ngini_valid = up_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = up_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = up_lgb_test_ngini)
+```
+
+#### None
+
+```{r, eval = F}
+none_lgb_tune_df = data.frame(
+    "max_depth" = numeric(),
+    "num_leaves" = numeric(),
+    "feature_fraction" = numeric(),
+    "bagging_fraction" = numeric(),
+    "validation" = numeric()
+)
+
+for (max_depth_param in c(5, 10, 15)){
+    for (num_leaves_param in c(15, 20, 25)) {
+        for (feature_fraction_param in c(0.7, 0.8)) {
+            for (bagging_fraction_param in c(0.7, 0.8)) {
+                
+                set.seed(1234)
+                params_lgb = list(
+                    objective        = "binary",               # type of exercise
+                    metric           = "auc",                  # metric to be evaluated
+                    learning_rate    = 0.01,                   # shrinkage rate
+                    max_depth        = max_depth_param,        # max depth for tree model (used to deal with over-fitting)
+                    num_leaves       = num_leaves_param,       # max number of leaves (nodes) in one tree
+                    is_unbalance     = T,                      # is data unbalanced (disable this if using scale_pos_weight)
+                    min_data_in_leaf = 1,                      # min number of data in one leaf (used to deal with over-fitting)
+                    feature_fraction = feature_fraction_param, # randomly select part of the features per iteration
+                    bagging_fraction = bagging_fraction_param, # randomly select part of the data without resampling
+                    bagging_freq     = 5,                      # if != 0, enables bagging, performs bagging at every k iteration
+                    num_threads      = 6                       # number of cpu cores (not threads) to use
+                )
+                
+                none_lgb_cv = lgb.cv(
+                    params                = params_lgb,         # hyperparameters
+                    data                  = train_XY_lgb,       # lgb.Dataset object for training
+                    eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+                    nrounds               = 1000,               # maximum iterations
+                    early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+                    verbose               = 1,                  # enable verbose
+                    eval_freq             = 50,                 # verbose every n iterations
+                    nfold                 = 5                   # k-folds CV
+                )
+                
+                row_param = data.frame(
+                    "max_depth" = max_depth_param,
+                    "num_leaves" = num_leaves_param,
+                    "feature_fraction" = feature_fraction_param,
+                    "bagging_fraction" = bagging_fraction_param,
+                    "validation" = none_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+                )
+                none_lgb_tune_df = none_lgb_tune_df %>% bind_rows(row_param)
+                
+            }
+        }
+    }
+}
+
+none_lgb_tune_df
+# none_lgb_model <- lgb.train(
+#   params    = params_lgb,                        # hyperparameters
+#   data      = train_XY_lgb,                      # lgb.Dataset object for training
+#   valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+#   eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+#   nrounds   = none_lgb_cv$best_iter, # nrounds from CV
+#   verbose   = 1,                                 # enable verbose
+#   eval_freq = 50                                 # verbose every n iterations
+# )
+```
+
+```{r}
+# save(none_lgb_cv, file = "./../data/none_lgb_cv.RData")
+# lgb.save(none_lgb_model, filename = "./../data/none_lgb_model.txt")
+# load("./../data/none_lgb_cv.RData")
+# none_lgb_model = lgb.load("./../data/none_lgb_model.txt")
+```
+
+```{r}
+none_lgb_train_preds          = predict(none_lgb_model, train_X_lgb)
+none_lgb_test_preds           = predict(none_lgb_model, test_X_lgb)
+none_lgb_train_ngini          = normalizedGini(train_Y_num, none_lgb_train_preds)
+none_lgb_test_ngini           = normalizedGini(test_Y_num, none_lgb_test_preds)
+ngini_valid = none_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = none_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = none_lgb_test_ngini)
+```
+
+
+<!-- ## stacking glm -->
+
+<!-- ```{r} -->
+<!-- # stacking_train = toto_rpart$df_recap %>% dplyr::select(rowIndex, target = obs, rpart_learner = pred) %>%  -->
+<!-- #     left_join(toto_logistic$df_recap %>% dplyr::select(rowIndex, glm_learner = pred)) %>%  -->
+<!-- #     left_join(toto_foret$df_recap %>% dplyr::select(rowIndex, rf_learner = pred)) %>%  -->
+<!-- #     # left_join(toto_ada$df_recap %>% dplyr::select(rowIndex, ada_learner = pred)) %>%  -->
+<!-- #     # left_join(toto_xgbtree$df_recap %>% dplyr::select(rowIndex, xgbtree_learner = pred)) %>%  -->
+<!-- #     left_join(toto_glmnet$df_recap %>% dplyr::select(rowIndex, glmnet_learner = pred)) %>%  -->
+<!-- #     left_join(toto_kppv$df_recap %>% dplyr::select(rowIndex, knn_learner = pred)) -->
+<!-- #     # left_join(toto_lda$df_recap %>% dplyr::select(rowIndex, lda_learner = pred)) %>%  -->
+<!-- #     # left_join(toto_gbm$df_recap %>% dplyr::select(rowIndex, gbm_learner = pred)) %>%  -->
+<!-- #     # left_join(toto_svm_rad$df_recap %>% dplyr::select(rowIndex, svm_rad_learner = pred)) -->
+
+<!-- pred_foret = predict(foret, train) -->
+<!-- pred_glmnet = predict(elastic, train) -->
+<!-- pred_kppv = predict(kppv, train) -->
+<!-- pred_logistic = predict(logistic, train) -->
+<!-- pred_rpart = predict(rpart, train) -->
+
+<!-- save(pred_foret, pred_glmnet, pred_kppv, pred_logistic, pred_rpart, file = "./../output/preds.RData") -->
+
+<!-- stacking_train = data.frame( -->
+<!--     "id" = train$id, -->
+<!--     "target" = train$target, -->
+<!--     "foret_pred" = pred_foret, -->
+<!--     "glmnet_pred" = pred_glmnet, -->
+<!--     "kppv_pred" = pred_kppv, -->
+<!--     "logistic_pred" = pred_logistic, -->
+<!--     "rpart_pred" = pred_rpart -->
+<!-- ) -->
+
+
+<!-- stacking_glm = train( -->
+<!--     target ~ . - id, -->
+<!--     data = stacking_train, -->
+<!--     metric = "ROC", -->
+<!--     trControl = tune_control, -->
+<!--     method = "glm", -->
+<!--     family = "binomial" -->
+<!-- ) -->
+
+<!-- toto_stacking_glm = eval_model(stacking_glm, "yes", "no", T) -->
+
+<!-- ################################################################################# -->
+
+<!-- tune_grid = expand.grid( -->
+<!--     mtry = c(1:(floor((ncol(stacking_train) - 2)))), -->
+<!--     # splitrule = c("gini", "extratrees"), -->
+<!--     splitrule = "gini", -->
+<!--     min.node.size = 1 -->
+<!-- ) -->
+
+<!-- foret_stacking = train( -->
+<!--     target ~ . - id, -->
+<!--     data = stacking_train, -->
+<!--     metric = "ROC", -->
+<!--     trControl = tune_control, -->
+<!--     tuneGrid = tune_grid, -->
+<!--     method = "ranger", -->
+<!--     importance = "impurity" -->
+<!-- ) -->
+
+<!-- toto_stacking_ranger = eval_model(foret_stacking, "yes", "no", T) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- tune_control_final <- trainControl(method = "none", -->
+<!--                                    summaryFunction = twoClassSummary, # prSummary -->
+<!--                                    classProbs = T, -->
+<!--                                    savePredictions = T, -->
+<!--                                    sampling = "smote") -->
+
+<!-- final_stacking_glm = train( -->
+<!--     target ~ . - id, -->
+<!--     data = stacking_train, -->
+<!--     metric = "ROC", -->
+<!--     trControl = tune_control_final, -->
+<!--     method = "glm", -->
+<!--     family = "binomial" -->
+<!-- ) -->
+
+
+<!-- tune_grid_foret_stacking = expand.grid( -->
+<!--     mtry = foret_stacking$bestTune$mtry, -->
+<!--     splitrule = foret_stacking$bestTune$splitrule, -->
+<!--     min.node.size = foret_stacking$bestTune$min.node.size -->
+<!-- ) -->
+
+<!-- final_stacking_ranger = train( -->
+<!--     target ~ . - id, -->
+<!--     data = stacking_train, -->
+<!--     metric = "ROC", -->
+<!--     trControl = tune_control_final, -->
+<!--     tuneGrid = tune_grid_foret_stacking, -->
+<!--     method = "ranger", -->
+<!--     importance = "impurity" -->
+<!-- ) -->
+
+
+<!-- pred_foret_test = predict(foret, test) -->
+<!-- pred_glmnet_test = predict(elastic, test) -->
+<!-- pred_kppv_test = predict(kppv, test) -->
+<!-- pred_logistic_test = predict(logistic, test) -->
+<!-- pred_rpart_test = predict(rpart, test) -->
+
+<!-- save(pred_foret_test, pred_glmnet_test, pred_kppv_test, pred_logistic_test, pred_rpart_test,  -->
+<!--      file = "./../output/preds_test.RData") -->
+
+<!-- load("./../output/preds_test.RData") -->
+
+<!-- pred_foret_test = pred_foret_test %>% as.character() -->
+<!-- pred_foret_test[pred_foret_test == "yes"] = "1" -->
+<!-- pred_foret_test[pred_foret_test == "no"] = "0" -->
+<!-- pred_foret_test = pred_foret_test %>% as.numeric() -->
+
+<!-- target = test$target %>% as.character() -->
+<!-- target[target == "yes"] = "1" -->
+<!-- target[target == "no"] = "0" -->
+<!-- target = target %>% as.numeric() -->
+
+<!-- normalizedGini <- function(aa, pp) { -->
+<!--     Gini <- function(a, p) { -->
+<!--         if (length(a) !=  length(p)) stop("Actual and Predicted need to be equal lengths!") -->
+<!--         temp.df <- data.frame(actual = a, pred = p, range=c(1:length(a))) -->
+<!--         temp.df <- temp.df[order(-temp.df$pred, temp.df$range),] -->
+<!--         population.delta <- 1 / length(a) -->
+<!--         total.losses <- sum(a) -->
+<!--         null.losses <- rep(population.delta, length(a)) # Hopefully is similar to accumulatedPopulationPercentageSum -->
+<!--         accum.losses <- temp.df$actual / total.losses # Hopefully is similar to accumulatedLossPercentageSum -->
+<!--         gini.sum <- cumsum(accum.losses - null.losses) # Not sure if this is having the same effect or not -->
+<!--         sum(gini.sum) / length(a) -->
+<!--     } -->
+<!--     Gini(aa,pp) / Gini(aa,aa) -->
+<!-- } -->
+
+<!-- test_preds_yo = predict(elastic, test %>% select(-target), type = "prob")[,2] -->
+<!-- normalizedGini(aa = target, pp = pred_foret_test) -->
+<!-- MLmetrics::NormalizedGini(test_preds_yo, test$target) -->
+<!-- MLmetrics::NormalizedGini(c(0, 0), c(0, 0)) -->
+
+<!-- stacking_test = data.frame( -->
+<!--     "id" = test$id, -->
+<!--     "target" = test$target, -->
+<!--     "foret_pred" = pred_foret_test, -->
+<!--     "glmnet_pred" = pred_glmnet_test, -->
+<!--     "kppv_pred" = pred_kppv_test, -->
+<!--     "logistic_pred" = pred_logistic_test, -->
+<!--     "rpart_pred" = pred_rpart_test -->
+<!-- ) -->
+
+<!-- # pred_stacking_test = predict(final_stacking_glm, stacking_test) -->
+
+<!-- toto_stacking_glm_test = test_model(final_stacking_glm, stacking_test, "yes", "no", T) -->
+
+<!-- toto_stacking_ranger_test = test_model(final_stacking_ranger, stacking_test, "yes", "no", T) -->
+
+<!-- pred_stacking_test %>% table -->
+<!-- table(pred_stacking_test, test$target) -->
+
+<!-- ``` -->
+

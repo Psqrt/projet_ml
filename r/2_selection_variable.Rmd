@@ -1,12 +1,22 @@
 ---
-title: "2_selection_variable"
-author: "Psqrt"
-date: "15/12/2019"
-output: html_document
+title: "Sélection des variables"
+date: "Étape 3"
+output:
+  rmdformats::readthedown:
+    highlight: kate
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+               prompt=FALSE,
+               tidy=FALSE,
+               comment=NA)
+opts_knit$set(width=75)
 ```
 
 ## Packages et fonctions externes
@@ -17,76 +27,323 @@ source("./0_packages.R")
 
 ```{r}
 type_col = readRDS("./../data/data_imp_type_col.rds")
-data_imp = data.table::fread(file = "./../data/data_imp.csv", colClasses = type_col) %>% as.data.frame()
+data_imp = fread(file = "./../data/data_imp.csv", colClasses = type_col) %>% as.data.frame()
 ```
 
 
-## Forêt aléatoire pour sélection de variables
 
+# Variable importance - LGBM
+
+L'utilisation d'un LGBM pour la sélection de variable est incitée pour deux raisons :
+
+* La rapidité d'exécution pour un modèle complexe
+* La possibilité de se servir du modèle afin de comparer le coefficient normalisé de Gini avant et après la première phase de traitement.
+
+Les hyperparamètres restent les mêmes qu'avant, de même pour la stratégie de validation du modèle (5-folds CV).
 
 ```{r}
-set.seed(1156)
-rf_selection = ranger(target ~ .,
-                      data = data_imp %>% filter(dataset == "train") %>% select(-dataset, -id),
-                      num.trees = 500,
-                      importance = "impurity")
+# LGBM
+train_X_lgb  = data_imp %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
 
-fun_imp_ggplot_split(rf_selection)
+train_Y_lgb = data_imp %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_imp$target[data_imp$dataset == "train"]) - 1
+
+test_X_lgb   = data_imp %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_imp %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_imp$target[data_imp$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+
+# RF
+train_XY = data_imp %>% 
+  filter(dataset == "train") %>% 
+  select(-dataset, -id)
+
+test_X = data_imp %>% 
+  filter(dataset == "test") %>% 
+  select(-dataset, -id, -target)
 ```
 
-On ne garde que les variables importantes (au delà de 500).
+## Tuning
 
 ```{r}
-var_imp = names(rf_selection$variable.importance[rf_selection$variable.importance > 500])
+params_lgb = list(
+  objective        = "binary", # type of exercise
+  metric           = "auc",    # metric to be evaluated
+  learning_rate    = 0.01,     # shrinkage rate
+  max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+  num_leaves       = 20,       # max number of leaves (nodes) in one tree
+  is_unbalance     = T,        # is data unbalanced
+  min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+  feature_fraction = 0.8,      # randomly select part of the features on each iteration
+  bagging_fraction = 0.8,      # randomly select part of the data without resampling
+  bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+  num_threads      = 6         # number of cpu cores (not threads) to use
+)
+```
+
+## Cross Validation
+
+```{r, eval = F}
+set.seed(1234)
+selection_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+```
+
+## Final Model
+
+```{r, eval = F}
+selection_lgb_model <- lgb.train(
+  params    = params_lgb,                 # hyperparameters
+  data      = train_XY_lgb,               # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb), # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,         # custom metric, additionnal to first metric
+  nrounds   = selection_lgb_cv$best_iter,           # nrounds from CV
+  verbose   = 1,                          # enable verbose
+  eval_freq = 50                          # verbose every n iterations
+)
+```
+
+```{r}
+# save(selection_lgb_cv, file = "./../data/selection_lgb_cv.RData")
+# lgb.save(selection_lgb_model, filename = "./../data/selection_lgb_model.txt")
+load("./../data/selection_lgb_cv.RData")
+selection_lgb_model = lgb.load("./../data/selection_lgb_model.txt")
+```
+
+## Variable importance
+
+```{r}
+fun_imp_ggplot_split_boosting(selection_lgb_model, "Gain")
+```
+
+## Benchmark - LGBM
+
+```{r}
+selection_lgb_train_preds          = predict(selection_lgb_model, train_X_lgb)
+selection_lgb_test_preds           = predict(selection_lgb_model, test_X_lgb)
+selection_lgb_train_ngini          = normalizedGini(train_Y_num, selection_lgb_train_preds)
+selection_lgb_test_ngini           = normalizedGini(test_Y_num, selection_lgb_test_preds)
+ngini_valid = selection_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = selection_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = selection_lgb_test_ngini)
+```
+
+On note que le coefficient normalisé de Gini a été amélioré par rapport au LGBM de benchmark, le modèle actuel a même dépassé le benchmark par XGBM.
+
+# Forêt aléatoire pour sélection de variables
+
+```{r, eval = F}
+set.seed(1234)
+selection_rf_model = ranger(target ~ .,
+                            data = train_XY,
+                            num.trees = 500,            # nombre d'arbres
+                            sample.fraction = 0.7,      # échantillonnage
+                            importance = "permutation",
+                            probability = T) # non biaisé en cas de données mixtes
+
+fun_imp_ggplot_split(selection_rf_model)
+```
+
+```{r}
+# save(selection_rf_model, file = "./../data/selection_rf_model.RData")
+load("./../data/selection_rf_model.RData")
+```
+
+
+```{r}
+selection_rf_train_preds          = predict(selection_rf_model, train_XY)$predictions[, 2]
+selection_rf_test_preds           = predict(selection_rf_model, test_X)$predictions[, 2]
+selection_rf_train_ngini          = normalizedGini(train_Y_num, selection_rf_train_preds)
+selection_rf_test_ngini           = normalizedGini(test_Y_num, selection_rf_test_preds)
+# ngini_valid = lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = selection_rf_train_ngini,
+  "Normalized Gini Coeff. (Test)"         = selection_rf_test_ngini)
+```
+
+* chercher à comprendre pourquoi le gini est à 1 pour le train.
+* 0.22 seulement car non tuné et bagging peut être moins adapté.
+
+
+On ne garde que les variables importantes (la première moitié pour chaque algorithme). On prendra alors l'union des deux listes proposées.
+
+```{r}
+var_imp_lgb = selection_lgb_model %>% 
+  lgb.importance() %>% 
+  as.data.frame() %>% 
+  arrange(-Gain) %>% 
+  slice(1:floor(nrow(.)/2)) %>% 
+  select(Feature) %>% 
+  .$Feature
+
+var_imp_rf = selection_rf_model$variable.importance %>% 
+  sort(decreasing = T) %>% 
+  .[1:floor(length(.)/2)] %>% 
+  names()
+
+var_imp_both = c(var_imp_lgb, var_imp_rf) %>% unique()
 
 data_sel = data_imp %>% 
-    select(dataset, id, target, var_imp)
+  select(dataset, id, target, var_imp_both)
 ```
 
+On retient 33 features.
+
+```{r}
+# On nettoie tout pour poursuivre le traitement ...
+rm(list = ls()[grep("_rf", ls())])
+gc()
+```
 
 ## Visualisation des distributions
 
 ```{r}
 liste_gg = list()
 for (i in c(4:ncol(data_sel))) {
-    
-    class_var = class(data_sel[[i]])    
-    
-    if (class_var == "factor"){
-        gg = data_sel %>% 
-            filter(dataset == "train") %>% 
-            ggplot() +
-            aes_string(x = colnames(data_sel)[i]) + 
-            geom_bar() +
-            ylab(NULL) +
-            theme(axis.text = element_blank())
-    } else {
-        gg = data_sel %>% 
-            filter(dataset == "train") %>% 
-            ggplot() +
-            aes_string(x = colnames(data_sel)[i]) + 
-            geom_density() +
-            ylab(NULL) +
-            theme(axis.text = element_blank())
-    }
-    liste_gg[[i]] = gg
+  
+  class_var = class(data_sel[[i]])    
+  
+  if (class_var == "factor"){
+    gg = data_sel %>% 
+      filter(dataset == "train") %>% 
+      ggplot() +
+      aes_string(x = colnames(data_sel)[i]) + 
+      geom_bar() +
+      ylab(NULL) +
+      theme(axis.text = element_blank())
+  } else {
+    gg = data_sel %>% 
+      filter(dataset == "train") %>% 
+      ggplot() +
+      aes_string(x = colnames(data_sel)[i]) + 
+      geom_density() +
+      ylab(NULL) +
+      theme(axis.text = element_blank())
+  }
+  liste_gg[[i]] = gg
 }
 
 liste_gg = liste_gg[4:length(liste_gg)]
 
-ggarrange(plotlist = liste_gg, ncol = 5, nrow = 6)
+ggarrange(plotlist = liste_gg, ncol = 6, nrow = 6)
 ```
 
+## Benchmark - LGBM
+
+```{r}
+# LGBM
+train_X_lgb  = data_sel %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+train_Y_lgb = data_sel %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_sel$target[data_sel$dataset == "train"]) - 1
+
+test_X_lgb   = data_sel %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_sel %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_sel$target[data_sel$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+```{r, eval = F}
+set.seed(1234)
+post_selection_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+
+post_selection_lgb_model <- lgb.train(
+  params    = params_lgb,                      # hyperparameters
+  data      = train_XY_lgb,                    # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb),      # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,              # custom metric, additionnal to first metric
+  nrounds   = post_selection_lgb_cv$best_iter, # nrounds from CV
+  verbose   = 1,                               # enable verbose
+  eval_freq = 50                               # verbose every n iterations
+)
+```
+
+```{r}
+# save(post_selection_lgb_cv, file = "./../data/post_selection_lgb_cv.RData")
+# lgb.save(post_selection_lgb_model, filename = "./../data/post_selection_lgb_model.txt")
+load("./../data/post_selection_lgb_cv.RData")
+post_selection_lgb_model = lgb.load("./../data/post_selection_lgb_model.txt")
+```
+
+```{r}
+post_selection_lgb_train_preds          = predict(post_selection_lgb_model, train_X_lgb)
+post_selection_lgb_test_preds           = predict(post_selection_lgb_model, test_X_lgb)
+post_selection_lgb_train_ngini          = normalizedGini(train_Y_num, post_selection_lgb_train_preds)
+post_selection_lgb_test_ngini           = normalizedGini(test_Y_num, post_selection_lgb_test_preds)
+ngini_valid = post_selection_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = post_selection_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = post_selection_lgb_test_ngini)
+```
+
+Le score a encore été amélioré.
 
 ## Exportation
 
 On exporte la base avec les variables retenues.
 
-```{r}
+```{r, eval = F}
 type_col = sapply(data_sel, class)
 
 saveRDS(object = type_col,
-      file = "./../data/data_sel_type_col.rds")
+        file = "./../data/data_sel_type_col.rds")
 write.csv(x = data_sel,
           file = "./../data/data_sel.csv",
           quote = T,

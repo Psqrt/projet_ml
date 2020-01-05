@@ -32,6 +32,7 @@ gg_contingence_freq = function(var_etudiee){
     gg = df_tot %>% 
         mutate(target = as.numeric(as.character(target)),
                var = as.numeric(as.character(var))) %>% 
+        mutate(var = if_else(var == -999, -1, var)) %>% 
         dplyr::arrange(target, var) %>% 
         ggplot() +
         aes(x = var, y = target) +

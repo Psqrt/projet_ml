@@ -1,0 +1,84 @@
+---
+title: "7_model_evaluation"
+author: "Psqrt"
+date: "03/01/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages et fonctions externes
+
+```{r, message=F, warning=F}
+source("./0_packages.R")
+
+library(doMC)
+registerDoMC(cores = 1)
+```
+
+## Importations
+
+```{r}
+load("./../data/bases_29features.RData")
+
+train_id = train$id
+train_XY = train %>% select(-id)
+train_X = train %>% select(-id, -target)
+train_Y = train$target %>% as.numeric()
+train_Y = train_Y - 1
+
+test_id = test$id
+test_X = test %>% select(-id, -target)
+test_Y = test$target %>% as.numeric()
+test_Y = test_Y - 1
+```
+
+## Zone de stockage
+
+```{r}
+path_exportation = file.path("/media/psqrt/SquareX/SAVE_MODELS/save_2020")
+path_exportation = file.path("/media/psqrt/DATA/save_models_2020")
+path_exportation = file.path("/home/psqrt/Téléchargements/000")
+```
+
+```{r, eval = F}
+df_score_modeles = data.frame("Method" = character(),
+                              "Sampling" = character(),
+                              "Train" = numeric(),
+                              "Validation" = numeric(),
+                              "Test" = numeric(),
+                              stringsAsFactors = F)
+donnees_modeles = list.files(path_exportation)
+donnees_modeles = donnees_modeles[-grep("ada", donnees_modeles)]
+for (rdata_file in donnees_modeles){
+    print(rdata_file)
+    modele = gsub(".RData", "", rdata_file)
+    print(modele)
+    load(file.path(path_exportation, rdata_file))
+    df_score_modeles = df_score_modeles %>%
+        bind_rows(caret_eval_gini(get(modele), train_X, test_X, train_Y, test_Y))
+    rm(list = get("modele"))
+}
+```
+
+```{r}
+load("./../data/df_score_modeles")
+
+df_score_modeles %>% 
+    filter(Method != "rpart2") %>% 
+    ggplot() +
+    aes(x = Sampling, y = Validation, group = Sampling, label = Method) +
+    geom_hline(yintercept = 0.2721429, color = "red", linetype = 2) +
+    stat_boxplot(geom = "errorbar", aes(color = Sampling)) +
+    geom_boxplot(aes(color = Sampling)) +
+    geom_point(aes(color = Method)) +
+    geom_text_repel(direction = "x", nudge_x = -0.2) +
+    coord_flip() +
+    xlab("Sampling Strategy") +
+    ylab("Normalized Gini Coefficient (5 folds CV)") +
+    annotation_custom(grob = textGrob(label = "LGBM benchmark", gp = gpar(fontsize = 9, col = "red")), xmin = -3.5, ymin = 0.272) +
+    theme_bw() +
+    theme(legend.position = "none")
+```

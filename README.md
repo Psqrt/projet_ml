@@ -4,6 +4,7 @@
 
 ```
 .
+├── article                               ### Dossier contenant les fichiers pour l'article scientifique
 ├── data                                  ### Dossier contenant les bases (initiales ou exportées)
 ├── output                                ### Dossier contenant les sorties en tout genre (hors données)
 ├── python                                ### Dossier contenant les codes Python

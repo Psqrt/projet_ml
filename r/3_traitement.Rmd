@@ -1,12 +1,22 @@
 ---
-title: "3_traitement"
-author: "Psqrt"
-date: "16/12/2019"
-output: html_document
+title: "Traitement"
+date: "Étape 4"
+output:
+  rmdformats::readthedown:
+    highlight: kate
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r knitr_init, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+               prompt=FALSE,
+               tidy=FALSE,
+               comment=NA)
+opts_knit$set(width=75)
 ```
 
 ## Packages et fonctions externes
@@ -17,15 +27,24 @@ source("./0_packages.R")
 
 ```{r}
 type_col = readRDS("./../data/data_sel_type_col.rds")
-data_sel = data.table::fread(file = "./../data/data_sel.csv", colClasses = type_col) %>% as.data.frame()
+data_sel = fread(file = "./../data/data_sel.csv", colClasses = type_col) %>% as.data.frame()
 ```
+
+Certaines variables qualitatives ont des modalités très peu représentées (fréquence relative inférieure à 5%). Il est nécessaire de fusionner certaines modalités pour combler ce problème. Il serait inquiétant de laisser les algorithmes apprendre sur une poignées d'observations pour comprendre l'interaction d'une modalité avec son environnement (autres observations, autres modalités, autres variables, target).
+
+Deux stratégies sont adoptées ici pour fusionner des modalités :
+
+* Projetter les modalités sur le premier plan factoriel d'une AFDM et regrouper les modalités projetées dans la même direction (clusters).
+* Fusionner les modalités en fonction de leur taux de target positive : les modalités ayant un comportement similaire vis-à-vis de la target seront rassemblées si besoin.
+
+# Fusion des modalités
 
 ## AFDM
 
 ```{r}
 df<- data_sel %>% filter(dataset=="train")
-if (1) {
-    res_famd <- FAMD(df[-c(1:3)], graph = FALSE)
+if (0) {
+    res_famd <- FAMD(df[-c(1:3)], ncp = 2, graph = FALSE)
     saveRDS(object = res_famd,
             file = "./../data/res_famd.rds")
 }
@@ -40,13 +59,14 @@ liste_var_factor<-names(liste_var_factor[-1])
 name<-c()
 
 for (var in liste_var_factor) {
-    df<-data_sel %>% filter(dataset=="train") %>% select(var) 
+    df<-data_sel %>% filter(dataset=="train") %>% select(var) %>% droplevels() # fix gt
     colnames(df)<-"col"
     n<-length(levels(df$col))
     name<-c(name,rep(var,n))
 }
-name <-name[-c(239,302)]
+# name <-name[-c(239,302)]
 # On retire une de chaque a cause de modalite non presente dans train (ps_calc_06 et ps_calc_11)
+# fix gt : au lieu de retirer à la main, il y a la fonction droplevels() pour ce problème
 coord<-cbind.data.frame(name,coord) 
 
 modalite<-data.frame("modalite"=rownames(coord), stringsAsFactors = FALSE) %>%
@@ -63,6 +83,16 @@ for(var in liste_var_factor) {
 }
 ```
 
+```{r}
+data_afdm = data_sel
+levels(data_afdm$ps_ind_05_cat) = c("A", "B", "A", "B", "B", "A", "C") # on laisse la modalité "6" seule car très atypique et a presque 5% ...
+levels(data_afdm$ps_car_01_cat) = c("A", "B", "B", "B", "C", "B", "C", "B", "A", "D", "A", "D")
+# ps_car_11_cat laissée de côté pour faire une régresssion logistique
+levels(data_afdm$ps_car_06_cat) = c("A", "B", "C", "D", "E", "F", "E", "D", "C", "F", "D", "G", "D", "C", "H", "C", "F", "F")
+levels(data_afdm$ps_car_09_cat) = c("A", "B", "C", "C", "D") # on laisse la modalité "1" seule car atypique et a presque 5% ...
+levels(data_afdm$ps_ind_02_cat) = c("A", "B", "C", "C")
+levels(data_afdm$ps_car_04_cat) = c("A", "B", "B", "B", "B", "B", "C", "C", "C", "C")
+```
 
 ## Tables croisées avec la target
 
@@ -76,143 +106,251 @@ for (var in names(liste_var_factor)[2:length(liste_var_factor)]){
 }
 ```
 
-Remarque : régression logistique sur ps_car_11_cat, on récupère les beta qui serviront de "modalités" pour construire une variable continue (faire un join ensuite pour remplacer les modalités par les beta).
-
-* `ps_ind_01` : modalité 6 vers 4, modalité 7 vers 3 ou 5
-* `ps_ind_03` : modalité 0 vers ? (peut être la garder), modalité 9 vers 1, modalité 10 vers 8, modalité 11 vers 8
-* `ps_ind_15` : modalité 1 vers 0, modalité 2 vers 0
-* `ps_reg_01` : modalité 0.0 vers 0.7 ou 0.8, modalité 0.2 vers 0.5
-* `ps_reg_02` : modalité 0.0 à 1.0 ensemble, 1.1 à 1.8 ensemble
-* `ps_car_06_cat` : modalités 2, 5, 8, 9, 12, 13, 15, 17 ensemble, modalités 0, 1, 3, 4, 6, 7, 10, 11, 14, 16 ensemble
-* ` ps_car_11_cat` : nah
-* `ps_calc_04` : modalité 0 vers 1 ou 2 ou 3 ou 4, modalité 5 atypique
-* `ps_calc_05` : modalité 5 vers tout possible, modalité 6 très atypique
-* `ps_calc_06` : modalités 0 à 5 ensemble, modalités 6 à 10 ensemble
-* `ps_calc_07` : modalités 0 à 3 ensemble, modalités 4 à 9 ensemble
-* `ps_calc_08` : modalités 2 à 7 ensemble, modalité 12 vers 11
-* `ps_calc_09` : modalités 4 à 7 ensemble
-* `ps_calc_10` : modalités 0 à 4 ensemble, modalités 13 à 25 ensemble
-* `ps_calc_11` : modalités 0 à 2 ensemble, modalités 9 à 19 ensemble
-* `ps_calc_12` : modalités 4 à 10 ensemble
-* `ps_calc_13` : modalités 6 et 13 ensemble
-* `ps_calc_14` : modalités 0 à 3 ensemble, modalités 12 à 23 ensemble
-* `ps_car_01_cat` : modalités 0 à 5 ensemble, modalités 8 et 9 ensemble
-
-
 ```{r}
-levels(data_sel$ps_ind_01) = c("A", "B", "C", "D", "E", "F", "G", "G")
-levels(data_sel$ps_ind_03) = c("A", "A", "B", "C", "D", "E", "F", "G", "H", "I", "I", "I")
-levels(data_sel$ps_ind_15) = c("A", "B", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M")
-levels(data_sel$ps_reg_01) = c("F", "A", "A", "B", "C", "D", "E", "F", "G", "H")
-levels(data_sel$ps_reg_02) = c("A", "B", "C", "D", "E", "F", "G", rep("H", 12))
-levels(data_sel$ps_car_06_cat) = c("A", "B", "C", "D", "E", "F", "D", "D", "C", "F", "G", "H", "D", "C", "I", "C", "F", "F")
-levels(data_sel$ps_calc_04) = c("A", "A", "B", "C", "D", "D")
-levels(data_sel$ps_calc_05) = c("A", "B", "C", "D", "E", "E", "E")
-levels(data_sel$ps_calc_06) = c("A", "A", "A", "A", "A", "A", "A", "B", "C", "D", "E")
-levels(data_sel$ps_calc_07) = c("A", "A", "B", "C", "D", "E", "E", "E", "E", "E")
-levels(data_sel$ps_calc_08) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "E", "E")
-levels(data_sel$ps_calc_09) = c("A", "B", "C", "D", "E", "E", "E", "E")
-levels(data_sel$ps_calc_10) = c("A", "A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 13))
-levels(data_sel$ps_calc_11) = c("A", "A", "A", "B", "C", "D", "E", "F", "G", rep("H", 11))
-levels(data_sel$ps_calc_12) = c("A", "B", "C", "D", rep("E", 7))
-levels(data_sel$ps_calc_13) = c("A", "B", "C", "D", "E", "F", rep("G", 8))
-levels(data_sel$ps_calc_14) = c("A", "A", "A", "A", "B", "C", "D", "E", "F", "G", "H", "I", rep("J", 12))
-levels(data_sel$ps_car_01_cat) = c("A", "A", "A", "A", "A", "A", "B", "C", "D", "D", "E", "F")
-
-## rename de levels (pas de fusion) == pour les déciles
-levels(data_sel$ps_calc_01) = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
-levels(data_sel$ps_calc_02) = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
-levels(data_sel$ps_calc_03) = c("A", "B", "C", "D", "E", "F", "G", "H", "I", "J")
-
-levels(data_sel$target) = c("no", "yes")
+data_tabc = data_sel
+levels(data_tabc$ps_ind_05_cat) = c("A", "B", "C", "B", "C", "B", "C")
+levels(data_tabc$ps_car_01_cat) = c("A", "A", "A", "B", "B", "B", "C", "D", "E", "A", "F", "E")
+# ps_car_11_cat laissée de côté pour faire une régresssion logistique
+levels(data_tabc$ps_car_06_cat) = c("A", "B", "C", "C", "C", "C", "D", "D", "E", "E", "F", "G", "H", "H", "H", "E", "E", "E")
+levels(data_tabc$ps_car_09_cat) = c("A", "B", "C", "C", "C")
+levels(data_tabc$ps_ind_02_cat) = c("A", "B", "C", "C")
+levels(data_tabc$ps_car_04_cat) = c("A", "B", "B", "B", "B", "C", "C", "C", "C", "C")
 ```
+
+Remarque : régression logistique sur ps_car_11_cat, on récupère les beta qui serviront de "modalités" pour construire une variable continue (faire un join ensuite pour remplacer les modalités par les beta).
 
 
 ## Régression logistique sur variable à 104 modalités
 
- 
 ```{r}
-df <- data_sel %>% filter(dataset=="train")
+df <- data_afdm %>% filter(dataset=="train")
 model<-glm(data = df, target ~ ps_car_11_cat, family = binomial(link = logit))
 res<-summary(model)
 df<-cbind.data.frame(ps_car_11_cat=gsub("ps_car_11_cat","",rownames(res$coefficients)),res$coefficients)
 df<- df %>% select(ps_car_11_cat,Estimate)
 df$ps_car_11_cat<-as.factor(df$ps_car_11_cat)
-data_sel<- left_join(data_sel,df,"ps_car_11_cat")
-data_sel$ps_car_11_cat<-data_sel$Estimate
-data_sel <- data_sel %>% select(-Estimate)
-data_sel$ps_car_11_cat[is.na(data_sel$ps_car_11_cat)] = 0 # NA signifie que la modalité était la modalité de référence, donc coef = 0
-ggplot(data_sel, aes(ps_car_11_cat,color=target))  +
+
+# imputation dans la base afdm
+data_afdm<- left_join(data_afdm,df,"ps_car_11_cat")
+data_afdm$ps_car_11_cat<-data_afdm$Estimate
+data_afdm <- data_afdm %>% select(-Estimate)
+data_afdm$ps_car_11_cat[is.na(data_afdm$ps_car_11_cat)] = 0 # NA signifie que la modalité était la modalité de référence, donc coef = 0
+
+# imputation dans la base tabc
+data_tabc<- left_join(data_tabc,df,"ps_car_11_cat")
+data_tabc$ps_car_11_cat<-data_tabc$Estimate
+data_tabc <- data_tabc %>% select(-Estimate)
+data_tabc$ps_car_11_cat[is.na(data_tabc$ps_car_11_cat)] = 0 # NA signifie que la modalité était la modalité de référence, donc coef = 0
+
+# représentation pour voir comment se distribuent les valeurs
+ggplot(data_afdm, aes(ps_car_11_cat,color=target))  +
   geom_density() +ggtitle("ps_car_11_cat")
 ```
 
+Après avoir fusionné les modalités selon deux stratégies différentes, on peut entraîner un LGBM pour voir l'impact de ces traitements sur la prédictivité du modèle.
 
-## Transformation des variables continues
+## Benchmark - LGBM (sur données AFDM)
 
 ```{r}
-colnames(data_sel)[sapply(data_sel, is.numeric)]
+# LGBM
+train_X_lgb  = data_afdm %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+train_Y_lgb = data_afdm %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_afdm$target[data_afdm$dataset == "train"]) - 1
+
+test_X_lgb   = data_afdm %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_afdm %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_afdm$target[data_afdm$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+```{r, eval = F}
+set.seed(1234)
+params_lgb = list(
+  objective        = "binary", # type of exercise
+  metric           = "auc",    # metric to be evaluated
+  learning_rate    = 0.01,     # shrinkage rate
+  max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+  num_leaves       = 20,       # max number of leaves (nodes) in one tree
+  is_unbalance     = T,        # is data unbalanced
+  min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+  feature_fraction = 0.8,      # randomly select part of the features on each iteration
+  bagging_fraction = 0.8,      # randomly select part of the data without resampling
+  bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+  num_threads      = 6         # number of cpu cores (not threads) to use
+)
+
+post_fusion_afdm_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+
+post_fusion_afdm_lgb_model <- lgb.train(
+  params    = params_lgb,                        # hyperparameters
+  data      = train_XY_lgb,                      # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+  nrounds   = post_fusion_afdm_lgb_cv$best_iter, # nrounds from CV
+  verbose   = 1,                                 # enable verbose
+  eval_freq = 50                                 # verbose every n iterations
+)
 ```
 
 ```{r}
-ps_car_13_checkup = gg_transformation_checkup(data_sel, "ps_car_13")
-
-# boxcox retenu
-data_sel = data_sel %>% 
-  mutate(ps_car_13 = (boxcox_transformation(ps_car_13, ps_car_13_checkup$lambda) - ps_car_13_checkup$boxcox_mean)/ps_car_13_checkup$boxcox_std)
+# save(post_fusion_afdm_lgb_cv, file = "./../data/post_fusion_afdm_lgb_cv.RData")
+# lgb.save(post_fusion_afdm_lgb_model, filename = "./../data/post_fusion_afdm_lgb_model.txt")
+load("./../data/post_fusion_afdm_lgb_cv.RData")
+post_fusion_afdm_lgb_model = lgb.load("./../data/post_fusion_afdm_lgb_model.txt")
 ```
 
 ```{r}
-ps_car_12_checkup = gg_transformation_checkup(data_sel, "ps_car_12")
+post_fusion_afdm_lgb_train_preds          = predict(post_fusion_afdm_lgb_model, train_X_lgb)
+post_fusion_afdm_lgb_test_preds           = predict(post_fusion_afdm_lgb_model, test_X_lgb)
+post_fusion_afdm_lgb_train_ngini          = normalizedGini(train_Y_num, post_fusion_afdm_lgb_train_preds)
+post_fusion_afdm_lgb_test_ngini           = normalizedGini(test_Y_num, post_fusion_afdm_lgb_test_preds)
+ngini_valid = post_fusion_afdm_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = post_fusion_afdm_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = post_fusion_afdm_lgb_test_ngini)
+```
 
-# log retenu
-data_sel = data_sel %>% 
-  mutate(ps_car_12 = (log(ps_car_12) - ps_car_12_checkup$log_mean)/ps_car_12_checkup$log_std)
+
+
+
+## Benchmark - LGBM (sur données TABC)
+
+```{r}
+# LGBM
+train_X_lgb  = data_tabc %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+train_Y_lgb = data_tabc %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_tabc$target[data_tabc$dataset == "train"]) - 1
+
+test_X_lgb   = data_tabc %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_tabc %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_tabc$target[data_tabc$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+```{r, eval = F}
+set.seed(1234)
+params_lgb = list(
+  objective        = "binary", # type of exercise
+  metric           = "auc",    # metric to be evaluated
+  learning_rate    = 0.01,     # shrinkage rate
+  max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+  num_leaves       = 20,       # max number of leaves (nodes) in one tree
+  is_unbalance     = T,        # is data unbalanced
+  min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+  feature_fraction = 0.8,      # randomly select part of the features on each iteration
+  bagging_fraction = 0.8,      # randomly select part of the data without resampling
+  bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+  num_threads      = 6         # number of cpu cores (not threads) to use
+)
+
+post_fusion_tabc_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+
+post_fusion_tabc_lgb_model <- lgb.train(
+  params    = params_lgb,                        # hyperparameters
+  data      = train_XY_lgb,                      # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+  nrounds   = post_fusion_tabc_lgb_cv$best_iter, # nrounds from CV
+  verbose   = 1,                                 # enable verbose
+  eval_freq = 50                                 # verbose every n iterations
+)
 ```
 
 ```{r}
-ps_car_14_checkup = gg_transformation_checkup(data_sel, "ps_car_14")
-
-# log retenu
-data_sel = data_sel %>% 
-  mutate(ps_car_14 = (log(ps_car_14) - ps_car_14_checkup$log_mean)/ps_car_14_checkup$log_std)
+# save(post_fusion_tabc_lgb_cv, file = "./../data/post_fusion_tabc_lgb_cv.RData")
+# lgb.save(post_fusion_tabc_lgb_model, filename = "./../data/post_fusion_tabc_lgb_model.txt")
+load("./../data/post_fusion_tabc_lgb_cv.RData")
+post_fusion_tabc_lgb_model = lgb.load("./../data/post_fusion_tabc_lgb_model.txt")
 ```
 
 ```{r}
-ps_car_11_cat_checkup = gg_transformation_checkup(data_sel, "ps_car_11_cat")
-
-# log retenu
-shifting = abs(min(data_sel[data_sel$dataset == "train", "ps_car_11_cat"])) + 1
-data_sel = data_sel %>% 
-  mutate(ps_car_11_cat = (log(ps_car_11_cat + shifting) - ps_car_11_cat_checkup$log_mean)/ps_car_11_cat_checkup$log_std)
+post_fusion_tabc_lgb_train_preds          = predict(post_fusion_tabc_lgb_model, train_X_lgb)
+post_fusion_tabc_lgb_test_preds           = predict(post_fusion_tabc_lgb_model, test_X_lgb)
+post_fusion_tabc_lgb_train_ngini          = normalizedGini(train_Y_num, post_fusion_tabc_lgb_train_preds)
+post_fusion_tabc_lgb_test_ngini           = normalizedGini(test_Y_num, post_fusion_tabc_lgb_test_preds)
+ngini_valid = post_fusion_tabc_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = post_fusion_tabc_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = post_fusion_tabc_lgb_test_ngini)
 ```
-
 
 ```{r}
-ps_reg_03_checkup = gg_transformation_checkup(data_sel, "ps_reg_03")
-
-# boxcox retenu
-data_sel = data_sel %>% 
-  mutate(ps_reg_03 = (boxcox_transformation(ps_reg_03, ps_reg_03_checkup$lambda) - ps_reg_03_checkup$boxcox_mean)/ps_reg_03_checkup$boxcox_std)
+# On nettoie tout pour poursuivre le traitement et refaire un benchmark !
+rm(list = ls()[grep("_lgb", ls())])
+gc()
 ```
 
-
-
-
-
-
-
-
-
-
+Les fusions par AFDM ont fortement diminué le coefficient de Gini. Par conséquent, on garde uniquement les fusions par tableaux de contingence, bien qu'elles diminuent légèrement le score. Ces fusions sont nécessaires et le coût (perte du score) reste raisonnable.
 
 ## Exportation
 
 Après avoir transformé les deux échantillons, on peut les rediviser selon la colonne "dataset". On exportera deux bases dans ce cas (ne pas oublier de récupérer le type des colonnes et exporter ça également).
 
+D'autres transformations sont envisagées, si celles-ci ne sont pas obligatoires mais recommandées. En revanche, si elles font diminuer le score, elles ne seront pas retenues. On travaillera alors avec les bases actuelles par la suite.
 
-```{r}
-train<-data_sel %>% filter(dataset=="train") %>% select(-dataset)
-test<-data_sel %>% filter(dataset=="test") %>% select(-dataset)
+```{r, eval = F}
+train <- data_tabc %>% filter(dataset=="train") %>% select(-dataset)
+test <- data_tabc %>% filter(dataset=="test") %>% select(-dataset)
 
 type_col = sapply(train, class)
 
@@ -228,4 +366,244 @@ write.csv(x = test,
           quote = T,
           row.names = F)
 ```
+
+
+
+# Transformation des variables continues
+
+```{r}
+colnames(data_sel)[sapply(data_sel, is.numeric)]
+```
+
+```{r}
+ps_car_13_checkup = gg_transformation_checkup(data_sel, "ps_car_13")
+
+# boxcox retenu
+data_afdm = data_afdm %>% 
+  mutate(ps_car_13 = (boxcox_transformation(ps_car_13, ps_car_13_checkup$lambda) - ps_car_13_checkup$boxcox_mean)/ps_car_13_checkup$boxcox_std)
+data_tabc = data_tabc %>% 
+  mutate(ps_car_13 = (boxcox_transformation(ps_car_13, ps_car_13_checkup$lambda) - ps_car_13_checkup$boxcox_mean)/ps_car_13_checkup$boxcox_std)
+```
+
+```{r}
+ps_reg_03_checkup = gg_transformation_checkup(data_sel, "ps_reg_03")
+
+# boxcox retenu
+data_afdm = data_afdm %>% 
+  mutate(ps_reg_03 = (boxcox_transformation(ps_reg_03, ps_reg_03_checkup$lambda) - ps_reg_03_checkup$boxcox_mean)/ps_reg_03_checkup$boxcox_std)
+data_tabc = data_tabc %>% 
+  mutate(ps_reg_03 = (boxcox_transformation(ps_reg_03, ps_reg_03_checkup$lambda) - ps_reg_03_checkup$boxcox_mean)/ps_reg_03_checkup$boxcox_std)
+```
+
+
+```{r}
+# ps_car_12_checkup = gg_transformation_checkup(data_sel, "ps_car_12")
+# 
+# # log retenu
+# data_afdm = data_afdm %>% 
+#   mutate(ps_car_12 = (log(ps_car_12) - ps_car_12_checkup$log_mean)/ps_car_12_checkup$log_std)
+# data_tabc = data_tabc %>% 
+#   mutate(ps_car_12 = (log(ps_car_12) - ps_car_12_checkup$log_mean)/ps_car_12_checkup$log_std)
+```
+
+```{r}
+ps_car_14_checkup = gg_transformation_checkup(data_sel, "ps_car_14")
+
+# log retenu
+data_afdm = data_afdm %>% 
+  mutate(ps_car_14 = (log(ps_car_14) - ps_car_14_checkup$log_mean)/ps_car_14_checkup$log_std)
+data_tabc = data_tabc %>% 
+  mutate(ps_car_14 = (log(ps_car_14) - ps_car_14_checkup$log_mean)/ps_car_14_checkup$log_std)
+```
+
+
+
+## Benchmark - LGBM (sur données AFDM)
+
+```{r}
+# LGBM
+train_X_lgb  = data_afdm %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+train_Y_lgb = data_afdm %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_afdm$target[data_afdm$dataset == "train"]) - 1
+
+test_X_lgb   = data_afdm %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_afdm %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_afdm$target[data_afdm$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+```{r, eval = F}
+set.seed(1234)
+params_lgb = list(
+  objective        = "binary", # type of exercise
+  metric           = "auc",    # metric to be evaluated
+  learning_rate    = 0.01,     # shrinkage rate
+  max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+  num_leaves       = 20,       # max number of leaves (nodes) in one tree
+  is_unbalance     = T,        # is data unbalanced
+  min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+  feature_fraction = 0.8,      # randomly select part of the features on each iteration
+  bagging_fraction = 0.8,      # randomly select part of the data without resampling
+  bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+  num_threads      = 6         # number of cpu cores (not threads) to use
+)
+
+post_traite_afdm_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+
+post_traite_afdm_lgb_model <- lgb.train(
+  params    = params_lgb,                        # hyperparameters
+  data      = train_XY_lgb,                      # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+  nrounds   = post_traite_afdm_lgb_cv$best_iter, # nrounds from CV
+  verbose   = 1,                                 # enable verbose
+  eval_freq = 50                                 # verbose every n iterations
+)
+```
+
+```{r}
+# save(post_traite_afdm_lgb_cv, file = "./../data/post_traite_afdm_lgb_cv.RData")
+# lgb.save(post_traite_afdm_lgb_model, filename = "./../data/post_traite_afdm_lgb_model.txt")
+load("./../data/post_traite_afdm_lgb_cv.RData")
+post_traite_afdm_lgb_model = lgb.load("./../data/post_traite_afdm_lgb_model.txt")
+```
+
+```{r}
+post_traite_afdm_lgb_train_preds          = predict(post_traite_afdm_lgb_model, train_X_lgb)
+post_traite_afdm_lgb_test_preds           = predict(post_traite_afdm_lgb_model, test_X_lgb)
+post_traite_afdm_lgb_train_ngini          = normalizedGini(train_Y_num, post_traite_afdm_lgb_train_preds)
+post_traite_afdm_lgb_test_ngini           = normalizedGini(test_Y_num, post_traite_afdm_lgb_test_preds)
+ngini_valid = post_traite_afdm_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = post_traite_afdm_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = post_traite_afdm_lgb_test_ngini)
+```
+
+
+
+
+## Benchmark - LGBM (sur données TABC)
+
+```{r}
+# LGBM
+train_X_lgb  = data_tabc %>% 
+  filter(dataset == "train") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+train_Y_lgb = data_tabc %>% 
+  filter(dataset == "train") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix() - 1
+
+train_Y_num = as.numeric(data_tabc$target[data_tabc$dataset == "train"]) - 1
+
+test_X_lgb   = data_tabc %>% 
+  filter(dataset == "test") %>% 
+  select(-id, -target, -dataset) %>% 
+  lgb.prepare() %>% 
+  as.matrix() 
+
+test_Y_lgb = data_tabc %>% 
+  filter(dataset == "test") %>% 
+  select(target) %>% 
+  lgb.prepare() %>% 
+  as.matrix()
+
+test_Y_num = as.numeric(data_tabc$target[data_tabc$dataset == "test"]) - 1
+
+train_XY_lgb = lgb.Dataset(train_X_lgb, label = train_Y_lgb)
+```
+
+```{r, eval = F}
+set.seed(1234)
+params_lgb = list(
+  objective        = "binary", # type of exercise
+  metric           = "auc",    # metric to be evaluated
+  learning_rate    = 0.01,     # shrinkage rate
+  max_depth        = 10,       # max depth for tree model (used to deal with over-fitting when data is small)
+  num_leaves       = 20,       # max number of leaves (nodes) in one tree
+  is_unbalance     = T,        # is data unbalanced
+  min_data_in_leaf = 1,        # min number of data in one leaf (used to deal with over-fitting)
+  feature_fraction = 0.8,      # randomly select part of the features on each iteration
+  bagging_fraction = 0.8,      # randomly select part of the data without resampling
+  bagging_freq     = 5,        # if != 0, enables bagging, performs bagging at every k iteration
+  num_threads      = 6         # number of cpu cores (not threads) to use
+)
+
+post_traite_tabc_lgb_cv = lgb.cv(
+  params                = params_lgb,         # hyperparameters
+  data                  = train_XY_lgb,       # lgb.Dataset object for training
+  eval                  = lgb.normalizedgini, # custom metric, additionnal to first metric
+  nrounds               = 1000,               # maximum iterations
+  early_stopping_rounds = 50,                 # if metric evaluation doesn't increase
+  verbose               = 1,                  # enable verbose
+  eval_freq             = 50,                 # verbose every n iterations
+  nfold                 = 5                   # k-folds CV
+)
+
+post_traite_tabc_lgb_model <- lgb.train(
+  params    = params_lgb,                        # hyperparameters
+  data      = train_XY_lgb,                      # lgb.Dataset object for training
+  valids    = list(train = train_XY_lgb),        # lgb.Dataset object for validation
+  eval      = lgb.normalizedgini,                # custom metric, additionnal to first metric
+  nrounds   = post_traite_tabc_lgb_cv$best_iter, # nrounds from CV
+  verbose   = 1,                                 # enable verbose
+  eval_freq = 50                                 # verbose every n iterations
+)
+```
+
+```{r}
+# save(post_traite_tabc_lgb_cv, file = "./../data/post_traite_tabc_lgb_cv.RData")
+# lgb.save(post_traite_tabc_lgb_model, filename = "./../data/post_traite_tabc_lgb_model.txt")
+load("./../data/post_traite_tabc_lgb_cv.RData")
+post_traite_tabc_lgb_model = lgb.load("./../data/post_traite_tabc_lgb_model.txt")
+```
+
+```{r}
+post_traite_tabc_lgb_train_preds          = predict(post_traite_tabc_lgb_model, train_X_lgb)
+post_traite_tabc_lgb_test_preds           = predict(post_traite_tabc_lgb_model, test_X_lgb)
+post_traite_tabc_lgb_train_ngini          = normalizedGini(train_Y_num, post_traite_tabc_lgb_train_preds)
+post_traite_tabc_lgb_test_ngini           = normalizedGini(test_Y_num, post_traite_tabc_lgb_test_preds)
+ngini_valid = post_traite_tabc_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max
+c("Normalized Gini Coeff. (Train)"        = post_traite_tabc_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid - 5fCV)" = ngini_valid,
+  "Normalized Gini Coeff. (Test)"         = post_traite_tabc_lgb_test_ngini)
+```
+
+
+Les scores ont diminué pour les deux bases, de façon significative pour des transformations (normalisation de 4 variables continues). On laisse tomber ces transformations pour rester dans l'optique d'optimisation. En revanche, on garde les fusions de modalités des variables qualitatives par tableaux de contingence parce qu'elles sont nécessaires bien que le score diminue légèrement.
+
 
