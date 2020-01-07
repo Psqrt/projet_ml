@@ -13,6 +13,7 @@
 \usepackage{fourier-orns}
 \usepackage{pgfornament}
 \usepackage{url}
+\usepackage{amsmath}
 % ============ HEADER / FOOTER =======================
 \fancypagestyle{hdr-normal}{
   \renewcommand{\headrulewidth}{0pt}
@@ -102,16 +103,18 @@ La variable cible ("target" dans la base) est binaire et indique si une réclama
 
 \subsection{Définition du cadre d'analyse}
 
-L'objectif de ce problème de classification est de réaliser un scoring des clients. Le score correspond à la probabilité pour chaque client de déposer une réclamation dans l'année à venir. La métrique retenue pour évaluer la performance prédictive des modèles est celle du Coefficient Normalisé de Gini. Le coefficient de Gini permet de comparer la proportion cumulée des labels positifs prédits avec la proportion théorique. De plus, ce coefficient est directement lié à la courbe de Lorentz, souvent utilisée en économie pour évaluer les inégalités salariales. Si on transpose ce concept à une société d'assurance (figure 1), on identifie donc l'intérêt du coefficient de Gini dans notre contexte.
+L'objectif de ce problème de classification est de réaliser un scoring des clients. Le score correspond à la probabilité pour chaque client de déposer une réclamation dans l'année à venir. La métrique retenue pour évaluer la performance prédictive des modèles est celle du Coefficient Normalisé de Gini. Le coefficient de Gini permet de comparer la proportion cumulée des labels positifs prédits avec la proportion théorique. 
+
+%De plus, ce coefficient est directement lié à la courbe de Lorentz, souvent utilisée en économie pour évaluer les inégalités salariales. Si on transpose ce concept à une société d'assurance (figure 1), on identifie donc l'intérêt du coefficient de Gini dans notre contexte.
 
 
-\begin{figure}[H] \centering
-  \includegraphics[width = \columnwidth]{img/gini}
-  \caption{Coefficient de Gini et Courbe de Lorentz}
-\end{figure}
+%\begin{figure}[H] \centering
+%  \includegraphics[width = \columnwidth]{img/gini}
+%  \caption{Coefficient de Gini et Courbe de Lorentz}
+%\end{figure}
 
 
-Une lecture de la courbe de Lorentz (figure 1) serait \og les 15\% des assurés les plus risqués paient 90\% de l'ensemble des factures d'assurance \fg{}. Ceci correspond bien au principe de mutualisation des risques qui correspond à la base des systèmes d'assurance. Ainsi, plus le coefficient de Gini est élevé, plus la capacité à individualiser les tarifs sera bonne. La normalisation de ce coefficient permet de s'assurer que la valeur prise par la métrique va de 0 (aucune capacité prédictive) à 1 (capacité prédictive parfaite).
+%Une lecture de la courbe de Lorentz (figure 1) serait \og les 15\% des assurés les plus risqués paient 90\% de l'ensemble des factures d'assurance \fg{}. Ceci correspond bien au principe de mutualisation des risques qui correspond à la base des systèmes d'assurance. Ainsi, plus le coefficient de Gini est élevé, plus la capacité à individualiser les tarifs sera bonne. La normalisation de ce coefficient permet de s'assurer que la valeur prise par la métrique va de 0 (aucune capacité prédictive) à 1 (capacité prédictive parfaite).
 
 \subsection{Statistiques Descriptives}
 
@@ -158,7 +161,7 @@ Le Light GBM effectué après les imputations permet également d'identifier l'i
 \end{figure}
 
 
-En plus des importances issues du Light GBM, une forêt aléatoire (non paramétrée de façon optimale) est construite pour réaliser une seconde liste d'importance en termes de \og permutation \fg{} (notion équivalente au \og Gain \fg{}). De même, cette seconde liste est issue de la première moitié des variables les plus importantes au modèle. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Au total, ce sont 33 régresseurs sur les 57 initiaux qui sont retenus.
+En plus des importances issues du Light GBM, une forêt aléatoire (non paramétrée de façon optimale) est construite pour réaliser une seconde liste d'importance en termes de \og permutation \fg{} (notion équivalente au \og Gain \fg{}). De même, cette seconde liste est issue de la première moitié des variables les plus importantes au modèle. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Au total, ce sont 35 régresseurs sur les 57 initiaux qui sont retenus.
 
 
 \subsection{Traitement des données}
@@ -215,6 +218,99 @@ L'ensemble des modèles ensemblistes et la régression logistique pénalisée so
 
 Pour chaque modèle, la question du ré-échantillonnage est traitée. Pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du cas sans sampling.
 
+
+
+
+
+\section{Méthodes utilisées}
+Les deux méthodes à traiter a minima pour notre groupe dans le cadre de ce projet de classification sont la régression logistique pénalisée et le XGboost dont les principes sont radicalement différents.
+
+
+\subsection{Régression pénalisée}
+La pénalisation de la métrique évaluant la prédiction est un principe applicable à toutes les méthodes d'estimation où l’on a des combinaisons linéaires de variables avec des coefficients à estimer (réseaux de neurones, SVM linéaire, etc).\\
+L'idée étant que les hypothèses classiques de la régression linéaire permettent d'obtenir le meilleur estimateur non biaisé i.e. l'estimateur sans biais de variance minimale.\\
+Dans les faits on obtient un estimateur de faible biais mais de variance plus élevée.\\
+Or en considérant l'écart quadratique moyen (EQM) qui est la fonction de perte la plus largement utilisée on a : \[\ E\left[\left(y^{*}-\hat{y}^{*}\right)^{2}\right]=\sigma^{2}+\left(E\left[\hat{y}^{*}\right]-y^{*}\right)^{2}+E\left[\left(\hat{y}^{*}-E\left[\hat{y}^{*}\right]\right)^{2}\right] \]\ 
+On a respectivement $\sigma^{2}$ la variance incompressible de la cible Y, le biais et la variable de la prévision. Ainsi si on s'autorise un certain biais, on peut imaginer qu'il est possible de réduire plus que proportionnellement la variance et ainsi gagner en pouvoir prédictif. Pour illustrer ceci, en utilisant les notations de l'équipe scikit-learn on note alors ce problème : 
+
+$\min _{\beta_{1}, \cdots, \beta_{p}} \sum_{i=1}^{n}\left(y_{i}-\sum_{j=1}^{p} \beta_{j} z_{i j}\right)^{2}+\lambda \ R(  \beta) \\ $\text{sous contraintes : }$ R(\beta)\leq \tau$ \\
+
+où l'on aura pris soin de centrer et réduire nos variables afin de leur accorder la même importance.
+\\
+
+Il y a donc 3 types de pénalisation utilisés régulièrement: 
+\begin{enumerate}
+    \item en norme $L^{2}$ on parle alors de régression ridge  : \ $R(\beta)=\sum_{j=1}^{p}\beta_{j}^{2}$
+    \item en norme $L^{1}$ on parle alors de régression LASSO  : $R(\beta)=\sum_{j=1}^{p}\left|\beta_{j}\right|$
+    \item ElasticNet qui est une combinaison linéaire des 2 : $R(\beta)=\alpha \sum_{j=1}^{p}\left|\beta_{j}\right|+(1-\alpha) \sum_{j=1}^{p} \beta_{j}^{2}$
+\end{enumerate}
+
+Notons que $\lambda$ est un paramètre du modèle qu'il faut calibrer également.\\
+On a une relation inverse entre $\tau$ et $\lambda$. Lorsque $\lambda=0$ on retrouve les MCO et plus $\lambda$ est grand, plus les coefficients sont contraints (plus de biais, moins de variance).
+On peut voir les coefficients se déformer en fonction de $\lambda$.\\
+La régression ridge est plus souple que la régression LASSO qui fait converger beaucoup plus vite les coefficients vers 0 ce qui fait qu'on s'en sert comme méthode de sélection de variable.\\Néanmoins, on obtient au maximum N  variables prédictives (identifiabililité) ce qui peut être préjudiciable quand le nombre de variables est très supérieur au nombre d'observations ($p \gg N$).\\
+De plus, elle choisit arbitrairement une variable parmi un groupe de variables corrélées quand la regression ridge permet de pondérer les influences.\\
+L'Elastic Net permet de combiner les avantages des deux méthodes en contrepartie d'une complexité accrue.\\
+
+Pour déterminer $\lambda$ on procède généralement par apprentissage-test lorsque c'est possible ou par validation croisée K-folds lorsque la base est faible, en minimisant le RMSE. Des formules basées sur des hypothèses simplificatrices existent également.\\
+En régression ridge, une astuce permet d'accélérer drastiquement les calculs en validation croisée Leave-One-Out grâce à une décomposition en valeurs singulières de X.\\
+Par ailleurs, de manière assez naturelle on obtient l'estimateur avec  $\hat{\beta}_{\text {Ridge}}=\left(X^{\prime} X+\lambda I_{p}\right)^{-1} X^{\prime} y$\\
+
+
+Pour la régression LASSO, on n'a pas de formulation explicite de $\beta$ (car la fonction valeur absolue n'est pas différentiable) ainsi on procède de manière itérative (LARS, Forward Stagewise). On fait varier de manière sélective les coefficients des variables. En grande dimension, on privilégiera la descente de gradient ou ses variantes pour l'estimation de $\beta$.\\
+\subsubsection{Régression logistique pénalisée}
+Dans le cadre classique de la discrimination binaire par la régression logistique, on suppose $(x_i,yi)$ IID d'une même distribution inconnue.\\
+On modélise $P(Y=1|X=x_i)=\frac{1}{1+e^{-\left(\beta^{\prime} x\right)}}=p_i$.\\
+Pour le cas particulier de la régression logistique pénalisée on cherche à minimiser:
+\[\ -\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] +\lambda \times R(\beta) \]\
+Les principes de la pénalisation sont les mêmes que précédemment, seulement on ne pénalise pas la constante mais elle doit faire partie de l'estimation.\\
+
+
+\subsubsection{Résultats}
+
+\subsection{XGboost}
+L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{Boost}ing approche introduite par Friedman.\\
+Comme la plupart des méthodes basées sur des arbres de décisions, il peut être utilisé en classication comme en régression.\\
+L'approche combine 2 mécanismes : le boosting et la descente de gradient.\\
+Le Boosting est une méthode ensembliste qui consiste à agréger des classifieurs élaborés séquentiellement sur un échantillon d’apprentissage dont les poids des individus sont corrigés au fur et à mesure, les individus mal classés se voyant affecter un poids plus important. Les classifieurs sont pondérés selon leurs performances.\\
+D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation.\\
+En apprentissage supervisé, la construction du modèle revient souvent à déterminer les paramètres (du modèle) qui permettent d’optimiser une fonction objectif.\\
+Enfin, outre les deux mécanismes précédents, l’approche possède aussi des paramètres liés à l’utilisation d’arbres comme classifieurs.\\
+Ainsi, l’algorithme XGboost dépend d’un grand nombre de paramètres: 
+\begin{enumerate}
+    \item Caractéristiques des
+arbres individuels : Profondeur T, effectifs minimums de coupe 
+\item Constante
+d'apprentissage $\eta$
+\item Nombre d'arbres K
+\item Taux d'échantillonnage des individus $\beta$
+\item Échantillonnage des variables
+\end{enumerate}
+La prévision se base sur K arbres. On construit donc itérativement ces K arbres, à chaque étape on ajoute celui qui minimise une fonction objectif régularisée qui est la somme d'une fonction de perte et d'une fonction de régularisation.\\
+\[\ \mathcal{L}=\sum_{i} l\left(\hat{y}_{i}, y_{i}\right)+\sum_{k} \Omega\left(f_{k}\right) \]\
+La fonction de perte est généralement la déviance binomiale en classification binaire :\\
+ \[\ -\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] \]\
+On utilise la descente de gradient pour optimiser cet objectif à chaque étape.\\
+On peut ajouter de l'aléa dans l'échantillon test en utilisant seulement un échantillonnage des données pour construire les arbres.\\
+Ce qui a l'avantage d'accélérer les calculs et de se prémunir contre le surapprentissage.\\
+L'algorithme propose également une gestion efficace des valeurs manquantes.\\
+On optimise les paramètres de l'algorithme par grid search.\\
+Il est évident que plus le nombre d'itérations est grand, plus on s'approche de la solution optimale, cependant celà s'effectue au détriment du temps de calcul.\\
+Le compromis pour $\eta$ $\in$ $]0,1[ $ est réalisé entre vitesse de convergence et surapprentissage.\\
+Si l'algorithme est très efficace, souple avec le choix des fonctions de coûts,
+adaptables à différents problèmes, permettant de prendre efficacement en compte des interactions non linéaires cela reste un modèle difficilement interprétable (même si on peut calculer des mesures d'importance des variables), lourd en mémoire et intensif avec beaucoup de paramètres à optimiser et un risque de surapprentissage qui peuvent rendre sa mise en œuvre efficiente moins aisée.
+
+
+\subsubsection{Résultats}
+
+
+
+
+
+
+
+
+
 \section{Résultats}
 
 \begin{figure}[H] \centering
@@ -226,10 +322,6 @@ Pour chaque modèle, la question du ré-échantillonnage est traitée. Pour l'en
 \nocite{*}
 \bibliographystyle{acm}
 \bibliography{biblio}
-
-\columnbreak
-
-\
 
 \end{multicols}
 

@@ -5,6 +5,14 @@
 \newblock The multiple faces of ‘feature importance’ in xgboost.
 \newblock Towards data science, 8 Février 2019.
 
+\bibitem{art4}
+{\sc {Chen T., Guestrin C.}}
+\newblock Xgboost: A scalable tree boosting system, university of washington.
+
+\bibitem{art1}
+{\sc Friedman, J.}
+\newblock Greedy function approximation : A gradient boosting machine, 2001.
+
 \bibitem{hn1}
 {\sc Gandhi, R.}
 \newblock Boosting algorithms: Adaboost, gradient boosting and xgboost.
@@ -15,10 +23,19 @@
 \newblock Smarter ways to encode categorical data for machine learning.
 \newblock Towards data science, 11 Septembre 2018.
 
+\bibitem{art2}
+{\sc {Hastie T., Tibshirani R., and Friedman J.}}
+\newblock The elements of statistical learning, 2001.
+
 \bibitem{twds2}
 {\sc {Juhi}}.
 \newblock Gini coefficient and lorenz curve explained.
 \newblock Towards data science, 6 Mars 2019.
+
+\bibitem{art3}
+{\sc {Rakotomalala.R}}.
+\newblock
+  \url{http://eric.univ-lyon2.fr/\~ricco/cours/slides/regularized\_regression.pdf}.
 
 \bibitem{rb1}
 {\sc {Rstats on pi: predict/infer}}.
