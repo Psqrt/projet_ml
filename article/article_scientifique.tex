@@ -14,6 +14,7 @@
 \usepackage{pgfornament}
 \usepackage{url}
 \usepackage{amsmath}
+\usepackage{amssymb}
 % ============ HEADER / FOOTER =======================
 \fancypagestyle{hdr-normal}{
   \renewcommand{\headrulewidth}{0pt}
@@ -62,7 +63,7 @@
 \null
 
 \begin{abstract}
-Cet article présente les enjeux du projet de Machine Learning et les données mises à disposition. Dans un premier temps, le fonctionnement de certains modèles (régression logistique pénalisée et Extreme Gradient Boosting) sont explicités (intuition, mécanisme, avantages et inconvénients) puis dans un second temps, la démarche du projet est détaillée dans les grandes lignes afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction. Une partie s'attardant sur les résultats conclura cet article.
+Cet article présente les enjeux du projet de Machine Learning et les données mises à disposition. Dans un premier temps, la démarche du projet est détaillée dans les grandes lignes afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction puis dans un second temps, le fonctionnement de certains modèles (régression logistique pénalisée et Extreme Gradient Boosting) sera explicité (intuition, mécanisme, avantages et inconvénients). Une partie s'attardant sur les résultats conclura cet article.
 \end{abstract}
 
 %\noindent Mots-clés : mot, mot, mot
@@ -81,11 +82,11 @@ Une société d'assurance souhaite affiner sa capacité à tarifer ses contrats 
 
 Ceci constitue un problème classique de modélisation aboutissant à un score. La métrique d'évaluation des prédictions devra être pertinente à cette problématique, sachant que la base de données fournie présente un déséquilibre de la cible.
 
-\textsc{Le but de cet article scientifique est de présenter les données, la démarche du projet, les modèles de prédiction utilisés et enfin, les résultats obtenus.} %TODO
+Le but de cet article scientifique est de présenter les données, la démarche du projet, les modèles de prédiction utilisés et enfin, les résultats obtenus.
 
 \section{Données}
 
-Les données sont fournies par la société d'assurance, comportant une base d'apprentissage et de test. L'apprentissage et la validation des modèles doit se faire sur la première base tandis que la seconde base doit servir uniquement à tester la performance du modèle retenu. Des valeurs manquantes sont présentes dans les deux échantillons.
+Les données sont fournies par la société d'assurance, comportant une base d'apprentissage et de test. L'apprentissage et la validation des modèles doivent se faire sur la première base tandis que la seconde base doit servir uniquement à tester la performance du modèle retenu. Des valeurs manquantes sont présentes dans les deux échantillons.
 
 Parmi les prédicteurs, on retrouve :
 \begin{itemize}
@@ -105,6 +106,10 @@ La variable cible ("target" dans la base) est binaire et indique si une réclama
 
 L'objectif de ce problème de classification est de réaliser un scoring des clients. Le score correspond à la probabilité pour chaque client de déposer une réclamation dans l'année à venir. La métrique retenue pour évaluer la performance prédictive des modèles est celle du Coefficient Normalisé de Gini. Le coefficient de Gini permet de comparer la proportion cumulée des labels positifs prédits avec la proportion théorique. 
 
+Le coefficient de Gini est étroitement lié à l'aire sous la courbe ROC (AUC) :
+\[ \text{Gini} = 2 \times \text{AUC} - 1 \]
+Ainsi, maximiser le coefficient (normalisé) de Gini revient à maximiser l'AUC.
+
 %De plus, ce coefficient est directement lié à la courbe de Lorentz, souvent utilisée en économie pour évaluer les inégalités salariales. Si on transpose ce concept à une société d'assurance (figure 1), on identifie donc l'intérêt du coefficient de Gini dans notre contexte.
 
 
@@ -118,20 +123,20 @@ L'objectif de ce problème de classification est de réaliser un scoring des cli
 
 \subsection{Statistiques Descriptives}
 
-Les statistiques descriptives sont faites pour vérifier le type de données traitées, la présence de valeurs manquantes, la présence de valeurs aberrantes et les distributions. De plus, on repère les types de variables (continues, catégorielles, ordinales, etc.) pour spécifier le traitement au cas par cas.
+Les statistiques descriptives sont faites pour vérifier la nature des données traitées, la présence de valeurs manquantes, la présence de valeurs aberrantes et les distributions. De plus, on repère les types de variables (continues, catégorielles, ordinales, etc.) pour spécifier le traitement au cas par cas.
 
-L'inférence faite à partir de modalités rares (moins de 5\% en général) n'est pas robuste et peut conduire à du sur-apprentissage. Les statistiques descriptives sur les variables catégorielles permettent de détecter ces modalités.
+L'inférence faite à partir de modalités rares (moins de 5\% en général) n'est pas robuste et peut conduire à du surapprentissage. Les statistiques descriptives sur les variables catégorielles permettent de détecter ces modalités.
 
 Enfin, l'étude des variables continues permet de prévoir l'utilité de transformations (normalisation ou standardisation).
 
 \subsection{Benchmark d'ouverture}
 
-Il est intéressant de placer un benchmark afin d'avoir une valeur de la métrique objectif (Coefficient Normalisé de Gini) à dépasser. Le score obtenu par un Light GBM\footnote{Gradient Boosting Machine} est généralement élevé et rapidement obtenu. Celui-ci est de : 0.2719 par validation croisée sur 5 blocs (5fCV). Bien que le score obtenu est sujet à fluctuer, il est intéressant de refaire un Light GBM après chaque étape de traitement pour voir si les modifications apportées augmente ou diminue le score.
+Il est intéressant de placer un benchmark afin d'avoir une valeur de la métrique objectif (Coefficient Normalisé de Gini) à dépasser. Le score obtenu par un Light GBM\footnote{Gradient Boosting Machine} est généralement élevé et rapidement obtenu. Celui-ci est de : 0.2719 par validation croisée sur 5 blocs (5fCV). Bien que le score obtenu est sujet à fluctuer, il est intéressant de refaire un Light GBM après chaque étape du traitement afin de voir si les modifications apportées augmentent ou diminuent le score.
 
 
 \subsection{Pré-traitement des données}
 
-Le pré-traitement des données consiste essentiellement à la gestion des valeurs manquantes. Plusieurs variables ont été identifiées dans les statistiques descriptives (figure 2). Selon le taux de valeurs absentes, la manipulation appliquée sera différente. 
+Le pré-traitement des données consiste essentiellement à la gestion des valeurs manquantes. Plusieurs variables ont été identifiées dans les statistiques descriptives (figure 1). Selon le taux de valeurs absentes, la manipulation appliquée sera différente. 
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/missing_values}
@@ -149,7 +154,7 @@ Pour le reste des variables, une imputation par forêt aléatoire est faite. Le 
     \item Remplacer les valeurs manquantes et s'assurer qu'il n'y a plus de valeurs manquantes pour la colonne traitée.
 \end{itemize}
 
-Suite aux imputations faites, le Light GBM de référence renvoie un Gini de 0.2721, toujours par validation croisée sur 5 folds. On note une augmentation par rapport au benchmark bien que la différence soit trop faible pour en tirer des conclusions.
+Suite aux imputations faites, le Light GBM de référence renvoie un Gini de 0.2721, toujours par validation croisée sur 5 blocs. On note une augmentation par rapport au benchmark bien que la différence soit trop faible pour en tirer des conclusions.
 
 \subsection{Sélection des variables}
 
@@ -166,11 +171,11 @@ En plus des importances issues du Light GBM, une forêt aléatoire (non paramét
 
 \subsection{Traitement des données}
 
-Lors de la phase des statistiques descriptives, plusieurs variables présentaient des modalités rares (effectif inférieur à 5\%). Celles-ci doivent être fusionnées pour pouvoir inférer des résultats robustes (AFDM ou tableaux de contingence).
+Lors de la phase des statistiques descriptives, plusieurs variables présentaient des modalités rares (effectif inférieur à 5\%). Celles-ci doivent être fusionnées pour pouvoir inférer des résultats robustes (par AFDM\footnote{Analyse Factorielle de Données Mixtes} ou tableaux de contingence).
 
 La stratégie de fusion peut passer par une projection des modalités d'une variable sur le premier plan factoriel d'une AFDM. Chaque modalité rare sera alors associée à la modalité fréquente la plus proche d'elle (et si possible projetée dans la même direction), ou un ensemble de modalités rares peuvent se regrouper pour former un groupe supplémentaire (clusters).
 
-La stratégie de fusion peut également passer par des tableaux de contingence (figure 4) qui croisent les variables problématiques avec la cible. Les modalités rares sont fusionnées soit entre elles si elles se comportent de façon similaire, soit avec une modalité fréquente si le comportement s'y rapproche.
+La stratégie de fusion peut également passer par des tableaux de contingence (figure 3) qui croisent les variables problématiques avec la cible. Les modalités rares sont fusionnées soit entre elles si elles se comportent de façon similaire, soit avec une modalité fréquente si le comportement s'y rapproche.
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/ex_tabc}
@@ -188,11 +193,11 @@ Le Light GBM fournit un score de 0.2729 (5fCV) pour la stratégie par AFDM et de
 Certaines variables continues ont une distribution qui se rapprochent d'une distribution normale. Il serait intéressant de tenter de les normaliser à travers différentes méthodes (box-cox, logarithme, racine carré).
 
 \begin{figure}[H] \centering
-  \includegraphics[width = \columnwidth]{img/ex_normalisation}
+  \includegraphics[width = 0.99\columnwidth]{img/ex_normalisation}
   \caption{Exemple de transformation}
 \end{figure}
 
-Il est notable que la transformation de box-cox est la meilleure pour normaliser cette distribution. Cette étude est menée pour les variables continues.
+Il est notable que la transformation de box-cox est la meilleure pour normaliser cette distribution (figure 4). Cette étude est menée pour les variables continues.
 
 En réutilisant un Light GBM pour mesurer les conséquences des normalisations faites, il est noté que la métrique diminue, suite à chacune des deux stratégies de fusion de modalités. On passe respectivement à un Gini de 0.2729 (AFDM) et 0.2752 (tableaux croisés). Ces diminutions sont minimes mais la normalisation des variables n'est pas obligatoire. Par conséquent, cette étape est laissée de côté pour la suite. 
 
@@ -204,7 +209,7 @@ L'objectif de cette étape est de diminuer à nouveau le nombre de variables exp
 
 \begin{itemize}
     \item les liens entre variables continues se font grâce aux corrélations,
-    \item les liens entre les variables continues et la cible se font grâce à un test d'ANOVA,
+    \item les liens entre les variables continues et la cible se font grâce à un test d'ANOVA\footnote{Analysis of Variance},
     \item les liens entre variables catégorielles (et la cible) se font grâce aux V de Cramer\footnote{Le V de Cramer est la statistique du $\chi^2$ standardisée de façon à ce qu'elle varie entre 0 et 1}.
 \end{itemize}
 
@@ -212,11 +217,11 @@ Les variables qui dépassent les seuils arbitrairement fixés ou qui ne passent 
 
 \subsection{Paramétrisation des modèles}
 
-Une dizaine d'algorithmes sont testés pour tenter d'avoir le meilleur pouvoir prédictif. On y trouve des modèles de base (LDA, KNN, régression logistique (pénalisée), SVM), puis des modèles de bagging (RF) et de boosting (ADABoost, GBM, XGBM, LGBM).
+Une dizaine d'algorithmes sont testés pour tenter d'avoir le meilleur pouvoir prédictif. On y trouve des modèles de base (Analyse Discriminante Linéaire (LDA), K plus proches voisins (KNN), régression logistique (pénalisée ou non), Machine à Vecteurs de Support (SVM)), puis des modèles de bagging (Forêt Aléatoire) et de boosting (ADAboost, GBM, XGBM, LGBM).
 
 L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs paramètres de pré-apprentissage\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}.
 
-Pour chaque modèle, la question du ré-échantillonnage est traitée. Pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du cas sans sampling.
+Pour chaque modèle, la question du ré-échantillonnage est traitée. Pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du cas sans resampling.
 
 
 
@@ -228,12 +233,16 @@ Les deux méthodes à traiter a minima pour notre groupe dans le cadre de ce pro
 
 \subsection{Régression pénalisée}
 La pénalisation de la métrique évaluant la prédiction est un principe applicable à toutes les méthodes d'estimation où l’on a des combinaisons linéaires de variables avec des coefficients à estimer (réseaux de neurones, SVM linéaire, etc).\\
-L'idée étant que les hypothèses classiques de la régression linéaire permettent d'obtenir le meilleur estimateur non biaisé i.e. l'estimateur sans biais de variance minimale.\\
-Dans les faits on obtient un estimateur de faible biais mais de variance plus élevée.\\
-Or en considérant l'écart quadratique moyen (EQM) qui est la fonction de perte la plus largement utilisée on a : \[\ E\left[\left(y^{*}-\hat{y}^{*}\right)^{2}\right]=\sigma^{2}+\left(E\left[\hat{y}^{*}\right]-y^{*}\right)^{2}+E\left[\left(\hat{y}^{*}-E\left[\hat{y}^{*}\right]\right)^{2}\right] \]\ 
-On a respectivement $\sigma^{2}$ la variance incompressible de la cible Y, le biais et la variable de la prévision. Ainsi si on s'autorise un certain biais, on peut imaginer qu'il est possible de réduire plus que proportionnellement la variance et ainsi gagner en pouvoir prédictif. Pour illustrer ceci, en utilisant les notations de l'équipe scikit-learn on note alors ce problème : 
+L'idée étant que les hypothèses classiques de la régression linéaire permettent d'obtenir le meilleur estimateur non biaisé i.e. l'estimateur sans biais de variance minimale. Dans les faits on obtient un estimateur de faible biais mais de variance plus élevée.
 
-$\min _{\beta_{1}, \cdots, \beta_{p}} \sum_{i=1}^{n}\left(y_{i}-\sum_{j=1}^{p} \beta_{j} z_{i j}\right)^{2}+\lambda \ R(  \beta) \\ $\text{sous contraintes : }$ R(\beta)\leq \tau$ \\
+Or, en considérant l'écart quadratique moyen (EQM) qui est la fonction de perte la plus largement utilisée on a : 
+\[\mathbb{E}\left[\left(y^{*}-\hat{y}^{*}\right)^{2}\right]=\sigma^{2}+\left(\mathbb{E}\left[\hat{y}^{*}\right]-y^{*}\right)^{2}+\mathbb{E}\left[\left(\hat{y}^{*}-\mathbb{E}\left[\hat{y}^{*}\right]\right)^{2}\right] \]
+
+On a respectivement $\sigma^{2}$ la variance incompressible de la cible Y, le biais et la variance de la prévision. Ainsi si on s'autorise un certain biais, on peut imaginer qu'il est possible de réduire plus que proportionnellement la variance et ainsi gagner en pouvoir prédictif. Pour illustrer ceci, en utilisant les notations de l'équipe scikit-learn on note alors ce problème : 
+
+\[ \left| \begin{array}{l}\displaystyle\min_{\beta_1, \dots, \beta_p} \sum_{i=1}^{n} \left( y_i - \sum_{j=1}^{p}\beta_j z_{ij} \right)^2 + \lambda \ R(\beta) \\
+\text{sous contraintes : } R (\beta) \leq \tau \end{array} \right.\]
+
 
 où l'on aura pris soin de centrer et réduire nos variables afin de leur accorder la même importance.
 \\
@@ -248,31 +257,39 @@ Il y a donc 3 types de pénalisation utilisés régulièrement:
 Notons que $\lambda$ est un paramètre du modèle qu'il faut calibrer également.\\
 On a une relation inverse entre $\tau$ et $\lambda$. Lorsque $\lambda=0$ on retrouve les MCO et plus $\lambda$ est grand, plus les coefficients sont contraints (plus de biais, moins de variance).
 On peut voir les coefficients se déformer en fonction de $\lambda$.\\
-La régression ridge est plus souple que la régression LASSO qui fait converger beaucoup plus vite les coefficients vers 0 ce qui fait qu'on s'en sert comme méthode de sélection de variable.\\Néanmoins, on obtient au maximum N  variables prédictives (identifiabililité) ce qui peut être préjudiciable quand le nombre de variables est très supérieur au nombre d'observations ($p \gg N$).\\
+La régression ridge est plus souple que la régression LASSO qui fait converger beaucoup plus vite les coefficients vers 0 ce qui fait qu'on s'en sert comme méthode de sélection de variable.\\Néanmoins, on obtient au maximum $N$  variables prédictives (identifiabililité) ce qui peut être préjudiciable quand le nombre de variables est très supérieur au nombre d'observations ($p \gg N$).\\
 De plus, elle choisit arbitrairement une variable parmi un groupe de variables corrélées quand la regression ridge permet de pondérer les influences.\\
 L'Elastic Net permet de combiner les avantages des deux méthodes en contrepartie d'une complexité accrue.\\
 
-Pour déterminer $\lambda$ on procède généralement par apprentissage-test lorsque c'est possible ou par validation croisée K-folds lorsque la base est faible, en minimisant le RMSE. Des formules basées sur des hypothèses simplificatrices existent également.\\
+Pour déterminer $\lambda$ on procède généralement par apprentissage-test lorsque c'est possible ou par validation croisée K-folds lorsque la base est petite, en minimisant le RMSE. Des formules basées sur des hypothèses simplificatrices existent également.\\
 En régression ridge, une astuce permet d'accélérer drastiquement les calculs en validation croisée Leave-One-Out grâce à une décomposition en valeurs singulières de X.\\
 Par ailleurs, de manière assez naturelle on obtient l'estimateur avec  $\hat{\beta}_{\text {Ridge}}=\left(X^{\prime} X+\lambda I_{p}\right)^{-1} X^{\prime} y$\\
 
 
 Pour la régression LASSO, on n'a pas de formulation explicite de $\beta$ (car la fonction valeur absolue n'est pas différentiable) ainsi on procède de manière itérative (LARS, Forward Stagewise). On fait varier de manière sélective les coefficients des variables. En grande dimension, on privilégiera la descente de gradient ou ses variantes pour l'estimation de $\beta$.\\
 \subsubsection{Régression logistique pénalisée}
-Dans le cadre classique de la discrimination binaire par la régression logistique, on suppose $(x_i,yi)$ IID d'une même distribution inconnue.\\
-On modélise $P(Y=1|X=x_i)=\frac{1}{1+e^{-\left(\beta^{\prime} x\right)}}=p_i$.\\
+Dans le cadre classique de la discrimination binaire par la régression logistique, on suppose $(x_i,y_i)$ \emph{iid} d'une même distribution inconnue.\\
+On modélise $\mathbb{P}(Y=1|X=x_i)=\frac{1}{1+e^{-\left(\beta^{\prime} x\right)}}=p_i$.\\
 Pour le cas particulier de la régression logistique pénalisée on cherche à minimiser:
 \[\ -\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] +\lambda \times R(\beta) \]\
 Les principes de la pénalisation sont les mêmes que précédemment, seulement on ne pénalise pas la constante mais elle doit faire partie de l'estimation.\\
 
 
-\subsubsection{Résultats}
+\subsubsection{Performance}
+
+\
+
+\begin{center}\begin{tabular}{l|rrrr}
+  Resampling & down & up & SMOTE & aucun \\ \hline
+  Gini Normalisé\textsuperscript{a} & 0.2566 & 0.2576 & 0.2483 & 0.2573 \\
+  \multicolumn{4}{l}{\footnotesize a. obtenu par validation croisée 5 blocs}
+\end{tabular}\end{center}
 
 \subsection{XGboost}
-L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{Boost}ing approche introduite par Friedman.\\
+L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{boost}ing, approche introduite par Friedman.\\
 Comme la plupart des méthodes basées sur des arbres de décisions, il peut être utilisé en classication comme en régression.\\
 L'approche combine 2 mécanismes : le boosting et la descente de gradient.\\
-Le Boosting est une méthode ensembliste qui consiste à agréger des classifieurs élaborés séquentiellement sur un échantillon d’apprentissage dont les poids des individus sont corrigés au fur et à mesure, les individus mal classés se voyant affecter un poids plus important. Les classifieurs sont pondérés selon leurs performances.\\
+Le boosting est une méthode ensembliste qui consiste à agréger des classifieurs élaborés séquentiellement sur un échantillon d’apprentissage dont les poids des individus sont corrigés au fur et à mesure, les individus mal classés se voyant affecter un poids plus important. Les classifieurs sont pondérés selon leurs performances.\\
 D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation.\\
 En apprentissage supervisé, la construction du modèle revient souvent à déterminer les paramètres (du modèle) qui permettent d’optimiser une fonction objectif.\\
 Enfin, outre les deux mécanismes précédents, l’approche possède aussi des paramètres liés à l’utilisation d’arbres comme classifieurs.\\
@@ -291,21 +308,26 @@ La prévision se base sur K arbres. On construit donc itérativement ces K arbre
 La fonction de perte est généralement la déviance binomiale en classification binaire :\\
  \[\ -\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] \]\
 On utilise la descente de gradient pour optimiser cet objectif à chaque étape.\\
-On peut ajouter de l'aléa dans l'échantillon test en utilisant seulement un échantillonnage des données pour construire les arbres.\\
-Ce qui a l'avantage d'accélérer les calculs et de se prémunir contre le surapprentissage.\\
+On peut ajouter de l'aléa dans l'échantillon test en utilisant seulement un échantillon des données pour construire les arbres. Ceci a l'avantage d'accélérer les calculs et de se prémunir contre le surapprentissage.\\
 L'algorithme propose également une gestion efficace des valeurs manquantes.\\
 On optimise les paramètres de l'algorithme par grid search.\\
 Il est évident que plus le nombre d'itérations est grand, plus on s'approche de la solution optimale, cependant celà s'effectue au détriment du temps de calcul.\\
 Le compromis pour $\eta$ $\in$ $]0,1[ $ est réalisé entre vitesse de convergence et surapprentissage.\\
 Si l'algorithme est très efficace, souple avec le choix des fonctions de coûts,
-adaptables à différents problèmes, permettant de prendre efficacement en compte des interactions non linéaires cela reste un modèle difficilement interprétable (même si on peut calculer des mesures d'importance des variables), lourd en mémoire et intensif avec beaucoup de paramètres à optimiser et un risque de surapprentissage qui peuvent rendre sa mise en œuvre efficiente moins aisée.
+adaptables à différents problèmes, permettant de prendre efficacement en compte des interactions non linéaires cela reste un modèle difficilement interprétable (bien qu'on puisse calculer des mesures d'importance des variables), lourd en mémoire et intensif avec beaucoup de paramètres à optimiser et un risque de surapprentissage qui peuvent rendre sa mise en œuvre efficiente moins aisée.
 
 
-\subsubsection{Résultats}
+\subsubsection{Performance}
 
+\
 
+\begin{center}\begin{tabular}{l|rrrr}
+  Resampling & down & up & SMOTE & aucun \\ \hline
+  Gini Normalisé\textsuperscript{a} & 0.2678 & 0.2728 & 0.2687 & 0.2778 \\
+  \multicolumn{4}{l}{\footnotesize a. obtenu par validation croisée 5 blocs}
+\end{tabular}\end{center}
 
-
+Le modèle sans resampling se classe premier en validation sans compter les modèles de stacking construits par la suite.
 
 
 
@@ -313,10 +335,17 @@ adaptables à différents problèmes, permettant de prendre efficacement en comp
 
 \section{Résultats}
 
+Plusieurs modèles ont été paramétrés par grid search pour chaque stratégie de resampling puis évalués en validation croisée 5 blocs. La figure 5 répertorie les résultats de performance obtenus.
+
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/results}
   \caption{Performance de validation des modèles}
 \end{figure}
+
+Certains modèles construits tels que les arbres de décision ne figurent pas dans la figure parce que leur performance est trop faible. Les modèles de stacking (glm\_stack et combi) ont été construits en choisissant les deux modèles les plus performants. Le méta-classifieur du stacking est une régression logistique et le modèle "combi" correspond à un classifieur qui combine linéairement les scores issus de la validation croisée des modèles.
+
+Au final, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.28809.
+
 
 % références
 \nocite{*}
