@@ -1,16 +1,16 @@
 # Fdb version 3
-["bibtex article_scientifique"] 1578421952 "article_scientifique.aux" "article_scientifique.bbl" "article_scientifique" 1578422031
+["bibtex article_scientifique"] 1578429077 "article_scientifique.aux" "article_scientifique.bbl" "article_scientifique" 1578430443
   "/usr/share/texlive/texmf-dist/bibtex/bst/base/acm.bst" 1480098433 21064 c61a48664f3c347ce7f73c1a6a530506 ""
-  "article_scientifique.aux" 1578422031 2731 7d8fa6cdad54b01414e6d25eba02833b ""
+  "article_scientifique.aux" 1578429229 2731 7d8fa6cdad54b01414e6d25eba02833b ""
   "article_scientifique.bcf" 0 -1 0 ""
   "biblio.bib" 1578420920 1385 b8ce828fb4b08c47572fdacb601c27c9 ""
   (generated)
-  "article_scientifique.bbl"
   "article_scientifique.blg"
-["pdflatex"] 1578422031 "/media/psqrt/SquareX/projet_ml/article/article_scientifique.tex" "/media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf" "article_scientifique" 1578422031
+  "article_scientifique.bbl"
+["pdflatex"] 1578429229 "/media/psqrt/SquareX/projet_ml/article/article_scientifique.tex" "/media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf" "article_scientifique" 1578430443
   "/etc/texmf/web2c/texmf.cnf" 1533479961 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux" 1578422031 2731 7d8fa6cdad54b01414e6d25eba02833b ""
-  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.tex" 1578422031 25820 cfb24e69b0eaf606e8269b42ecaa66e5 ""
+  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux" 1578429229 2731 7d8fa6cdad54b01414e6d25eba02833b ""
+  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.tex" 1578430443 25760 7a8c9b8b686921cdcb0b79ddda40fafb ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc" 1490133665 2933 9ad527ce78d7c5fa0a642dead095f172 ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc" 1490133665 2934 a4a9158faed2e9e89c771b4e3b7fc12f ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc" 1490133665 3288 25b5d43be7be8cba51d85b642598b3b0 ""
@@ -194,9 +194,9 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1535839965 2559861 d5dd7f84c7f44f379d61ea2964f41c49 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1539340045 2383159 e660560196ac31ac3f41d7017e40afff ""
-  "article_scientifique.aux" 1578422031 2731 7d8fa6cdad54b01414e6d25eba02833b ""
-  "article_scientifique.bbl" 1578421953 1293 72031bbd11e6d4488fe43e722ad61250 "bibtex article_scientifique"
-  "article_scientifique.tex" 1578422031 25820 cfb24e69b0eaf606e8269b42ecaa66e5 ""
+  "article_scientifique.aux" 1578429229 2731 7d8fa6cdad54b01414e6d25eba02833b ""
+  "article_scientifique.bbl" 1578429077 1293 72031bbd11e6d4488fe43e722ad61250 "bibtex article_scientifique"
+  "article_scientifique.tex" 1578430443 25760 7a8c9b8b686921cdcb0b79ddda40fafb ""
   "img/ex_normalisation.pdf" 1578251564 22831 da45b9924d371db845f46fce1de1c9d0 ""
   "img/ex_tabc.pdf" 1578251195 9235 02bfc4090b073b354d3b92a8eee6dfd3 ""
   "img/logo_r1n.png" 1577403700 25473 61097408df201006266e651caebc9799 ""
@@ -204,8 +204,8 @@
   "img/results.pdf" 1578420918 7432 cf0ddf306716f0e66d5f1eed5c2464f7 ""
   "img/var_imp_lgb.pdf" 1578250407 6609 d874eca9e96df99e426c68aa9cc94ba0 ""
   (generated)
-  "article_scientifique.aux"
-  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf"
   "article_scientifique.log"
   "article_scientifique.pdf"
+  "/media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf"
+  "article_scientifique.aux"
   "/media/psqrt/SquareX/projet_ml/article/article_scientifique.log"

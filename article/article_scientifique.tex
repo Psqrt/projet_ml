@@ -205,7 +205,7 @@ En réutilisant un Light GBM pour mesurer les conséquences des normalisations f
 
 \subsection{Étude des corrélations et dépendances}
 
-L'objectif de cette étape est de diminuer à nouveau le nombre de variables explicatives. La stratégie est différente : il s'agit d'étudier les corrélations et les dépendances entre variables puis avec la cible. Ceci permet de détecter des problèmes de colinéarité et ou dépendance entre prédicteurs :
+L'objectif de cette étape est d'étudier les liens entre variables. On évalue les corrélations et les dépendances entre variables puis avec la cible. Ceci permet de détecter des problèmes de colinéarité et ou dépendance entre prédicteurs :
 
 \begin{itemize}
     \item les liens entre variables continues se font grâce aux corrélations,
@@ -213,7 +213,7 @@ L'objectif de cette étape est de diminuer à nouveau le nombre de variables exp
     \item les liens entre variables catégorielles (et la cible) se font grâce aux V de Cramer\footnote{Le V de Cramer est la statistique du $\chi^2$ standardisée de façon à ce qu'elle varie entre 0 et 1}.
 \end{itemize}
 
-Les variables qui dépassent les seuils arbitrairement fixés ou qui ne passent pas le test d'ANOVA sont laissées de côté. Le nombre de prédicteurs chute alors à 29. % TODO
+Les variables qui dépassent les seuils arbitrairement fixés ou qui ne passent pas le test d'ANOVA sont laissées de côté. L'étude n'a pas abouti à de suppression de variables.
 
 \subsection{Paramétrisation des modèles}
 
