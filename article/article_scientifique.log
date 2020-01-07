@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  5 JAN 2020 22:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  6 JAN 2020 17:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -997,100 +997,98 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 12.0pt on input line 48.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 48.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 48.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 48.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 48.
-LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 54.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 54.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 62.
+(Font)              scaled to size 10.0pt on input line 63.
 (/usr/share/texlive/texmf-dist/tex/generic/pgfornament/vectorian/vectorian84.pgf)
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 74.
+(Font)              scaled to size 14.4pt on input line 75.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 74.
+(Font)              scaled to size 14.4pt on input line 75.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
+(Font)              scaled to size 10.0pt on input line 83.
 <img/gini.pdf, id=4, 365.78938pt x 311.62462pt>
 File: img/gini.pdf Graphic file (type pdf)
 <use img/gini.pdf>
-Package pdftex.def Info: img/gini.pdf  used on input line 106.
+Package pdftex.def Info: img/gini.pdf  used on input line 109.
 (pdftex.def)             Requested size: 251.07481pt x 213.89902pt.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 10.0pt on input line 107.
 <img/logo_r1n.png, id=5, 895.345pt x 506.89375pt>
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 109.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 116.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
- </media/psqrt/SquareX/projet_ml/article/img/logo_r1n.png>]
+ </media/psqrt/SquareX/projet_ml/article/img/logo_r1n.png> </media/psqrt/SquareX/projet_ml/article/img/gini.pdf>]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 125.
-<img/missing_values.pdf, id=16, 589.20125pt x 433.62pt>
+(Font)              scaled to size 7.0pt on input line 126.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 8.0pt on input line 126.
+<img/missing_values.pdf, id=17, 589.20125pt x 433.62pt>
 File: img/missing_values.pdf Graphic file (type pdf)
 <use img/missing_values.pdf>
-Package pdftex.def Info: img/missing_values.pdf  used on input line 135.
+Package pdftex.def Info: img/missing_values.pdf  used on input line 134.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-File: img/logo_r1n.png Graphic file (type png)
-<use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 155.
-(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
- [2 </media/psqrt/SquareX/projet_ml/article/img/gini.pdf> </media/psqrt/SquareX/projet_ml/article/img/missing_values.pdf>]
-<img/var_imp_lgb.pdf, id=26, 589.20125pt x 433.62pt>
+<img/var_imp_lgb.pdf, id=18, 589.20125pt x 433.62pt>
 File: img/var_imp_lgb.pdf Graphic file (type pdf)
 <use img/var_imp_lgb.pdf>
-Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 157.
+Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 156.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-<img/ex_afdm.pdf, id=27, 589.20125pt x 433.62pt>
-File: img/ex_afdm.pdf Graphic file (type pdf)
-<use img/ex_afdm.pdf>
-Package pdftex.def Info: img/ex_afdm.pdf  used on input line 179.
-(pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-<img/ex_tabc.pdf, id=28, 589.20125pt x 433.62pt>
-File: img/ex_tabc.pdf Graphic file (type pdf)
-<use img/ex_tabc.pdf>
-Package pdftex.def Info: img/ex_tabc.pdf  used on input line 188.
-(pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
+
+
+Package multicol Warning: I moved some lines to the next page.
+(multicol)                Footnotes on page 2 might be wrong on input line 162.
+
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 201.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 162.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
- [3 </media/psqrt/SquareX/projet_ml/article/img/var_imp_lgb.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_afdm.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_tabc.pdf>]
-<img/ex_normalisation.pdf, id=48, 589.20125pt x 433.62pt>
+[2 </media/psqrt/SquareX/projet_ml/article/img/missing_values.pdf> </media/psqrt/SquareX/projet_ml/article/img/var_imp_lgb.pdf>]
+<img/ex_tabc.pdf, id=32, 589.20125pt x 433.62pt>
+File: img/ex_tabc.pdf Graphic file (type pdf)
+<use img/ex_tabc.pdf>
+Package pdftex.def Info: img/ex_tabc.pdf  used on input line 173.
+(pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
+<img/ex_normalisation.pdf, id=33, 589.20125pt x 433.62pt>
 File: img/ex_normalisation.pdf Graphic file (type pdf)
 <use img/ex_normalisation.pdf>
-Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 203.
+Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 188.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-<img/results.pdf, id=49, 589.20125pt x 432.61626pt>
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 205.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 205.
+File: img/logo_r1n.png Graphic file (type png)
+<use img/logo_r1n.png>
+Package pdftex.def Info: img/logo_r1n.png  used on input line 215.
+(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
+ [3 </media/psqrt/SquareX/projet_ml/article/img/ex_tabc.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_normalisation.pdf>]
+<img/results.pdf, id=50, 589.20125pt x 411.5375pt>
 File: img/results.pdf Graphic file (type pdf)
 <use img/results.pdf>
-Package pdftex.def Info: img/results.pdf  used on input line 236.
-(pdftex.def)             Requested size: 251.07481pt x 184.35126pt.
+Package pdftex.def Info: img/results.pdf  used on input line 221.
+(pdftex.def)             Requested size: 251.07481pt x 175.36894pt.
  (/media/psqrt/SquareX/projet_ml/article/article_scientifique.bbl)
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 247.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 236.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
- [4 </media/psqrt/SquareX/projet_ml/article/img/ex_normalisation.pdf> </media/psqrt/SquareX/projet_ml/article/img/results.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
+ [4 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
 Here is how much of TeX's memory you used:
- 15932 strings out of 494317
- 303952 string characters out of 6163361
- 456682 words of memory out of 5000000
- 18937 multiletter control sequences out of 15000+600000
- 62732 words of font info for 43 fonts, out of 8000000 for 9000
+ 15921 strings out of 494317
+ 303768 string characters out of 6163361
+ 448154 words of memory out of 5000000
+ 18929 multiletter control sequences out of 15000+600000
+ 61819 words of font info for 40 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
- 62i,17n,57p,885b,532s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,17n,59p,801b,538s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (4 pages, 356624 bytes).
+Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (4 pages, 350417 bytes).
 PDF statistics:
- 86 PDF objects out of 1000 (max. 8388607)
- 60 compressed objects within 1 object stream
+ 80 PDF objects out of 1000 (max. 8388607)
+ 56 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 53 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 48 words of extra memory for PDF output out of 10000 (max. 10000000)
 
