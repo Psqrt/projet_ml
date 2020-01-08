@@ -1,3 +1,8 @@
+# Inputs : le model (objet issu caret) et la mesure d'importance (gain, frequence, cover par exemple)
+# Output : un ggplot split en deux pour que les noms des variables soient plus lisibles
+# Intérêt : lorsqu'il y a trop de variables, le graphique des importances est trop compact,
+# d'ou l'intérêt de diviser en deux.
+
 fun_imp_ggplot_split_boosting = function(model, metric) {
     if (class(model)[1] == "lgb.Booster"){
         df = lgb.importance(model) %>% as.data.frame() %>% select(Feature, get("metric"))

@@ -11,21 +11,21 @@ library(knitr)
 library(rmdformats)
 
 ## Global options
-options(max.print="75")
-opts_chunk$set(echo=TRUE,
-               prompt=FALSE,
-               tidy=FALSE,
-               comment=NA)
-opts_knit$set(width=75)
+options(max.print = "75")
+opts_chunk$set(echo    = TRUE,
+               prompt  = FALSE,
+               tidy    = FALSE,
+               comment = NA)
+opts_knit$set(width = 75)
 ```
 
-## Packages et fonctions externes
+# Importation des Packages et fonctions externes
 
 ```{r, message=F, warning=F}
 source("./0_packages.R")
 ```
 
-## Importations
+# Importation des données
 
 ```{r}
 type_col = readRDS("./../data/data_sel_type_col.rds")
@@ -64,11 +64,7 @@ for (i in var_num){
 df_recap_anova %>% arrange(-pvalue)
 ```
 
-On note que 6 variables ne passent pas l'ANOVA. Ce sont essentiellement des variables type `calc` : `ps_calc_11`, `ps_calc_14`, `ps_calc_02`, `ps_calc_10`, `ps_car_11` et `ps_calc_03`. Ces variables sont écartées pour la suite.
-
-```{r}
-var_poubelle = df_recap_anova[df_recap_anova$pvalue > 0.05, "variable"]
-```
+On note que 6 variables ne passent pas l'ANOVA. Ce sont essentiellement des variables type `calc` : `ps_calc_11`, `ps_calc_14`, `ps_calc_02`, `ps_calc_10`, `ps_car_11` et `ps_calc_03`. Être un client risqué n'a pas d'impact sur la valeur de ces variables.
 
 
 
@@ -135,23 +131,15 @@ corrplot(cramer_cross,
 
 Les variables catégorielles ne présentent pas de problème.
 
-```{r}
-train = train %>% 
-    select(-var_poubelle)
+On ne modifie pas la liste des régresseurs.
 
-test = test %>% 
-    select(-var_poubelle)
-```
-
-Au final, on retient 29 variables pour la construction des modèles.
-
-## Exportations
+# Exportations
 
 ```{r, eval = F}
 levels(train$target) = c("no", "yes")
 levels(test$target) = c("no", "yes")
 type_col = sapply(train, class)
 save(train, test, type_col,
-     file = "./../data/bases_29features.RData")
+     file = "./../data/bases_35features.RData")
 ```
 

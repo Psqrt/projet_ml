@@ -23,15 +23,17 @@ library(rmdformats)
 
 ## Global options
 options(max.print="75")
-opts_chunk$set(echo=TRUE,
-               cache=TRUE,
-               prompt=FALSE,
-               tidy=TRUE,
-               comment=NA)
-opts_knit$set(width=75)
+opts_chunk$set(echo    = TRUE,
+               cache   = FALSE,
+               prompt  = FALSE,
+               tidy    = FALSE,
+               comment = NA)
+opts_knit$set(width = 75)
 ```
 
 # Importation des packages et fonctions externes
+
+Afin de faciliter l'accès aux définitions de fonctions et aux appels de packages, chaque fonction est programmée dans un fichier R séparé et l'ensemble de ces fichiers sont exécutés à travers le fichier `0_packages.R`.
 
 ```{r, message=F, warning=F}
 source("./0_packages.R")
@@ -54,7 +56,7 @@ df_test  = fread(file = "./../data/Base_test.csv")  %>% as.data.frame()
 * Une phase de gestion de mémoire termine la préparation des données pour éviter la saturation de la mémoire vive pendant le tuning des modèles.
 
 ```{r}
-# XGBM
+# Préparation des données pour le XGBM
 train_id        = df_train %>% select(id)
 train_X         = df_train %>% select(-target, -id)
 train_Y         = factor(df_train$target)
@@ -67,7 +69,7 @@ test_Y          = factor(df_test$target)
 levels(test_Y)  = c("no", "yes")
 test_Y_num      = df_test$target # servira à calculer le coefficient de Gini
 
-# LGBM
+# Préparation des données pour le LGBM
 train_X_lgb  = as.matrix(lgb.prepare(train_X))
 train_Y_lgb  = as.matrix(lgb.prepare(df_train %>% select(target)))
 
@@ -84,7 +86,7 @@ gc()
 
 # Benchmark 1 - XGBM
 
-## Overview
+## Aperçu
 
 Quels paramètres sont à régler pour optimiser le modèle ?
 
@@ -92,17 +94,18 @@ Quels paramètres sont à régler pour optimiser le modèle ?
 modelLookup("xgbTree")
 ```
 
-## Tuning
+## Validation croisée
 
 La validation passe par un 5-folds cross validation. Pas plus, pas moins pour des raisons de mémoire disponible et de temps de calcul.
 
 ```{r}
-tune_control <- trainControl(method          = "cv",        # validation method
-                             number          = 5,           # number of CV folds
-                             summaryFunction = giniSummary, # summary for evaluation
-                             classProbs      = T,           # compute probabilities
-                             savePredictions = T,           # keep predictions in object
-                             verboseIter     = T            # enable verbose
+tune_control <- trainControl(
+  method          = "cv",        # validation method
+  number          = 5,           # number of CV folds
+  summaryFunction = giniSummary, # summary for evaluation
+  classProbs      = T,           # compute probabilities
+  savePredictions = T,           # keep predictions in object
+  verboseIter     = T            # enable verbose
 )
 
 tune_grid = expand.grid(
@@ -116,8 +119,6 @@ tune_grid = expand.grid(
 )
 ```
 
-## Cross Validation and Final Model
-
 La métrique objective est le coefficient normalisé de Gini.
 
 ```{r, eval = F}
@@ -129,39 +130,49 @@ benchmark_xgbtree_model = train(
   metric    = "NormalizedGini", # objective function
   trControl = tune_control,     # validation tuning
   tuneGrid  = tune_grid,        # hyperparameters tuning
-  method    = "xgbTree",        # algorithm used
+  method    = "xgbTree"         # algorithm used
 )
 registerDoMC(cores = 1)
 ```
+
+Les résultats du cross validation sont enregistrés pour éviter de devoir le refaire.
 
 ```{r}
 # save(benchmark_xgbtree_model, file = "./../data/benchmark_xgbtree_model.RData")
 load("./../data/benchmark_xgbtree_model.RData")
 ```
 
-## Tuning results
+## Résultats du grid search
 
 ```{r}
 ggplot(benchmark_xgbtree_model)
 ```
 
+On note qu'il aurait été intéressant d'élargir le grid search au delà de 300 itérations. Pour une profondeur maximale de 4 et un learning rate de 0.05, la performance en validation est en phase ascendante selon le nombre d'itérations.
+
 ## Variable importance
 
+L'importance des variables est donnée par le Gain.
+
 ```{r}
-# fun_imp_ggplot_split(benchmark_xgbtree_model)
 fun_imp_ggplot_split_boosting(benchmark_xgbtree_model$finalModel, "Gain")
 ```
 
-## Prediction and Evaluation
+## Prédictions et évaluation
+
+Bien qu'il s'agisse d'un benchmark pour mesurer la performance en cross validation, il est toujours intéressant de garder un oeil sur la performance sur la base d'apprentissage entière et sur la base de test.
 
 ```{r}
 benchmark_xgbtree_train_preds      = predict(benchmark_xgbtree_model, train_X, type = "prob")
 benchmark_xgbtree_test_preds       = predict(benchmark_xgbtree_model, test_X, type = "prob")
 benchmark_xgbtree_train_ngini      = normalizedGini(train_Y_num, benchmark_xgbtree_train_preds[,"yes"])
 benchmark_xgbtree_test_ngini       = normalizedGini(test_Y_num, benchmark_xgbtree_test_preds[,"yes"])
-c("Normalized Gini Coeff. (Train)" = benchmark_xgbtree_train_ngini,
-  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_xgbtree_model$results$NormalizedGini %>% max,
-  "Normalized Gini Coeff. (Test)"  = benchmark_xgbtree_test_ngini)
+# on récupère le meilleur Gini du CV directement dans l'objet caret
+benchmark_xgbtree_valid_ngini      = max(benchmark_xgbtree_model$results$NormalizedGini)
+# Print des résultats
+c("Normalized Gini Coeff. (Train)"      = benchmark_xgbtree_train_ngini,
+  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_xgbtree_valid_ngini,
+  "Normalized Gini Coeff. (Test)"       = benchmark_xgbtree_test_ngini)
 ```
 
 
@@ -170,7 +181,9 @@ c("Normalized Gini Coeff. (Train)" = benchmark_xgbtree_train_ngini,
 
 # Benchmark 2 - LGBM
 
-## Tuning
+On fait de même avec un LGBM.
+
+## Validation croisée
 
 ```{r}
 params_lgb = list(
@@ -188,8 +201,6 @@ params_lgb = list(
 )
 ```
 
-## Cross Validation
-
 ```{r, eval = F}
 set.seed(1234)
 benchmark_lgb_cv = lgb.cv(
@@ -204,7 +215,9 @@ benchmark_lgb_cv = lgb.cv(
 )
 ```
 
-## Final Model
+## Modèle final
+
+Le package lightgbm ne conserve pas le modèle optimisé, on récupère les paramètres et l'itération optimale pour reconstruire le modèle optimisé.
 
 ```{r, eval = F}
 benchmark_lgb_model <- lgb.train(
@@ -218,7 +231,7 @@ benchmark_lgb_model <- lgb.train(
 )
 ```
 
-Note : La construction du modèle LGBM s'est faite avec du calcul parallèle et pour des raisons inconnues, la sauvegarde traditionnelle par `save()` ne permet pas de réutiliser le modèle. En effet, en utilisant un `load()`, quelconque appel au modèle engendre une erreur (référence : segfault). Le package a prévu des fonctions de sauvegarde du modèle dédiées : `lgb.save()` (couplé avec `lgb.load()`).
+Note technique : La construction du modèle LGBM s'est faite avec du calcul parallèle et pour des raisons inconnues, la sauvegarde traditionnelle par `save()` ne permet pas de réutiliser le modèle. En effet, en utilisant un `load()`, quelconque appel au modèle engendre une erreur (référence : segfault). Le package a prévu des fonctions de sauvegarde du modèle dédiées : `lgb.save()` (couplé avec `lgb.load()`).
 
 ```{r}
 # lgb.save(benchmark_lgb_model, filename = "./../data/benchmark_lgb_model.txt")
@@ -233,30 +246,31 @@ benchmark_lgb_model = lgb.load("./../data/benchmark_lgb_model.txt")
 fun_imp_ggplot_split_boosting(benchmark_lgb_model, "Gain")
 ```
 
-## Prediction and Evaluation
+## Prédictions et évaluation
 
 ```{r}
-benchmark_lgb_train_preds          = predict(benchmark_lgb_model, train_X_lgb)
-benchmark_lgb_test_preds           = predict(benchmark_lgb_model, test_X_lgb)
-benchmark_lgb_train_ngini          = normalizedGini(train_Y_num, benchmark_lgb_train_preds)
-benchmark_lgb_test_ngini           = normalizedGini(test_Y_num, benchmark_lgb_test_preds)
-c("Normalized Gini Coeff. (Train)" = benchmark_lgb_train_ngini,
-  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max,
-  "Normalized Gini Coeff. (Test)"  = benchmark_lgb_test_ngini)
+benchmark_lgb_train_preds            = predict(benchmark_lgb_model, train_X_lgb)
+benchmark_lgb_test_preds             = predict(benchmark_lgb_model, test_X_lgb)
+benchmark_lgb_train_ngini            = normalizedGini(train_Y_num, benchmark_lgb_train_preds)
+benchmark_lgb_test_ngini             = normalizedGini(test_Y_num, benchmark_lgb_test_preds)
+benchmark_lgb_valid_ngini            = max(unlist(benchmark_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]]))
+c("Normalized Gini Coeff. (Train)"      = benchmark_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_lgb_valid_ngini,
+  "Normalized Gini Coeff. (Test)"       = benchmark_lgb_test_ngini)
 ```
 
 # Conclusion
 
 ```{r}
 print("XGBTREE/BENCHMARK")
-c("Normalized Gini Coeff. (Train)" = benchmark_xgbtree_train_ngini,
-  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_xgbtree_model$results$NormalizedGini %>% max,
-  "Normalized Gini Coeff. (Test)"  = benchmark_xgbtree_test_ngini)
+c("Normalized Gini Coeff. (Train)"      = benchmark_xgbtree_train_ngini,
+  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_xgbtree_valid_ngini,
+  "Normalized Gini Coeff. (Test)"       = benchmark_xgbtree_test_ngini)
 
 print("LGBM/BENCHMARK")
-c("Normalized Gini Coeff. (Train)" = benchmark_lgb_train_ngini,
-  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_lgb_cv[["record_evals"]][["valid"]][["Norm-gini"]][["eval"]] %>% unlist %>% max,
-  "Normalized Gini Coeff. (Test)"  = benchmark_lgb_test_ngini)
+c("Normalized Gini Coeff. (Train)"      = benchmark_lgb_train_ngini,
+  "Normalized Gini Coeff. (Valid 5fCV)" = benchmark_lgb_valid_ngini,
+  "Normalized Gini Coeff. (Test)"       = benchmark_lgb_test_ngini)
 ```
 
-Le benchmark est ainsi placé. Il faudra espérer faire mieux malgré qu'il soit relativement élevé (par rapport aux leaderboards Kaggle).
+Le benchmark est ainsi placé. Il faudra espérer faire mieux.

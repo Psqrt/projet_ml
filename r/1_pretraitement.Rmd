@@ -12,13 +12,13 @@ library(rmdformats)
 
 ## Global options
 options(max.print="75")
-opts_chunk$set(echo=TRUE,
-               cache=TRUE,
-               prompt=FALSE,
-               tidy=FALSE,
+opts_chunk$set(echo       = TRUE,
+               cache      = FALSE,
+               prompt     = FALSE,
+               tidy       = FALSE,
                # fix pour l'erreur "Error in lazyLoadDBinsertVariable (...) long vectors not supported yet ...
                cache.lazy = FALSE, 
-               comment=NA)
+               comment    = NA)
 opts_knit$set(width=75)
 ```
 
@@ -32,7 +32,7 @@ source("./0_packages.R")
 
 ```{r, warning=F, message=F}
 train = fread(file = "./../data/Base_train.csv") %>% as.data.frame()
-test = fread(file = "./../data/Base_test.csv") %>% as.data.frame()
+test  = fread(file = "./../data/Base_test.csv")  %>% as.data.frame()
 ```
 
 On vérifie dans un premier temps que la construction de l'échantillon test ne suit pas une logique par rapport à l'identifiant, laissant de l'information pour les modèles.
@@ -68,11 +68,10 @@ test = test %>%
 variables = colnames(train)[2:length(colnames(train))]
 variables_quanti = c("ps_reg_03", "ps_car_12", "ps_car_13", "ps_car_14", "ps_car_15")
 variables_quali = variables[!(variables %in% variables_quanti)]
+# le reformattage des variables sera fait plus tard.
 
 # fusion train/test pour les modifications simultanées mais sans contamination
-# reformatage des types de variables
 data = bind_rows("train" = train, "test" = test, .id = "dataset")
-#     mutate_at(variables_quali, as.factor)
 
 # liste des variables ayant des valeurs manquantes
 col_na = colnames(data[colSums(is.na(data)) > 0])
@@ -212,6 +211,7 @@ for (var_cible in col_na){
 }
 ```
 
+La base `data_imp` remplace la base initiale `data` et correspond à jeu de données issu des imputations.
 
 On vérifie qu'il n'y a plus de valeurs manquantes et on trace les distributions.
 
@@ -226,9 +226,8 @@ gg_df = bind_rows("initial" = data[complete.cases(data),],
 
 liste_gg = list()
 for (i in c(1:length(col_na))) {
-  
+  # on trace toutes les distributions
   class_var = class(data_imp[[get("col_na")[i]]])    
-  
   if (class_var == "factor"){
     gg = gg_df %>% 
       ggplot() +
@@ -253,15 +252,15 @@ gc()
 
 ## Exportation
 
-On exporte la base sans valeurs manquantes, tout en remettant les bons formats de colonnes.
+On exporte la base sans valeurs manquantes `data_imp`, tout en remettant les bons formats de colonnes.
 
 ```{r, eval = F}
-ind_factor = grep("bin|cat", colnames(data_imp))
+ind_factor = grep("bin|cat", colnames(data_imp)) # toutes les variables bin ou cat sont passées en factor
 
 type_col = c(rep("numeric", ncol(data_imp)))
 names(type_col) = colnames(data_imp)
 type_col[ind_factor] = "factor"
-type_col[1:3] = c("character", "numeric", "factor")
+type_col[1:3] = c("character", "numeric", "factor") # dataset, id et target
 
 saveRDS(object = type_col,
         file = "./../data/data_imp_type_col.rds")
