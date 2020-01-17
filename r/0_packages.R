@@ -3,6 +3,7 @@
 library(data.table)     # importation des données avec fread()
 library(tidyverse)      # data manipulation + ggplot (viz)
 library(glue)           # strings manipulation
+library(stringr)        # strings manipulation
 library(doMC)           # calcul parallèle
 
 # Machine Learning

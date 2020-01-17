@@ -1767,14 +1767,14 @@ OK
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># Prépration des données pour les modèles</span></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">train_id =<span class="st"> </span>train<span class="op">$</span>id</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">train_X =<span class="st"> </span>train <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>id, <span class="op">-</span>target)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">train_Y =<span class="st"> </span>train<span class="op">$</span>target</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">train_X  =<span class="st"> </span>train <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>id, <span class="op">-</span>target)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">train_Y  =<span class="st"> </span>train<span class="op">$</span>target</a>
 <a class="sourceLine" id="cb2-7" data-line-number="7">train_XY =<span class="st"> </span>train <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>id)</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb2-9" data-line-number="9">test_id =<span class="st"> </span>test<span class="op">$</span>id</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10">test_X =<span class="st"> </span>test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>id, <span class="op">-</span>target)</a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">test_Y =<span class="st"> </span>test<span class="op">$</span>target <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()</a>
-<a class="sourceLine" id="cb2-12" data-line-number="12">test_Y =<span class="st"> </span>test_Y <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a></code></pre></div>
+<a class="sourceLine" id="cb2-10" data-line-number="10">test_X  =<span class="st"> </span>test <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(<span class="op">-</span>id, <span class="op">-</span>target)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">test_Y  =<span class="st"> </span>test<span class="op">$</span>target <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">test_Y  =<span class="st"> </span>test_Y <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a></code></pre></div>
 </div>
 <div id="exportations" class="section level1">
 <h1>Exportations</h1>
@@ -2110,8 +2110,8 @@ OK
 <a class="sourceLine" id="cb16-52" data-line-number="52">    }</a>
 <a class="sourceLine" id="cb16-53" data-line-number="53">  }</a>
 <a class="sourceLine" id="cb16-54" data-line-number="54">}</a></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># save(up_lgb_tune_df, file = &quot;./../output/up_lgb_tune_df.RData&quot;)</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&quot;./../output/up_lgb_tune_df.RData&quot;</span>)</a>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="co"># save(up_lgb_tune_df, file = &quot;./../data/up_lgb_tune_df.RData&quot;)</span></a>
+<a class="sourceLine" id="cb17-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&quot;./../data/up_lgb_tune_df.RData&quot;</span>)</a>
 <a class="sourceLine" id="cb17-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb17-4" data-line-number="4">up_lgb_best_tune =<span class="st"> </span>up_lgb_tune_df <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb17-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>validation) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -2167,7 +2167,7 @@ Normalized Gini Coeff. (Valid - 5fCV)
 <a class="sourceLine" id="cb22-5" data-line-number="5">                         <span class="st">&quot;Test&quot;</span>       =<span class="st"> </span>up_lgb_test_ngini,</a>
 <a class="sourceLine" id="cb22-6" data-line-number="6">                         <span class="dt">stringsAsFactors =</span> F)</a>
 <a class="sourceLine" id="cb22-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co"># save(up_lgb_info, file = &quot;./../output/up_lgb_info.RData&quot;)</span></a></code></pre></div>
+<a class="sourceLine" id="cb22-8" data-line-number="8"><span class="co"># save(up_lgb_info, file = &quot;./../data/up_lgb_info.RData&quot;)</span></a></code></pre></div>
 <p>On sauvegarde les scores pour plus tard.</p>
 </div>
 <div id="none" class="section level3">
@@ -2227,8 +2227,8 @@ Normalized Gini Coeff. (Valid - 5fCV)
 <a class="sourceLine" id="cb23-52" data-line-number="52">    }</a>
 <a class="sourceLine" id="cb23-53" data-line-number="53">  }</a>
 <a class="sourceLine" id="cb23-54" data-line-number="54">}</a></code></pre></div>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># save(none_lgb_tune_df, file = &quot;./../output/none_lgb_tune_df.RData&quot;)</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&quot;./../output/none_lgb_tune_df.RData&quot;</span>)</a>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># save(none_lgb_tune_df, file = &quot;./../data/none_lgb_tune_df.RData&quot;)</span></a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&quot;./../data/none_lgb_tune_df.RData&quot;</span>)</a>
 <a class="sourceLine" id="cb24-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb24-4" data-line-number="4">none_lgb_best_tune =<span class="st"> </span>none_lgb_tune_df <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb24-5" data-line-number="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>validation) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -2282,16 +2282,16 @@ Normalized Gini Coeff. (Valid - 5fCV)
 <a class="sourceLine" id="cb29-5" data-line-number="5">                           <span class="st">&quot;Test&quot;</span>       =<span class="st"> </span>none_lgb_test_ngini,</a>
 <a class="sourceLine" id="cb29-6" data-line-number="6">                           <span class="dt">stringsAsFactors =</span> F)</a>
 <a class="sourceLine" id="cb29-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="co"># save(none_lgb_info, file = &quot;./../output/none_lgb_info.RData&quot;)</span></a></code></pre></div>
+<a class="sourceLine" id="cb29-8" data-line-number="8"><span class="co"># save(none_lgb_info, file = &quot;./../data/none_lgb_info.RData&quot;)</span></a></code></pre></div>
 </div>
 </div>
 <div id="stacking" class="section level2">
 <h2>Stacking</h2>
-<p>Après avoir comparé les performances de modèle (Rmd n°7), on tente un stacking de deux modèles : LGB et XGB sans resampling.</p>
+<p>Après avoir comparé les performances de modèle (Rmd n°6), on tente un stacking de deux modèles : LGB et XGB sans resampling.</p>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">none_lgb_model =<span class="st"> </span><span class="kw">lgb.load</span>(<span class="kw">file.path</span>(path_exportation, <span class="st">&quot;none_lgb_model.txt&quot;</span>))</a>
 <a class="sourceLine" id="cb30-2" data-line-number="2"><span class="kw">load</span>(<span class="kw">file.path</span>(path_exportation, <span class="st">&quot;none_xgbtree_model.RData&quot;</span>))</a></code></pre></div>
-<div id="stacking-sans-fuite-dinformation" class="section level3">
-<h3>Stacking sans fuite d’information</h3>
+<div id="stacking-par-glm" class="section level3">
+<h3>Stacking par GLM</h3>
 <p>L’objet lgb.cv ne contenant pas les prédictions CV de la meilleur itération (959ème) mais uniquement la dernière (1000ème), on relance le LGB avec les paramètres tunés et la meilleure itération comme dernière itération à faire. La dernière itération sera donc la meilleure itération.</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb31-2" data-line-number="2">params_lgb =<span class="st"> </span><span class="kw">list</span>(</a>
@@ -2322,18 +2322,10 @@ Normalized Gini Coeff. (Valid - 5fCV)
 <a class="sourceLine" id="cb32-2" data-line-number="2"><span class="kw">load</span>(<span class="st">&quot;./../data/none_lgb_cv_stacking.RData&quot;</span>)</a></code></pre></div>
 <p>On récupère les prédictions CV.</p>
 <p>Source pour la fonction d’extraction des prédictions : <a href="https://github.com/Microsoft/LightGBM/issues/283" class="uri">https://github.com/Microsoft/LightGBM/issues/283</a></p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">get_lgbm_cv_preds &lt;-<span class="st"> </span><span class="cf">function</span>(cv){</a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">  rows &lt;-<span class="st"> </span><span class="kw">length</span>(cv<span class="op">$</span>boosters[[<span class="dv">1</span>]]<span class="op">$</span>booster<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>valid_sets[[<span class="dv">1</span>]]<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>used_indices) <span class="op">+</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="st">    </span><span class="kw">length</span>(cv<span class="op">$</span>boosters[[<span class="dv">1</span>]]<span class="op">$</span>booster<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>train_set<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>used_indices)</a>
-<a class="sourceLine" id="cb33-4" data-line-number="4">  preds &lt;-<span class="st"> </span><span class="kw">numeric</span>(rows)</a>
-<a class="sourceLine" id="cb33-5" data-line-number="5">  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(cv<span class="op">$</span>boosters)){</a>
-<a class="sourceLine" id="cb33-6" data-line-number="6">    preds[cv<span class="op">$</span>boosters[[i]]<span class="op">$</span>booster<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>valid_sets[[<span class="dv">1</span>]]<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span>used_indices] &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb33-7" data-line-number="7"><span class="st">      </span>cv<span class="op">$</span>boosters[[i]]<span class="op">$</span>booster<span class="op">$</span>.__enclos_env__<span class="op">$</span>private<span class="op">$</span><span class="kw">inner_predict</span>(<span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb33-8" data-line-number="8">  }</a>
-<a class="sourceLine" id="cb33-9" data-line-number="9">  <span class="kw">return</span>(preds)</a>
-<a class="sourceLine" id="cb33-10" data-line-number="10">}</a>
-<a class="sourceLine" id="cb33-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb33-12" data-line-number="12">none_lgb_cv_stacking_valid_preds =<span class="st"> </span><span class="kw">get_lgbm_cv_preds</span>(none_lgb_cv_stacking)</a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">none_lgb_cv_stacking_valid_preds =<span class="st"> </span><span class="kw">get_lgbm_cv_preds</span>(none_lgb_cv_stacking)</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="co"># on enregistre les prédictions pour la courbe roc plus tard</span></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="co"># save(none_lgb_cv_stacking_valid_preds, file = &quot;./../data/none_lgb_stacking_valid_preds.RData&quot;)</span></a></code></pre></div>
 <p>L’extraction des prédictions CV est plus simple pour le XGB, car déjà stockées et facilement accessibles.</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">none_xgb_cv_stacking_valid_preds =<span class="st"> </span>none_xgbtree_model<span class="op">$</span>pred <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb34-2" data-line-number="2"><span class="st">  </span><span class="kw">filter</span>(max_depth <span class="op">==</span><span class="st"> </span>none_xgbtree_model<span class="op">$</span>bestTune<span class="op">$</span>max_depth) <span class="op">%&gt;%</span><span class="st"> </span></a>
@@ -2343,20 +2335,20 @@ Normalized Gini Coeff. (Valid - 5fCV)
 <a class="sourceLine" id="cb34-6" data-line-number="6"><span class="st">  </span><span class="kw">select</span>(yes)</a></code></pre></div>
 <p>Les deux listes de prédictions sont ordonnées selon l’index de la ligne dans la base d’apprentissage, donc on peut les concaténer dans un data.frame tout simplement.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">df_stacking_train =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;id&quot;</span>          =<span class="st"> </span>train_id,</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2">                               <span class="st">&quot;target&quot;</span>      =<span class="st"> </span>train_Y,</a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">                               <span class="st">&quot;target&quot;</span>      =<span class="st"> </span><span class="kw">factor</span>(train_Y, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)),</a>
 <a class="sourceLine" id="cb35-3" data-line-number="3">                               <span class="st">&quot;lgb_learner&quot;</span> =<span class="st"> </span>none_lgb_cv_stacking_valid_preds,</a>
 <a class="sourceLine" id="cb35-4" data-line-number="4">                               <span class="st">&quot;xgb_learner&quot;</span> =<span class="st"> </span>none_xgb_cv_stacking_valid_preds<span class="op">$</span>yes)</a>
 <a class="sourceLine" id="cb35-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb35-6" data-line-number="6">df_stacking_train_X =<span class="st"> </span>df_stacking_train <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb35-7" data-line-number="7"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>id, <span class="op">-</span>target)</a></code></pre></div>
 <p>On lance le méta-classifieur qui est une régression logistique. Validation croisée 5 blocs comme depuis le départ.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">tune_control &lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method =</span> <span class="st">&quot;cv&quot;</span>,</a>
-<a class="sourceLine" id="cb36-2" data-line-number="2">                             <span class="dt">number =</span> <span class="dv">5</span>,</a>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">tune_control &lt;-<span class="st"> </span><span class="kw">trainControl</span>(<span class="dt">method          =</span> <span class="st">&quot;cv&quot;</span>,</a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">                             <span class="dt">number          =</span> <span class="dv">5</span>,</a>
 <a class="sourceLine" id="cb36-3" data-line-number="3">                             <span class="dt">summaryFunction =</span> giniSummary,</a>
-<a class="sourceLine" id="cb36-4" data-line-number="4">                             <span class="dt">classProbs =</span> T,</a>
+<a class="sourceLine" id="cb36-4" data-line-number="4">                             <span class="dt">classProbs      =</span> T,</a>
 <a class="sourceLine" id="cb36-5" data-line-number="5">                             <span class="dt">savePredictions =</span> T,</a>
-<a class="sourceLine" id="cb36-6" data-line-number="6">                             <span class="dt">verboseIter =</span> T,</a>
-<a class="sourceLine" id="cb36-7" data-line-number="7">                             <span class="dt">sampling =</span> <span class="ot">NULL</span>) <span class="co"># NULL, smote, down, up</span></a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">                             <span class="dt">verboseIter     =</span> T,</a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">                             <span class="dt">sampling        =</span> <span class="ot">NULL</span>) <span class="co"># NULL, smote, down, up</span></a>
 <a class="sourceLine" id="cb36-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb36-9" data-line-number="9"><span class="kw">set.seed</span>(<span class="dv">1234</span>)</a>
 <a class="sourceLine" id="cb36-10" data-line-number="10"><span class="kw">modelLookup</span>(<span class="st">&quot;glm&quot;</span>)</a></code></pre></div>
@@ -2364,11 +2356,11 @@ Normalized Gini Coeff. (Valid - 5fCV)
 1   glm parameter parameter   TRUE     TRUE      TRUE</code></pre>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">glm_stacking_model =<span class="st"> </span><span class="kw">train</span>(</a>
 <a class="sourceLine" id="cb38-2" data-line-number="2">  target <span class="op">~</span><span class="st"> </span>. <span class="op">-</span><span class="st"> </span>id,</a>
-<a class="sourceLine" id="cb38-3" data-line-number="3">  <span class="dt">data =</span> df_stacking_train,</a>
-<a class="sourceLine" id="cb38-4" data-line-number="4">  <span class="dt">metric =</span> <span class="st">&quot;NormalizedGini&quot;</span>,</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">  <span class="dt">data      =</span> df_stacking_train,</a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">  <span class="dt">metric    =</span> <span class="st">&quot;NormalizedGini&quot;</span>,</a>
 <a class="sourceLine" id="cb38-5" data-line-number="5">  <span class="dt">trControl =</span> tune_control,</a>
-<a class="sourceLine" id="cb38-6" data-line-number="6">  <span class="dt">method =</span> <span class="st">&quot;glm&quot;</span>,</a>
-<a class="sourceLine" id="cb38-7" data-line-number="7">  <span class="dt">family =</span> <span class="st">&quot;binomial&quot;</span></a>
+<a class="sourceLine" id="cb38-6" data-line-number="6">  <span class="dt">method    =</span> <span class="st">&quot;glm&quot;</span>,</a>
+<a class="sourceLine" id="cb38-7" data-line-number="7">  <span class="dt">family    =</span> <span class="st">&quot;binomial&quot;</span></a>
 <a class="sourceLine" id="cb38-8" data-line-number="8">)</a></code></pre></div>
 <pre><code>+ Fold1: parameter=none 
 - Fold1: parameter=none 
@@ -2382,7 +2374,7 @@ Normalized Gini Coeff. (Valid - 5fCV)
 - Fold5: parameter=none 
 Aggregating results
 Fitting final model on full training set</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">none_stacking_train_preds =<span class="st"> </span><span class="kw">predict</span>(glm_stacking_model<span class="op">$</span>finalModel, df_stacking_train_X, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)</a>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">none_stacking_train_preds  =<span class="st"> </span><span class="kw">predict</span>(glm_stacking_model<span class="op">$</span>finalModel, df_stacking_train_X, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)</a>
 <a class="sourceLine" id="cb40-2" data-line-number="2">none_stacking_train_ngini  =<span class="st"> </span><span class="kw">normalizedGini</span>(train_Y_num, none_stacking_train_preds)</a>
 <a class="sourceLine" id="cb40-3" data-line-number="3">none_stacking_valid_ngini  =<span class="st"> </span><span class="kw">max</span>(glm_stacking_model<span class="op">$</span>results<span class="op">$</span>NormalizedGini)</a>
 <a class="sourceLine" id="cb40-4" data-line-number="4"><span class="kw">c</span>(<span class="st">&quot;Train&quot;</span> =<span class="st"> </span>none_stacking_train_ngini,</a>
@@ -2395,12 +2387,18 @@ Fitting final model on full training set</code></pre>
 <a class="sourceLine" id="cb42-3" data-line-number="3">                                     <span class="st">&quot;Train&quot;</span>      =<span class="st"> </span>none_stacking_train_ngini,</a>
 <a class="sourceLine" id="cb42-4" data-line-number="4">                                     <span class="st">&quot;Validation&quot;</span> =<span class="st"> </span>none_stacking_valid_ngini,</a>
 <a class="sourceLine" id="cb42-5" data-line-number="5">                                     <span class="st">&quot;Test&quot;</span>       =<span class="st"> </span><span class="ot">NA</span>,</a>
-<a class="sourceLine" id="cb42-6" data-line-number="6">                                     <span class="dt">stringsAsFactors =</span> F)</a></code></pre></div>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># save(glm_stacking_model_info, file = &quot;./../output/glm_stacking_model_info.RData&quot;)</span></a></code></pre></div>
+<a class="sourceLine" id="cb42-6" data-line-number="6">                                     <span class="dt">stringsAsFactors =</span> F)</a>
+<a class="sourceLine" id="cb42-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb42-8" data-line-number="8"><span class="co"># on extrait les prédictions pour la courbe roc plus tard</span></a>
+<a class="sourceLine" id="cb42-9" data-line-number="9">none_glm_stacking_valid_preds =<span class="st"> </span>glm_stacking_model<span class="op">$</span>pred <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb42-10" data-line-number="10"><span class="st">  </span><span class="kw">arrange</span>(rowIndex) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb42-11" data-line-number="11"><span class="st">  </span>.<span class="op">$</span>yes</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="co"># save(glm_stacking_model_info, file = &quot;./../data/glm_stacking_model_info.RData&quot;)</span></a>
+<a class="sourceLine" id="cb43-2" data-line-number="2"><span class="co"># save(none_glm_stacking_valid_preds, file = &quot;./../data/none_glm_stacking_valid_preds.RData&quot;)</span></a></code></pre></div>
 <p>Le score de validation est le meilleur par rapport aux autres modèles.</p>
 </div>
-<div id="stacking-avec-alpha-combinaison" class="section level3">
-<h3>Stacking avec alpha (combinaison)</h3>
+<div id="stacking-avec-combinaison-lineaire-combinaison" class="section level3">
+<h3>Stacking avec combinaison linéaire (combinaison)</h3>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">df_results_valid_combinaison =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;alpha&quot;</span> =<span class="st"> </span><span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>),</a>
 <a class="sourceLine" id="cb44-2" data-line-number="2">                                          <span class="st">&quot;validation&quot;</span> =<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">length</span>(<span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>))))</a>
 <a class="sourceLine" id="cb44-3" data-line-number="3"></a>
@@ -2440,27 +2438,33 @@ Fitting final model on full training set</code></pre>
 <a class="sourceLine" id="cb48-4" data-line-number="4">none_lgb_test_preds =<span class="st"> </span><span class="kw">predict</span>(none_lgb_model, test_X_lgb, <span class="dt">type =</span> <span class="st">&quot;prob&quot;</span>)</a>
 <a class="sourceLine" id="cb48-5" data-line-number="5">none_xgb_test_preds =<span class="st"> </span><span class="kw">predict</span>(none_xgbtree_model, test_X, <span class="dt">type =</span> <span class="st">&quot;prob&quot;</span>)[, <span class="st">&quot;yes&quot;</span>]</a>
 <a class="sourceLine" id="cb48-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb48-7" data-line-number="7">df_train_stacking =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;id&quot;</span>          =<span class="st"> </span>train_id,</a>
-<a class="sourceLine" id="cb48-8" data-line-number="8">                               <span class="st">&quot;target&quot;</span>      =<span class="st"> </span><span class="kw">factor</span>(train_Y, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)),</a>
-<a class="sourceLine" id="cb48-9" data-line-number="9">                               <span class="st">&quot;lgb_learner&quot;</span> =<span class="st"> </span>none_lgb_train_preds,</a>
-<a class="sourceLine" id="cb48-10" data-line-number="10">                               <span class="st">&quot;xgb_learner&quot;</span> =<span class="st"> </span>none_xgb_train_preds)</a>
-<a class="sourceLine" id="cb48-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb48-12" data-line-number="12">df_test_stacking =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;id&quot;</span>          =<span class="st"> </span>test_id,</a>
-<a class="sourceLine" id="cb48-13" data-line-number="13">                              <span class="st">&quot;target&quot;</span>      =<span class="st"> </span><span class="kw">factor</span>(test_Y, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)),</a>
-<a class="sourceLine" id="cb48-14" data-line-number="14">                              <span class="st">&quot;lgb_learner&quot;</span> =<span class="st"> </span>none_lgb_test_preds,</a>
-<a class="sourceLine" id="cb48-15" data-line-number="15">                              <span class="st">&quot;xgb_learner&quot;</span> =<span class="st"> </span>none_xgb_test_preds)</a>
-<a class="sourceLine" id="cb48-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb48-17" data-line-number="17">df_train_combi =<span class="st"> </span>df_train_stacking <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb48-18" data-line-number="18"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">combinaison =</span> best_tune_combinaison<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>lgb_learner <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha) <span class="op">*</span><span class="st"> </span>xgb_learner)</a>
-<a class="sourceLine" id="cb48-19" data-line-number="19"></a>
-<a class="sourceLine" id="cb48-20" data-line-number="20">df_test_combi =<span class="st"> </span>df_test_stacking <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb48-21" data-line-number="21"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">combinaison =</span> best_tune_combinaison<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>lgb_learner <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha) <span class="op">*</span><span class="st"> </span>xgb_learner)</a>
-<a class="sourceLine" id="cb48-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb48-23" data-line-number="23">none_combi_train_ngini =<span class="st"> </span><span class="kw">normalizedGini</span>(train_Y_num, df_train_combi<span class="op">$</span>combinaison)</a>
-<a class="sourceLine" id="cb48-24" data-line-number="24">none_combi_test_ngini  =<span class="st"> </span><span class="kw">normalizedGini</span>(test_Y_num, df_test_combi<span class="op">$</span>combinaison)</a>
-<a class="sourceLine" id="cb48-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb48-26" data-line-number="26"><span class="co"># pour information (comparer avec les autres)</span></a>
-<a class="sourceLine" id="cb48-27" data-line-number="27"><span class="kw">auc</span>(test_Y_num, df_test_combi<span class="op">$</span>combinaison)</a></code></pre></div>
+<a class="sourceLine" id="cb48-7" data-line-number="7">none_combi_valid_preds =<span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>none_lgb_cv_stacking_valid_preds <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha) <span class="op">*</span><span class="st"> </span>none_xgb_cv_stacking_valid_preds<span class="op">$</span>yes</a>
+<a class="sourceLine" id="cb48-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb48-9" data-line-number="9"><span class="co"># save(none_combi_valid_preds, file = &quot;./../data/none_combi_valid_preds.RData&quot;)</span></a>
+<a class="sourceLine" id="cb48-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb48-11" data-line-number="11">df_train_stacking =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;id&quot;</span>          =<span class="st"> </span>train_id,</a>
+<a class="sourceLine" id="cb48-12" data-line-number="12">                               <span class="st">&quot;target&quot;</span>      =<span class="st"> </span><span class="kw">factor</span>(train_Y, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)),</a>
+<a class="sourceLine" id="cb48-13" data-line-number="13">                               <span class="st">&quot;lgb_learner&quot;</span> =<span class="st"> </span>none_lgb_train_preds,</a>
+<a class="sourceLine" id="cb48-14" data-line-number="14">                               <span class="st">&quot;xgb_learner&quot;</span> =<span class="st"> </span>none_xgb_train_preds)</a>
+<a class="sourceLine" id="cb48-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb48-16" data-line-number="16">df_test_stacking =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;id&quot;</span>          =<span class="st"> </span>test_id,</a>
+<a class="sourceLine" id="cb48-17" data-line-number="17">                              <span class="st">&quot;target&quot;</span>      =<span class="st"> </span><span class="kw">factor</span>(test_Y, <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>)),</a>
+<a class="sourceLine" id="cb48-18" data-line-number="18">                              <span class="st">&quot;lgb_learner&quot;</span> =<span class="st"> </span>none_lgb_test_preds,</a>
+<a class="sourceLine" id="cb48-19" data-line-number="19">                              <span class="st">&quot;xgb_learner&quot;</span> =<span class="st"> </span>none_xgb_test_preds)</a>
+<a class="sourceLine" id="cb48-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb48-21" data-line-number="21">df_train_combi =<span class="st"> </span>df_train_stacking <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb48-22" data-line-number="22"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">combinaison =</span> best_tune_combinaison<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>lgb_learner <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha) <span class="op">*</span><span class="st"> </span>xgb_learner)</a>
+<a class="sourceLine" id="cb48-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb48-24" data-line-number="24">df_test_combi =<span class="st"> </span>df_test_stacking <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb48-25" data-line-number="25"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">combinaison =</span> best_tune_combinaison<span class="op">$</span>alpha <span class="op">*</span><span class="st"> </span>lgb_learner <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">-</span><span class="st"> </span>best_tune_combinaison<span class="op">$</span>alpha) <span class="op">*</span><span class="st"> </span>xgb_learner)</a>
+<a class="sourceLine" id="cb48-26" data-line-number="26"></a>
+<a class="sourceLine" id="cb48-27" data-line-number="27"><span class="co"># save(df_test_combi, file = &quot;./../data/none_combi_test_preds.RData&quot;)</span></a>
+<a class="sourceLine" id="cb48-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb48-29" data-line-number="29">none_combi_train_ngini =<span class="st"> </span><span class="kw">normalizedGini</span>(train_Y_num, df_train_combi<span class="op">$</span>combinaison)</a>
+<a class="sourceLine" id="cb48-30" data-line-number="30">none_combi_test_ngini  =<span class="st"> </span><span class="kw">normalizedGini</span>(test_Y_num, df_test_combi<span class="op">$</span>combinaison)</a>
+<a class="sourceLine" id="cb48-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb48-32" data-line-number="32"><span class="co"># pour information (comparer avec les autres)</span></a>
+<a class="sourceLine" id="cb48-33" data-line-number="33"><span class="kw">auc</span>(test_Y_num, df_test_combi<span class="op">$</span>combinaison)</a></code></pre></div>
 <pre><code>[1] 0.6440448</code></pre>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">combinaison_model_info =<span class="st"> </span><span class="kw">data.frame</span>(<span class="st">&quot;Method&quot;</span>     =<span class="st"> &quot;combi&quot;</span>,</a>
 <a class="sourceLine" id="cb50-2" data-line-number="2">                                    <span class="st">&quot;Sampling&quot;</span>   =<span class="st"> &quot;none&quot;</span>,</a>
@@ -2472,7 +2476,7 @@ Fitting final model on full training set</code></pre>
 <a class="sourceLine" id="cb50-8" data-line-number="8">combinaison_model_info</a></code></pre></div>
 <pre><code>  Method Sampling     Train Validation      Test
 1  combi     none 0.3519087  0.2793893 0.2880895</code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># save(combinaison_model_info, file = &quot;./../output/combinaison_model_info.RData&quot;)</span></a></code></pre></div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1"><span class="co"># save(combinaison_model_info, file = &quot;./../data/combinaison_model_info.RData&quot;)</span></a></code></pre></div>
 </div>
 </div>
 </div>

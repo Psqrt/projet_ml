@@ -131,14 +131,14 @@ load("./../data/bases_35features.RData")
 
 # Prépration des données pour les modèles
 train_id = train$id
-train_X = train %>% select(-id, -target)
-train_Y = train$target
+train_X  = train %>% select(-id, -target)
+train_Y  = train$target
 train_XY = train %>% select(-id)
 
 test_id = test$id
-test_X = test %>% select(-id, -target)
-test_Y = test$target %>% as.numeric()
-test_Y = test_Y - 1
+test_X  = test %>% select(-id, -target)
+test_Y  = test$target %>% as.numeric()
+test_Y  = test_Y - 1
 ```
 
 # Exportations
@@ -534,8 +534,8 @@ for (max_depth_param in c(5, 10, 15)){
 ```
 
 ```{r}
-# save(up_lgb_tune_df, file = "./../output/up_lgb_tune_df.RData")
-load("./../output/up_lgb_tune_df.RData")
+# save(up_lgb_tune_df, file = "./../data/up_lgb_tune_df.RData")
+load("./../data/up_lgb_tune_df.RData")
 
 up_lgb_best_tune = up_lgb_tune_df %>% 
   arrange(-validation) %>% 
@@ -595,7 +595,7 @@ up_lgb_info = data.frame("Method"     = "lgb",
                          "Test"       = up_lgb_test_ngini,
                          stringsAsFactors = F)
 
-# save(up_lgb_info, file = "./../output/up_lgb_info.RData")
+# save(up_lgb_info, file = "./../data/up_lgb_info.RData")
 ```
 
 On sauvegarde les scores pour plus tard.
@@ -662,8 +662,8 @@ for (max_depth_param in c(5, 10, 15)){
 ```
 
 ```{r}
-# save(none_lgb_tune_df, file = "./../output/none_lgb_tune_df.RData")
-load("./../output/none_lgb_tune_df.RData")
+# save(none_lgb_tune_df, file = "./../data/none_lgb_tune_df.RData")
+load("./../data/none_lgb_tune_df.RData")
 
 none_lgb_best_tune = none_lgb_tune_df %>% 
   arrange(-validation) %>% 
@@ -720,19 +720,19 @@ none_lgb_info = data.frame("Method"     = "lgb",
                            "Test"       = none_lgb_test_ngini,
                            stringsAsFactors = F)
 
-# save(none_lgb_info, file = "./../output/none_lgb_info.RData")
+# save(none_lgb_info, file = "./../data/none_lgb_info.RData")
 ```
 
 ## Stacking
 
-Après avoir comparé les performances de modèle (Rmd n°7), on tente un stacking de deux modèles : LGB et XGB sans resampling.
+Après avoir comparé les performances de modèle (Rmd n°6), on tente un stacking de deux modèles : LGB et XGB sans resampling.
 
 ```{r}
 none_lgb_model = lgb.load(file.path(path_exportation, "none_lgb_model.txt"))
 load(file.path(path_exportation, "none_xgbtree_model.RData"))
 ```
 
-### Stacking sans fuite d'information
+### Stacking par GLM
 
 L'objet lgb.cv ne contenant pas les prédictions CV de la meilleur itération (959ème) mais uniquement la dernière (1000ème), on relance le LGB avec les paramètres tunés et la meilleure itération comme dernière itération à faire. La dernière itération sera donc la meilleure itération.
 
@@ -775,18 +775,10 @@ On récupère les prédictions CV.
 Source pour la fonction d'extraction des prédictions : https://github.com/Microsoft/LightGBM/issues/283
 
 ```{r}
-get_lgbm_cv_preds <- function(cv){
-  rows <- length(cv$boosters[[1]]$booster$.__enclos_env__$private$valid_sets[[1]]$.__enclos_env__$private$used_indices) + 
-    length(cv$boosters[[1]]$booster$.__enclos_env__$private$train_set$.__enclos_env__$private$used_indices)
-  preds <- numeric(rows)
-  for(i in 1:length(cv$boosters)){
-    preds[cv$boosters[[i]]$booster$.__enclos_env__$private$valid_sets[[1]]$.__enclos_env__$private$used_indices] <- 
-      cv$boosters[[i]]$booster$.__enclos_env__$private$inner_predict(2)
-  }
-  return(preds)
-}
-
 none_lgb_cv_stacking_valid_preds = get_lgbm_cv_preds(none_lgb_cv_stacking)
+
+# on enregistre les prédictions pour la courbe roc plus tard
+# save(none_lgb_cv_stacking_valid_preds, file = "./../data/none_lgb_stacking_valid_preds.RData")
 ```
 
 L'extraction des prédictions CV est plus simple pour le XGB, car déjà stockées et facilement accessibles.
@@ -804,7 +796,7 @@ Les deux listes de prédictions sont ordonnées selon l'index de la ligne dans l
 
 ```{r}
 df_stacking_train = data.frame("id"          = train_id,
-                               "target"      = train_Y,
+                               "target"      = factor(train_Y, labels = c("no", "yes")),
                                "lgb_learner" = none_lgb_cv_stacking_valid_preds,
                                "xgb_learner" = none_xgb_cv_stacking_valid_preds$yes)
 
@@ -815,29 +807,29 @@ df_stacking_train_X = df_stacking_train %>%
 On lance le méta-classifieur qui est une régression logistique. Validation croisée 5 blocs comme depuis le départ.
 
 ```{r}
-tune_control <- trainControl(method = "cv",
-                             number = 5,
+tune_control <- trainControl(method          = "cv",
+                             number          = 5,
                              summaryFunction = giniSummary,
-                             classProbs = T,
+                             classProbs      = T,
                              savePredictions = T,
-                             verboseIter = T,
-                             sampling = NULL) # NULL, smote, down, up
+                             verboseIter     = T,
+                             sampling        = NULL) # NULL, smote, down, up
 
 set.seed(1234)
 modelLookup("glm")
 
 glm_stacking_model = train(
   target ~ . - id,
-  data = df_stacking_train,
-  metric = "NormalizedGini",
+  data      = df_stacking_train,
+  metric    = "NormalizedGini",
   trControl = tune_control,
-  method = "glm",
-  family = "binomial"
+  method    = "glm",
+  family    = "binomial"
 )
 ```
 
 ```{r}
-none_stacking_train_preds = predict(glm_stacking_model$finalModel, df_stacking_train_X, type = "response")
+none_stacking_train_preds  = predict(glm_stacking_model$finalModel, df_stacking_train_X, type = "response")
 none_stacking_train_ngini  = normalizedGini(train_Y_num, none_stacking_train_preds)
 none_stacking_valid_ngini  = max(glm_stacking_model$results$NormalizedGini)
 c("Train" = none_stacking_train_ngini,
@@ -850,16 +842,22 @@ glm_stacking_model_info = data.frame("Method"     = "glm_stack",
                                      "Validation" = none_stacking_valid_ngini,
                                      "Test"       = NA,
                                      stringsAsFactors = F)
+
+# on extrait les prédictions pour la courbe roc plus tard
+none_glm_stacking_valid_preds = glm_stacking_model$pred %>% 
+  arrange(rowIndex) %>% 
+  .$yes
 ```
 
 ```{r}
-# save(glm_stacking_model_info, file = "./../output/glm_stacking_model_info.RData")
+# save(glm_stacking_model_info, file = "./../data/glm_stacking_model_info.RData")
+# save(none_glm_stacking_valid_preds, file = "./../data/none_glm_stacking_valid_preds.RData")
 ```
 
 
 Le score de validation est le meilleur par rapport aux autres modèles.
 
-### Stacking avec alpha (combinaison)
+### Stacking avec combinaison linéaire (combinaison)
 
 ```{r}
 df_results_valid_combinaison = data.frame("alpha" = seq(0, 1, 0.01),
@@ -908,6 +906,10 @@ none_xgb_train_preds = predict(none_xgbtree_model, train_X, type = "prob")[, "ye
 none_lgb_test_preds = predict(none_lgb_model, test_X_lgb, type = "prob")
 none_xgb_test_preds = predict(none_xgbtree_model, test_X, type = "prob")[, "yes"]
 
+none_combi_valid_preds = best_tune_combinaison$alpha * none_lgb_cv_stacking_valid_preds + (1 - best_tune_combinaison$alpha) * none_xgb_cv_stacking_valid_preds$yes
+
+# save(none_combi_valid_preds, file = "./../data/none_combi_valid_preds.RData")
+
 df_train_stacking = data.frame("id"          = train_id,
                                "target"      = factor(train_Y, labels = c("no", "yes")),
                                "lgb_learner" = none_lgb_train_preds,
@@ -923,6 +925,8 @@ df_train_combi = df_train_stacking %>%
 
 df_test_combi = df_test_stacking %>% 
   mutate(combinaison = best_tune_combinaison$alpha * lgb_learner + (1 - best_tune_combinaison$alpha) * xgb_learner)
+
+# save(df_test_combi, file = "./../data/none_combi_test_preds.RData")
 
 none_combi_train_ngini = normalizedGini(train_Y_num, df_train_combi$combinaison)
 none_combi_test_ngini  = normalizedGini(test_Y_num, df_test_combi$combinaison)
@@ -941,5 +945,5 @@ combinaison_model_info
 ```
 
 ```{r}
-# save(combinaison_model_info, file = "./../output/combinaison_model_info.RData")
+# save(combinaison_model_info, file = "./../data/combinaison_model_info.RData")
 ```

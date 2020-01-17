@@ -13,6 +13,8 @@
 \usepackage{fourier-orns}
 \usepackage{pgfornament}
 \usepackage{url}
+\usepackage{multirow}
+\usepackage{array}
 \usepackage{amsmath}
 \usepackage{amssymb}
 % ============ HEADER / FOOTER =======================
@@ -45,11 +47,11 @@
 
 \ \\[30pt]
 
-{\LARGE \bf Projet Machine Learning - Groupe 2} \\
+{\LARGE \bf Tarification des contrats d'assurance automobile} \\
 
-{\large \bf Léo Dutertre, 
+{\large \bf Léo Dutertre-Laduree, 
             Axel Gardahaut, 
-            Guy Tsang}
+            Guy Tsang (Groupe 2)}
 
 
 
@@ -63,7 +65,7 @@
 \null
 
 \begin{abstract}
-Cet article présente les enjeux du projet de Machine Learning et les données mises à disposition. Dans un premier temps, la démarche du projet est détaillée dans les grandes lignes afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction puis dans un second temps, le fonctionnement de certains modèles (régression logistique pénalisée et Extreme Gradient Boosting) sera explicité (intuition, mécanisme, avantages et inconvénients). Une partie s'attardant sur les résultats conclura cet article.
+Cet article présente l'intérêt des méthodes liées au Machine Learning pour affiner la tarification des contrats d'assurance automobile. Différentes familles d'algorithmes (non-ensembliste, boosting, bagging, stacking) seront confrontées en utilisant des stratégies de reéchantillonnage (SMOTE, down-sampling, up-sampling) pour l'apprentissage de ces modèles. Dans un premier temps, la démarche du projet est présentée afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction. Puis dans un second temps, le fonctionnement de certains modèles (régression logistique pénalisée et Extreme Gradient Boosting) sera explicité (intuition, mécanisme, avantages et inconvénients) afin de faire le lien entre la démarche effectuée et les performances obtenues. Une partie s'attardant sur les résultats conclura cet article et montrera qu'une hiérarchie entre les différentes familles se dessine pour ce cas de figure.
 \end{abstract}
 
 %\noindent Mots-clés : mot, mot, mot
@@ -77,16 +79,16 @@ Cet article présente les enjeux du projet de Machine Learning et les données m
 \section{Introduction}
 
 
-Une société d'assurance souhaite affiner sa capacité à tarifer ses contrats automobiles avec ses clients. L'objectif est de faire payer à chaque assuré son \og juste prix \fg{}. Ainsi, à partir d'un jeu de données sur ses clients, le but sera de construire un modèle qui prédit, pour chaque assuré, sa probabilité de déposer une réclamation au cours de la prochaine année. Plus cette probabilité est élevée, plus la tarification sera élevée pour l'assuré.
+Une société d'assurance souhaite affiner sa capacité à tarifer ses contrats automobiles avec ses clients. L'objectif est de faire payer à chaque assuré son \og juste prix \fg{}. Ainsi, à partir d'un jeu de données sur ses clients, le but de cette étude sera de construire un modèle qui prédit, pour chaque assuré, sa probabilité de déposer une réclamation au cours de la prochaine année. Plus cette probabilité est élevée, plus la tarification sera élevée pour l'assuré.
 
 
-Ceci constitue un problème classique de modélisation aboutissant à un score. La métrique d'évaluation des prédictions devra être pertinente à cette problématique, sachant que la base de données fournie présente un déséquilibre de la cible.
+Ceci constitue un problème classique de modélisation aboutissant à un score. L'évaluation des performances doit se faire à l'aide d'une métrique adaptée à un contexte où la variable cible est déséquilibrée. En effet, celle-ci présente uniquement 3.67\% de labels positifs. Ceci justifie également l'intérêt de méthodes de reéchantillonnage (SMOTE\footnote{Synthetic Minority Over-Sampling Technique}, down-sampling, up-sampling) lors de l'apprentissage des modèles.
 
-Le but de cet article scientifique est de présenter les données, la démarche du projet, les modèles de prédiction utilisés et enfin, les résultats obtenus.
+Dans un premier temps, les données seront présentées afin de positionner le contexte. Puis, dans un second temps, la démarche du projet sera décrite étape par étape afin de justifier les choix effectués pour améliorer le pouvoir prédictif des régresseurs. Enfin, certains modèles de prédiction utilisés seront détaillés et les résultats obtenus seront explicités.
 
 \section{Données}
 
-Les données sont fournies par la société d'assurance, comportant une base d'apprentissage et de test. L'apprentissage et la validation des modèles doivent se faire sur la première base tandis que la seconde base doit servir uniquement à tester la performance du modèle retenu. Des valeurs manquantes sont présentes dans les deux échantillons.
+Les données sont fournies par la société d'assurance. Elles comportent une base d'apprentissage et de test. L'apprentissage et la validation des modèles doivent se faire sur la première base tandis que base de test ne sert uniquement à tester la performance du modèle retenu. Des valeurs manquantes sont présentes dans les deux échantillons.
 
 Parmi les prédicteurs, on retrouve :
 \begin{itemize}
@@ -100,14 +102,14 @@ La variable cible ("target" dans la base) est binaire et indique si une réclama
 
 
 
-\section{Démarche du projet}
+\section{Démarche} 
 
-\subsection{Définition du cadre d'analyse}
+\subsection{Généralités}
 
 L'objectif de ce problème de classification est de réaliser un scoring des clients. Le score correspond à la probabilité pour chaque client de déposer une réclamation dans l'année à venir. La métrique retenue pour évaluer la performance prédictive des modèles est celle du Coefficient Normalisé de Gini. Le coefficient de Gini permet de comparer la proportion cumulée des labels positifs prédits avec la proportion théorique. 
 
 Le coefficient de Gini est étroitement lié à l'aire sous la courbe ROC (AUC) :
-\[ \text{Gini} = 2 \times \text{AUC} - 1 \]
+\[ \text{Gini} = 2 \times \text{AUC} - 1  \in \lbrack 0 , 1 \rbrack \]
 Ainsi, maximiser le coefficient (normalisé) de Gini revient à maximiser l'AUC.
 
 %De plus, ce coefficient est directement lié à la courbe de Lorentz, souvent utilisée en économie pour évaluer les inégalités salariales. Si on transpose ce concept à une société d'assurance (figure 1), on identifie donc l'intérêt du coefficient de Gini dans notre contexte.
@@ -121,17 +123,9 @@ Ainsi, maximiser le coefficient (normalisé) de Gini revient à maximiser l'AUC.
 
 %Une lecture de la courbe de Lorentz (figure 1) serait \og les 15\% des assurés les plus risqués paient 90\% de l'ensemble des factures d'assurance \fg{}. Ceci correspond bien au principe de mutualisation des risques qui correspond à la base des systèmes d'assurance. Ainsi, plus le coefficient de Gini est élevé, plus la capacité à individualiser les tarifs sera bonne. La normalisation de ce coefficient permet de s'assurer que la valeur prise par la métrique va de 0 (aucune capacité prédictive) à 1 (capacité prédictive parfaite).
 
-\subsection{Statistiques Descriptives}
-
-Les statistiques descriptives sont faites pour vérifier la nature des données traitées, la présence de valeurs manquantes, la présence de valeurs aberrantes et les distributions. De plus, on repère les types de variables (continues, catégorielles, ordinales, etc.) pour spécifier le traitement au cas par cas.
-
-L'inférence faite à partir de modalités rares (moins de 5\% en général) n'est pas robuste et peut conduire à du surapprentissage. Les statistiques descriptives sur les variables catégorielles permettent de détecter ces modalités.
-
-Enfin, l'étude des variables continues permet de prévoir l'utilité de transformations (normalisation ou standardisation).
-
 \subsection{Benchmark d'ouverture}
 
-Il est intéressant de placer un benchmark afin d'avoir une valeur de la métrique objectif (Coefficient Normalisé de Gini) à dépasser. Le score obtenu par un Light GBM\footnote{Gradient Boosting Machine} est généralement élevé et rapidement obtenu. Celui-ci est de : 0.2719 par validation croisée sur 5 blocs (5fCV). Bien que le score obtenu est sujet à fluctuer, il est intéressant de refaire un Light GBM après chaque étape du traitement afin de voir si les modifications apportées augmentent ou diminuent le score.
+Il est intéressant de placer un benchmark afin d'avoir une valeur de la métrique objectif (Coefficient Normalisé de Gini) à dépasser. Le score obtenu par un Light GBM\footnote{Gradient Boosting Machine} est généralement élevé et rapidement obtenu. Celui-ci est de : 0.2719 par validation croisée sur 5 blocs (5fCV). La réalisation d'un score obtenu par la méthode du Light GBM est effectuée à chaque étape du traitement : sélection de variables, regroupement par classe, normalisation des données, paramétrisation des modèles. La variation de ce score lors des ces différentes étapes permettra d'évaluer leur pertinence. 
 
 
 \subsection{Pré-traitement des données}
@@ -143,8 +137,7 @@ Le pré-traitement des données consiste essentiellement à la gestion des valeu
   \caption{Valeurs manquantes par variable}
 \end{figure}
 
-
-Deux colonnes présentent trop de valeurs manquantes (plus de 40\%) pour une imputation sophistiquée, ainsi, elles sont remplacées par une valeur spéciale (-999 par exemple) pour conserver l'information issue de l'absence de valeur. En effet, en croisant ces variables avec la cible, il est noté que le taux croisé d'effectif est significativement différent à ceux des valeurs normales.
+Deux variables explicatives  qualitatives présentent trop de valeurs manquantes (plus de 40\%) ce qui pourrait conduire à supprimer ces variables de l'étude. Cependant, la comparaison de ces variables avec la cible montre que la perte de ces valeurs manquantes serait une perte d'information. Le nombre élevé de valeurs manquantes ne permet pas une imputation sophistiquée pour ces variables. Les valeurs manquantes de ces deux variables qualitatives sont remplacées par une valeur spéciale (-999 par exemple), permettant ainsi de conserver l'information issue de l'absence de valeur.
 
 Pour le reste des variables, une imputation par forêt aléatoire est faite. Le procédé d'imputation est le suivant :
 \begin{itemize}
@@ -154,28 +147,26 @@ Pour le reste des variables, une imputation par forêt aléatoire est faite. Le 
     \item Remplacer les valeurs manquantes et s'assurer qu'il n'y a plus de valeurs manquantes pour la colonne traitée.
 \end{itemize}
 
-Suite aux imputations faites, le Light GBM de référence renvoie un Gini de 0.2721, toujours par validation croisée sur 5 blocs. On note une augmentation par rapport au benchmark bien que la différence soit trop faible pour en tirer des conclusions.
+Suite aux imputations faites, le Light GBM de référence renvoie un score de Gini de 0.2721, toujours par validation croisée sur 5 blocs. On note une augmentation par rapport au benchmark bien que la différence soit trop faible pour en tirer des conclusions.
 
 \subsection{Sélection des variables}
 
-Le Light GBM effectué après les imputations permet également d'identifier l'importance des variables dans le pouvoir prédictif du modèle. L'importance d'une variable peut être mesurée de différentes manières. Celle adoptée ici est le \og Gain \fg{}, i.e. la contribution de la variable au modèle. Ainsi, plus une variable contribue au pouvoir prédictif d'un modèle, plus son \og Gain \fg{} associé sera élevé. Arbitrairement, on garde la première moitié des variables les plus contributives au modèle.
+Le Light GBM effectué après les imputations permet également d'identifier l'importance des variables dans le pouvoir prédictif du modèle. L'importance d'une variable peut être mesurée de différentes manières. Celle adoptée ici est le \og Gain \fg \footnote{Abu-Rmileh, A. \og The multiple faces of Feature importance in XGBoost \fg, 2019}, i.e. la contribution de la variable au modèle. Ainsi, plus une variable contribue au pouvoir prédictif d'un modèle, plus son \og Gain \fg{} associé sera élevé. Arbitrairement, on garde la première moitié des variables les plus contributives au modèle.
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/var_imp_lgb}
   \caption{Importance des variables}
 \end{figure}
 
-
-En plus des importances issues du Light GBM, une forêt aléatoire (non paramétrée de façon optimale) est construite pour réaliser une seconde liste d'importance en termes de \og permutation \fg{} (notion équivalente au \og Gain \fg{}). De même, cette seconde liste est issue de la première moitié des variables les plus importantes au modèle. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Au total, ce sont 35 régresseurs sur les 57 initiaux qui sont retenus.
-
+En plus des importances issues du Light GBM, une forêt aléatoire (sans optimisation des hyper-paramètres) est construite pour réaliser une seconde liste d'importance en termes de \og Permutation \fg{} \footnote{R-bloggers, \emph{Rstats on Pi : Predict/Infer}, \og Be aware of bias in RF variable importance metrics \fg, 2018}. L'idée de base de cette notion est de considérer une variable importante si elle a un effet positif sur la précision de la prédiction. Ainsi, une seconde liste de variables est identifiée en sélectionnant la moitié des variables les plus importantes au modèle au sens de la notion de \og Permutation \fg. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Au total, ce sont 35 régresseurs sur les 57 initiaux qui sont retenus.
 
 \subsection{Traitement des données}
 
-Lors de la phase des statistiques descriptives, plusieurs variables présentaient des modalités rares (effectif inférieur à 5\%). Celles-ci doivent être fusionnées pour pouvoir inférer des résultats robustes (par AFDM\footnote{Analyse Factorielle de Données Mixtes} ou tableaux de contingence).
+Plusieurs variables présentent des modalités rares (effectif inférieur à 5\%). Il est difficile d'obtenir des résultats d'estimation robustes pour ces modalités. Il est donc nécessaire de fusionner certaines modalités. Cependant, les modalités de ces variables ont été anonymisées, il n'est donc pas possible de les regrouper par l'intermédiaire d'une certaine expertise. Dans le but de fusionner ces modalités rares, deux stratégies ont été testées :  l'Analyse Factorielle de Données Mixtes (AFDM) et les tableaux de contingence.
 
 La stratégie de fusion peut passer par une projection des modalités d'une variable sur le premier plan factoriel d'une AFDM. Chaque modalité rare sera alors associée à la modalité fréquente la plus proche d'elle (et si possible projetée dans la même direction), ou un ensemble de modalités rares peuvent se regrouper pour former un groupe supplémentaire (clusters).
 
-La stratégie de fusion peut également passer par des tableaux de contingence (figure 3) qui croisent les variables problématiques avec la cible. Les modalités rares sont fusionnées soit entre elles si elles se comportent de façon similaire, soit avec une modalité fréquente si le comportement s'y rapproche.
+La stratégie de fusion peut également passer par des tableaux de contingence (\emph{Figure 3}) qui croisent les variables avec la cible. Les modalités rares sont fusionnées soit entre elles si elles se comportent de façon similaire, soit avec une modalité fréquente si le comportement s'en rapproche.
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/ex_tabc}
@@ -186,20 +177,20 @@ La stratégie de fusion peut également passer par des tableaux de contingence (
 
 Une variable présente un grand nombre de modalités (104). Plutôt que de fusionner ces modalités, on peut s'en servir comme régresseur unique d'une régression logistique avec la variable cible comme variable à expliquer. Les modalités seront alors remplacées par les coefficients estimés et la variable deviendra alors numérique et continue.
 
-Le Light GBM fournit un score de 0.2729 (5fCV) pour la stratégie par AFDM et de 0.2757 (5fCV) pour la stratégie par tableaux croisés. Le score ayant fortement augmenté pour la seconde stratégie, elle sera retenue pour la suite.
+Le Light GBM fournit un score de 0.2729 (5fCV) pour la stratégie par AFDM et de 0.2757 (5fCV) pour la stratégie par tableaux croisés. Ces deux scores sont supérieurs à celui du benchmark. Cependant, nous retiendrons la deuxième stratégie car elle permet l'obtention d'un meilleur score par rapport à la première.
 
 \subsubsection{Normalisation des données}
 
-Certaines variables continues ont une distribution qui se rapprochent d'une distribution normale. Il serait intéressant de tenter de les normaliser à travers différentes méthodes (box-cox, logarithme, racine carré).
+Certaines variables continues ont une distribution qui ont un fort kurtosis (i.e. avec un haut sommet) et qui n'est pas centrée. Il serait donc intéressant de tenter de les transformer à travers différentes méthodes (box-cox, logarithme, racine carré).
 
 \begin{figure}[H] \centering
   \includegraphics[width = 0.99\columnwidth]{img/ex_normalisation}
   \caption{Exemple de transformation}
 \end{figure}
 
-Il est notable que la transformation de box-cox est la meilleure pour normaliser cette distribution (figure 4). Cette étude est menée pour les variables continues.
+Il est notable que la transformation de box-cox est la meilleure pour normaliser cette distribution (\emph{Figure 4}). Cette étude est menée pour les variables continues.
 
-En réutilisant un Light GBM pour mesurer les conséquences des normalisations faites, il est noté que la métrique diminue, suite à chacune des deux stratégies de fusion de modalités. On passe respectivement à un Gini de 0.2729 (AFDM) et 0.2752 (tableaux croisés). Ces diminutions sont minimes mais la normalisation des variables n'est pas obligatoire. Par conséquent, cette étape est laissée de côté pour la suite. 
+En réutilisant un Light GBM pour mesurer les conséquences des transformations réalisées, il est noté que la métrique diminue, suite à chacune des deux stratégies de fusion de modalités. On passe respectivement à un score de Gini de 0.2729 pour l'AFDM et de 0.2752 pour les tableaux croisés. Ces diminutions sont minimes mais la transformation des variables n'est pas obligatoire. Par conséquent, cette étape est laissée de côté pour la suite. 
 
 À la fin de cette étape, le traitement se résume à la fusion de modalités en utilisant des tableaux de contingence.
 
@@ -217,13 +208,11 @@ Les variables qui dépassent les seuils arbitrairement fixés ou qui ne passent 
 
 \subsection{Paramétrisation des modèles}
 
-Une dizaine d'algorithmes sont testés pour tenter d'avoir le meilleur pouvoir prédictif. On y trouve des modèles de base (Analyse Discriminante Linéaire (LDA), K plus proches voisins (KNN), régression logistique (pénalisée ou non), Machine à Vecteurs de Support (SVM)), puis des modèles de bagging (Forêt Aléatoire) et de boosting (ADAboost, GBM, XGBM, LGBM).
+Une dizaine d'algorithmes sont testés pour tenter d'avoir le meilleur pouvoir prédictif tels que : l'Analyse Discriminante Linéaire (LDA), les K plus proches voisins (KNN), la régression logistique (pénalisée ou non), la Machine à Vecteurs de Support (SVM)), puis des modèles de bagging (Forêt Aléatoire) et de boosting (ADAboost, GBM, XGBM, LGBM).
 
-L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs paramètres de pré-apprentissage\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}.
+L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs paramètres de hyper-paramètres\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}. La méthode choisie pour effectuer cette hyper-paramétrisation est celle du \og grid search\fg. L'idée étant d'établir au préalable une liste arbitraire non exhaustive de valeurs des hyper-paramètres puis de retenir la combinaison qui maximise le score de Gini pour chaque modèle. 
 
-Pour chaque modèle, la question du ré-échantillonnage est traitée. Pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du cas sans resampling.
-
-
+Le fait que les données soient déséquilibrées pose la question du ré-échantillonnage. Ainsi, pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du jeu de données d'apprentissage initial. L'hyper-paramétrisation via la méthode du \og grid search \fg est donc effectuée pour ces quatre cas.
 
 
 
@@ -335,17 +324,47 @@ Le modèle sans resampling se classe premier en validation sans compter les mod�
 
 \section{Résultats}
 
-Plusieurs modèles ont été paramétrés par grid search pour chaque stratégie de resampling puis évalués en validation croisée 5 blocs. La figure 5 répertorie les résultats de performance obtenus.
+Plusieurs modèles ont été paramétrés par \og grid search \fg{} pour chaque stratégie de resampling puis évalués en validation croisée 5 blocs. La \emph{Figure 5} répertorie les résultats de performance obtenus.
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/results}
   \caption{Performance de validation des modèles}
 \end{figure}
 
-Certains modèles construits tels que les arbres de décision ne figurent pas dans la figure parce que leur performance est trop faible. Les modèles de stacking (glm\_stack et combi) ont été construits en choisissant les deux modèles les plus performants. Le méta-classifieur du stacking est une régression logistique et le modèle "combi" correspond à un classifieur qui combine linéairement les scores issus de la validation croisée des modèles.
+Certains modèles construits tels que les arbres de décision ne figurent pas dans la figure parce que leur performance est trop faible. Les modèles de stacking (glm\_stack et combi) ont été construits en choisissant les deux modèles les plus performants. Le méta-classifieur du stacking est une régression logistique et le modèle "combi" correspond à un classifieur qui combine linéairement les scores issus de la validation croisée des modèles. Pour les deux modèles de stacking, seules les prédictions issues du Light GBM et du XGboost (sans reéchantillonnage) sont utilisées.
 
-Au final, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.28809.
+Bien que les performances des modèles ayant appris sur des données sur-échantillonnées sont équivalentes à celles des modèles sans reéchantillonnage, deux raisons vont en faveur de la seconde solution :
+\begin{itemize}
+    \item le sur-échantillonnage engendre une augmentation des temps de calcul (duplication des individus, apprentissage sur quasiment deux fois plus de données)
+    \item le meilleur modèle en validation croisée est obtenu sans reéchantillonnage.
+\end{itemize}
+Par conséquent, seule les modèles sans reéchantillonnage seront retenus afin de tracer leur courbe ROC (Figure 6).
 
+\begin{figure}[H] \centering
+  \includegraphics[width = \columnwidth]{img/roc_curves}
+  \caption{Courbes ROC des modèles sans reéchantillonnage}
+\end{figure}
+
+Finalement, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.2881\footnote{À titre informatif, l'AUROC (Area Under the Receiver Operating Characteristic curve) du modèle sur l'échantillon test est de 0.6440.}.
+
+Pour passer de la prédiction à la classification\footnote{{https://www.fharrell.com/post/classification/}}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label "0" pour les individus concernés et "1" sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test. On obtient les résultats suivants.
+
+\begin{center}\begin{tabular}{l|rr}
+  & F1 & Recall \\ \hline
+  Validation & 0.1176 & 0.2482 \\
+  Test & 0.1158 & 0.2488
+\end{tabular}\end{center}
+
+
+La matrice de confusion associée à l'échantillon test est :
+
+\begin{center} \begin{tabular}{|cc|c|c|} \hline
+  & & \multicolumn{2}{c|}{Observé} \\
+  & & 0 & 1 \\ \hline
+  \multirow{2}{*}{\rotatebox{90}{Prédiction \ }} & 0 & 152 542 & 4 827 \\[15pt] \cline{2-4}
+  & 1 & 19 596 & 1 599 \\[15pt] \hline \end{tabular} \end{center}
+
+blabla
 
 % références
 \nocite{*}
