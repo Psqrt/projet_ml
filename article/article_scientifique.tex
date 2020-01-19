@@ -249,7 +249,7 @@ En pratique, on cherche le meilleur compromis entre le biais et la variance.\\
 Dans le cadre classique de la discrimination binaire par la régression logistique, on suppose $(x_i,y_i)$ \emph{iid} d'une même distribution inconnue.\\
 On modélise $\mathbb{P}(Y=1|X=x_i)=\frac{1}{1+e^{-\left(\beta^{\prime} x\right)}}=p_i$.
 
-\noindent Une approche consiste à résoudre le problème suivant : 
+\noindent Une approche\footnote{\cite{art3} Rakotomalala.R. Université de Lyon 2, http://eric.univ-lyon2.fr/\tild ricco/cours/slides/regularized\_regression.pdf} consiste à résoudre le problème suivant : 
 \[ \left| \begin{array}{l}\displaystyle\min_{\beta}-\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] + R(\beta) \\
 \text{sous contraintes : } R (\beta) \leq \tau \end{array} \right.\]
 qui s'écrit également : 
@@ -257,7 +257,7 @@ qui s'écrit également :
 où l'on aura pris soin de centrer et réduire les variables afin de leur accorder la même importance.
 \\
 
-Il y a 3 types de pénalisation utilisés régulièrement: 
+\noindent Il y a 3 types de pénalisation utilisés régulièrement: 
 \begin{enumerate}
     \item en norme $L^{2}$ on parle alors de régression ridge  : \ $R(\beta)=\sum_{j=1}^{p}\beta_{j}^{2}$
     \item en norme $L^{1}$ on parle alors de régression LASSO  : $R(\beta)=\sum_{j=1}^{p}\left|\beta_{j}\right|$
@@ -281,11 +281,11 @@ Pour la régression LASSO, il n'y a pas de formulation explicite de $\beta$ (car
 
 \subsection{Gradient Boosting Machine}
 \subsubsection{XGboost}
-L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{boost}ing, approche introduite par Friedman.\\
+L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{boost}ing, approche introduite par Friedman\footnotemark[11].\\
 Comme la plupart des méthodes basées sur des arbres de décisions, il peut être utilisé en classication comme en régression.\\
 L'approche combine 2 mécanismes : le boosting et la descente de gradient.\\
 Le boosting est une méthode ensembliste qui consiste à agréger des classifieurs élaborés séquentiellement sur un échantillon d’apprentissage dont les poids des individus sont corrigés au fur et à mesure, les individus mal classés se voyant affecter un poids plus important. Les classifieurs sont pondérés selon leurs performances.\\
-D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation.\\
+D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation\footnote{\cite{art1} Friedman, J. Greedy function approximation : A gradientboosting machine, 2001.}.\\
 Enfin, outre les deux mécanismes précédents, l’approche possède aussi des paramètres liés à l’utilisation d’arbres comme classifieurs.\\
 Ainsi, l’algorithme XGboost dépend d’un grand nombre d' hyperparamètres: 
 \begin{enumerate}
@@ -300,7 +300,7 @@ d'apprentissage $\eta$
 On optimise les hyperparamètres par grid search.\\
 L'algorithme propose également une gestion efficace de matrices creuses et des valeurs manquantes : \og sparsity-aware split finding\footnote{\cite{chen2016xgboost} Tianqi Chen and Carlos Guestrin. 2016. XGBoost: A Scalable Tree Boosting System} \fg{}. Ces valeurs manquantes sont dirigées vers le noeud qui optimise le gain.
 
-La prévision se base sur K arbres construits de façon itérative. À chaque étape on ajoute celui qui minimise une fonction objectif régularisée $\mathcal{L}$ qui est la somme d'une fonction de perte et d'une fonction de régularisation.\\
+La prévision se base sur K arbres construits de façon itérative. À chaque étape on ajoute celui qui minimise une fonction objectif régularisée $\mathcal{L}$ qui est la somme d'une fonction de perte et d'une fonction de régularisation\footnotemark[11].\\
 \[\ \mathcal{L}=\sum_{i} l\left(\hat{y}_{i}, y_{i}\right)+\sum_{k} \Omega\left(f_{k}\right) \]\\
 $\text {avec } \Omega(f)=\gamma T+\frac{1}{2} \lambda\|w\|^{2}$, $\gamma$ étant le coefficient de pénalisation par rapport à la profondeur $T$, $\lambda$ le coefficient par rapport qui pondère l'impact du poids $w$.
 \\
@@ -309,7 +309,7 @@ La fonction de perte est généralement la déviance binomiale en classification
 On utilise la descente de gradient pour optimiser cet objectif à chaque étape.\\
 L'optimisation est effectuée sans les valeurs manquantes pour le feature considéré, les individus ayant le feature manquant pour le noeud optimal sont affectés à la direction majoritaire.\\
 L'algorithme réalise un one-hot encoding\footnote{consistant à construire autant de variables binaires que de valeurs possibles prises par la variable catégorielle (binarisation)} des variables catégorielles pour pouvoir calculer le gain.\\
-Pour accélérer l'optimisation, une approximation d'ordre 2 de la fonction objectif est faite.\\
+Pour accélérer l'optimisation, une approximation d'ordre 2 de la fonction objectif est faite\footnotemark[11].\\
 \[\ \mathcal{L}^{(t)} \simeq \sum_{i=1}^{n}\left[l\left(y_{i}, \hat{y}^{(t-1)}\right)+g_{i} f_{t}\left(\mathbf{x}_{i}\right)+\frac{1}{2} h_{i} f_{t}^{2}\left(\mathbf{x}_{i}\right)\right]+\Omega\left(f_{t}\right) \]\ 
 avec  
 \[ g_{i}=\partial_{\hat{y}(t-1)} l\left(y_{i}, \hat{y}^{(t-1)}\right) \ \text{ et } \ h_{i}=\partial_{\hat{y}(t-1)}^{2} l\left(y_{i}, \hat{y}^{(t-1)}\right)\]
@@ -334,20 +334,20 @@ adaptables à différents problèmes, permettant de prendre efficacement en comp
 L'algorithme LightGBM est une autre implématation du Gradient Boosting Tree, très efficace en mémoire et en temps de calcul.\\
 Il s'agit également d'un algorithme \og Leaf-wise \fg{}.\\
 Les deux principales différences avec XGboost sont des approches heuristiques pour diminuer drastiquement le temps de calcul tout en restant très performant.\\
-Une première approche pour reduire le nombre d'observations à prendre en compte pour calculer le split est appelée GOSS : \og Gradient-based One-Side Sampling \fg{}.\\
+Une première approche pour reduire le nombre d'observations à prendre en compte pour calculer le split est appelée GOSS : \og Gradient-based One-Side Sampling \fg{}\footnote{\cite{micr} Guolin Ke et al., Microsoft Research Peking University. Lightgbm : A highly efficient gradient boosting decision tree.}.\\
 L'idée étant que les observations avec un faible gradient sont peu informatives, les a\% premières observations triées par gradient decroissants sont gardées (ensemble $A$) puis on prend aléatoirement b\% du reste (ensemble $B$).\\
 Afin de ne pas trop modifier la distribution des observations, on multiplie les gradients des observations échantillonnées par un facteur $\frac{1-a}{b}$ dans la mesure de gain de variance $\tilde{V}_{j}$.\\
 \[
 \tilde{V}_{j}(d)=\frac{1}{n}\left(\frac{\left(\sum_{x_{i} \in A_{l}} g_{i}+\frac{1-a}{b} \sum_{x_{i} \in B_{l}} g_{i}\right)^{2}}{n_{l}^{j}(d)} \right. \]
 \[ \null \qquad \qquad + \left. \frac{\left(\sum_{x_{i} \in A_{r}} g_{i}+\frac{1-a}{b} \sum_{x_{i} \in B_{r}} g_{i}\right)^{2}}{n_{r}^{j}(d)}\right)
 \]
-avec $A_l$ et $B_l$ correspondant au subset des parties $A$ et $B$ au point de coupure $d$ pour le feature $j$ dans la feuille gauche, de même pour $A_r$ et $B_r$ pour le côté droit; $n_l^j$ et $n_r^j$ sont les nombres d'observations respectifs.
+avec $A_l$ et $B_l$ correspondant au subset des parties $A$ et $B$ au point de coupure $d$ pour le feature $j$ dans la feuille gauche, de même pour $A_r$ et $B_r$ pour le côté droit; $n_l^j$ et $n_r^j$ sont les nombres d'observations respectifs\footnotemark[14].
 
 Une borne supérieure de l'erreur commise est connue théoriquement, on peut déduire de celle-ci que si le nombre d'observations est grand et que le seuil selectionné n'induit pas un déséquilibre des observations important alors l'approximation est excellente.\\
 L'erreur de généralisation via GOSS (comparaison avec le gain de variance sur toutes les données (\og vraie variance de la distribution \fg{})) est très bonne si l'erreur du GOSS est déja bonne sinon un sampling classique des observations peut permettre de mieux apprendre.\\
 On comprend pourquoi on n'a pas intérêt à échantillonner le training set pour cet algorithme, ce qui transparait bien dans nos résultats.
 
-La deuxième approche est appélée Exclusive Feature Bundling (EFB).\\
+La deuxième approche est appélée Exclusive Feature Bundling (EFB)\footnotemark[14].\\
 Le but est d'aggréger intelligement les variables qui ne sont pas ou peu mutuellement nulles simultanement.\\
 Il s'agit d'un problème NP-difficile donc une heurtistique gloutone est utilisée.\\
 On aggrège les variables de manière itérative dans des \og bundles \fg{} jusqu'à obtenir un seuil de conflit prédéfini.\\
@@ -413,20 +413,27 @@ On obtient les résultats suivants :
   Échantillon Test & 0.1158 & 0.2488 \\ \hline
 \end{tabular}\end{center}
 
-Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs sur l'ensemble des vrais observés} et de la Précision\footnote{taux de vrais positifs sur l'ensemble des vrais prédits} des prédictions et est une métrique adaptée en situation de déséquilibre de la variable cible. Dans le contexte d'une assurance, le Rappel est plus important que la Précision car une faible valeur du Rappel indiquerait que la tarification appliquée est trop faible par rapport au risque du client. Ici, un client sur quatre labélisé \og 1 \fg{} en réalité est détecté par l'algorithme.
+Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs sur l'ensemble des vrais observés} et de la Précision\footnote{taux de vrais positifs sur l'ensemble des vrais prédits} des prédictions et est une métrique adaptée en situation de déséquilibre de la variable cible. Dans le contexte d'une assurance, le Rappel est plus important que la Précision car une faible valeur du Rappel indiquerait que la tarification appliquée est trop faible par rapport au risque du client. Ici, un client sur quatre labélisé \og 1 \fg{} en réalité est détecté par l'algorithme (\emph{Tables 2 et 3}).
+
+%\begin{multicols}{2}
 
 
-La matrice de confusion associée à l'échantillon test est :
 \captionof{table}{Matrice de confusion (échantillon test)}
 {\footnotesize{\begin{center} \begin{tabular}{|cc|c|c|} \hline
   & & \multicolumn{2}{c|}{Observé} \\
   & & 0 & 1 \\ \hline
   \multirow{2}{*}{\rotatebox{90}{Prédiction \ }} & 0 & 152 542 & 4 827 \\[15pt] \cline{2-4}
   & 1 & 19 596 & 1 599 \\[15pt] \hline \end{tabular} \end{center}}}
+  
+  Le passage d'un score à un label reste au choix d'arbitrage du décideur (assureur), basé sur les enseignements tirés de cette matrice de confusion mais également d'autres éléments non étudiés ici : interprétation et explicativité des variables (méthode LIME\footnote{\cite{ribeiro2016should} Ribeiro, M. T., Singh, S., and Guestrin, C. Why shouldi trust you ? : Explaining the predictions of any classifier} ou méthode Shapley\footnote{\cite{vstrumbelj2014explaining} Štrumbelj, E., and Kononenko, I. Explaining predictionmodels and individual predictions with feature contributions}).
 
-Le passage d'un score à un label reste au choix d'arbitrage du décideur (assureur), basé sur les enseignements tirés de cette matrice de confusion mais également d'autres éléments non étudiés ici : interprétation et explicativité des variables (méthode LIME\footnote{\cite{ribeiro2016should} Ribeiro, M. T., Singh, S., and Guestrin, C. Why shouldi trust you ? : Explaining the predictions of any classifier} ou méthode Shapley\footnote{\cite{vstrumbelj2014explaining} Štrumbelj, E., and Kononenko, I. Explaining predictionmodels and individual predictions with feature contributions}).
+
+%\vfill\null
+%\end{multicols}
+
+
 % références
-
+\small
 \nocite{*}
 \bibliographystyle{acm}
 \bibliography{biblio}

@@ -11,10 +11,6 @@
 \newblock In {\em Proceedings of the 22nd acm sigkdd international conference
   on knowledge discovery and data mining\/} (2016), ACM, pp.~785--794.
 
-\bibitem{art4}
-{\sc {Chen T., Guestrin C.}}
-\newblock Xgboost: A scalable tree boosting system, university of washington.
-
 \bibitem{art1}
 {\sc Friedman, J.}
 \newblock Greedy function approximation : A gradient boosting machine, 2001.

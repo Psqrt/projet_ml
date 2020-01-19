@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  19 JAN 2020 16:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  19 JAN 2020 22:38
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1540,38 +1540,50 @@ File: img/results.pdf Graphic file (type pdf)
 <use img/results.pdf>
 Package pdftex.def Info: img/results.pdf  used on input line 385.
 (pdftex.def)             Requested size: 251.07481pt x 175.79668pt.
-<img/roc_curves.pdf, id=66, 589.20125pt x 411.5375pt>
+
+
+Package multicol Warning: I moved some lines to the next page.
+(multicol)                Footnotes on page 6 might be wrong on input line 394.
+
+File: img/logo_r1n.png Graphic file (type png)
+<use img/logo_r1n.png>
+Package pdftex.def Info: img/logo_r1n.png  used on input line 394.
+(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
+[6 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>]
+<img/roc_curves.pdf, id=74, 589.20125pt x 411.5375pt>
 File: img/roc_curves.pdf Graphic file (type pdf)
 <use img/roc_curves.pdf>
 Package pdftex.def Info: img/roc_curves.pdf  used on input line 399.
 (pdftex.def)             Requested size: 251.07481pt x 175.36894pt.
-File: img/logo_r1n.png Graphic file (type png)
-<use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 402.
-(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
- [6 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
 (Font)              scaled to size 8.0pt on input line 405.
 
-Overfull \vbox (21.49002pt too high) detected at line 424
+Overfull \vbox (21.49002pt too high) detected at line 425
  []
 
-(/media/psqrt/SquareX/projet_ml/article/article_scientifique.bbl)
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 436.
+(/media/psqrt/SquareX/projet_ml/article/article_scientifique.bbl
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
+(Font)              scaled to size 9.0pt on input line 4.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 9.0pt on input line 11.
+)
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 433.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 440.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [7 </media/psqrt/SquareX/projet_ml/article/img/roc_curves.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
 Here is how much of TeX's memory you used:
- 30039 strings out of 494317
- 600397 string characters out of 6163361
- 784970 words of memory out of 5000000
- 32923 multiletter control sequences out of 15000+600000
- 612885 words of font info for 74 fonts, out of 8000000 for 9000
+ 30044 strings out of 494317
+ 600559 string characters out of 6163361
+ 785965 words of memory out of 5000000
+ 32925 multiletter control sequences out of 15000+600000
+ 627791 words of font info for 80 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
  62i,18n,92p,10468b,803s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (7 pages, 535865 bytes).
+Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (7 pages, 536229 bytes).
 PDF statistics:
  140 PDF objects out of 1000 (max. 8388607)
  100 compressed objects within 1 object stream
