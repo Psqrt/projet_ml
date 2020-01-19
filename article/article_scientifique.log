@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  16 JAN 2020 14:08
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  18 JAN 2020 17:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -939,33 +939,376 @@ Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-)) (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux)
+)) (/usr/share/texlive/texmf-dist/tex/latex/mdframed/mdframed.sty
+Package: mdframed 2013/07/01 1.9b: mdframed
+ (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+))) (/usr/share/texlive/texmf-dist/tex/latex/l3packages/xparse/xparse.sty (/usr/share/texlive/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2018/02/21 L3 programming layer (loader) 
+ (/usr/share/texlive/texmf-dist/tex/latex/l3kernel/expl3-code.tex
+Package: expl3 2018/02/21 L3 programming layer (code)
+\c_max_int=\count144
+\l_tmpa_int=\count145
+\l_tmpb_int=\count146
+\g_tmpa_int=\count147
+\g_tmpb_int=\count148
+\g__intarray_font_int=\count149
+\g__prg_map_int=\count150
+\c_log_iow=\count151
+\l_iow_line_count_int=\count152
+\l__iow_line_target_int=\count153
+\l__iow_one_indent_int=\count154
+\l__iow_indent_int=\count155
+\c_zero_dim=\dimen183
+\c_max_dim=\dimen184
+\l_tmpa_dim=\dimen185
+\l_tmpb_dim=\dimen186
+\g_tmpa_dim=\dimen187
+\g_tmpb_dim=\dimen188
+\c_zero_skip=\skip66
+\c_max_skip=\skip67
+\l_tmpa_skip=\skip68
+\l_tmpb_skip=\skip69
+\g_tmpa_skip=\skip70
+\g_tmpb_skip=\skip71
+\c_zero_muskip=\muskip12
+\c_max_muskip=\muskip13
+\l_tmpa_muskip=\muskip14
+\l_tmpb_muskip=\muskip15
+\g_tmpa_muskip=\muskip16
+\g_tmpb_muskip=\muskip17
+\l_keys_choice_int=\count156
+\c__fp_leading_shift_int=\count157
+\c__fp_middle_shift_int=\count158
+\c__fp_trailing_shift_int=\count159
+\c__fp_big_leading_shift_int=\count160
+\c__fp_big_middle_shift_int=\count161
+\c__fp_big_trailing_shift_int=\count162
+\c__fp_Bigg_leading_shift_int=\count163
+\c__fp_Bigg_middle_shift_int=\count164
+\c__fp_Bigg_trailing_shift_int=\count165
+\c__fp_rand_size_int=\count166
+\c__fp_rand_four_int=\count167
+\c__fp_rand_eight_int=\count168
+\l__sort_length_int=\count169
+\l__sort_min_int=\count170
+\l__sort_top_int=\count171
+\l__sort_max_int=\count172
+\l__sort_true_max_int=\count173
+\l__sort_block_int=\count174
+\l__sort_begin_int=\count175
+\l__sort_end_int=\count176
+\l__sort_A_int=\count177
+\l__sort_B_int=\count178
+\l__sort_C_int=\count179
+\l__tl_build_start_index_int=\count180
+\l__tl_build_index_int=\count181
+\l__tl_analysis_normal_int=\count182
+\l__tl_analysis_index_int=\count183
+\l__tl_analysis_nesting_int=\count184
+\l__tl_analysis_type_int=\count185
+\l__regex_internal_a_int=\count186
+\l__regex_internal_b_int=\count187
+\l__regex_internal_c_int=\count188
+\l__regex_balance_int=\count189
+\l__regex_group_level_int=\count190
+\l__regex_mode_int=\count191
+\c__regex_cs_in_class_mode_int=\count192
+\c__regex_cs_mode_int=\count193
+\l__regex_catcodes_int=\count194
+\l__regex_default_catcodes_int=\count195
+\c__regex_catcode_D_int=\count196
+\c__regex_catcode_S_int=\count197
+\c__regex_catcode_L_int=\count198
+\c__regex_catcode_O_int=\count199
+\c__regex_catcode_A_int=\count266
+\c__regex_all_catcodes_int=\count267
+\l__regex_show_lines_int=\count268
+\l__regex_min_state_int=\count269
+\l__regex_max_state_int=\count270
+\l__regex_left_state_int=\count271
+\l__regex_right_state_int=\count272
+\l__regex_capturing_group_int=\count273
+\l__regex_min_pos_int=\count274
+\l__regex_max_pos_int=\count275
+\l__regex_curr_pos_int=\count276
+\l__regex_start_pos_int=\count277
+\l__regex_success_pos_int=\count278
+\l__regex_curr_char_int=\count279
+\l__regex_curr_catcode_int=\count280
+\l__regex_last_char_int=\count281
+\l__regex_case_changed_char_int=\count282
+\l__regex_curr_state_int=\count283
+\l__regex_step_int=\count284
+\l__regex_min_active_int=\count285
+\l__regex_max_active_int=\count286
+\l__regex_replacement_csnames_int=\count287
+\l__regex_match_count_int=\count288
+\l__regex_min_submatch_int=\count289
+\l__regex_submatch_int=\count290
+\l__regex_zeroth_submatch_int=\count291
+\g__regex_trace_regex_int=\count292
+\c_empty_box=\box67
+\l_tmpa_box=\box68
+\l_tmpb_box=\box69
+\g_tmpa_box=\box70
+\g_tmpb_box=\box71
+\l__box_top_dim=\dimen189
+\l__box_bottom_dim=\dimen190
+\l__box_left_dim=\dimen191
+\l__box_right_dim=\dimen192
+\l__box_top_new_dim=\dimen193
+\l__box_bottom_new_dim=\dimen194
+\l__box_left_new_dim=\dimen195
+\l__box_right_new_dim=\dimen196
+\l__box_internal_box=\box72
+\l__coffin_internal_box=\box73
+\l__coffin_internal_dim=\dimen197
+\l__coffin_offset_x_dim=\dimen198
+\l__coffin_offset_y_dim=\dimen199
+\l__coffin_x_dim=\dimen256
+\l__coffin_y_dim=\dimen257
+\l__coffin_x_prime_dim=\dimen258
+\l__coffin_y_prime_dim=\dimen259
+\c_empty_coffin=\box74
+\l__coffin_aligned_coffin=\box75
+\l__coffin_aligned_internal_coffin=\box76
+\l_tmpa_coffin=\box77
+\l_tmpb_coffin=\box78
+\l__coffin_display_coffin=\box79
+\l__coffin_display_coord_coffin=\box80
+\l__coffin_display_pole_coffin=\box81
+\l__coffin_display_offset_dim=\dimen260
+\l__coffin_display_x_dim=\dimen261
+\l__coffin_display_y_dim=\dimen262
+\l__coffin_bounding_shift_dim=\dimen263
+\l__coffin_left_corner_dim=\dimen264
+\l__coffin_right_corner_dim=\dimen265
+\l__coffin_bottom_corner_dim=\dimen266
+\l__coffin_top_corner_dim=\dimen267
+\l__coffin_scaled_total_height_dim=\dimen268
+\l__coffin_scaled_width_dim=\dimen269
+) (/usr/share/texlive/texmf-dist/tex/latex/l3kernel/l3pdfmode.def
+File: l3pdfmode.def 2017/03/18 v L3 Experimental driver: PDF mode
+\l__driver_color_stack_int=\count293
+\l__driver_tmp_box=\box82
+))
+Package: xparse 2018/02/21 L3 Experimental document command parser
+\l__xparse_current_arg_int=\count294
+\g__xparse_grabber_int=\count295
+\l__xparse_m_args_int=\count296
+\l__xparse_mandatory_args_int=\count297
+\l__xparse_v_nesting_int=\count298
+) (/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2018/02/11 v2.5e e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count299
+) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/zref-abspage.sty
+Package: zref-abspage 2016/05/21 v2.26 Module abspage for zref (HO)
+ (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/zref-base.sty
+Package: zref-base 2016/05/21 v2.26 Module base for zref (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/auxhook.sty
+Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
+)
+Package zref Info: New property list: main on input line 759.
+Package zref Info: New property: default on input line 760.
+Package zref Info: New property: page on input line 761.
+) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/atbegshi.sty
+Package: atbegshi 2016/06/09 v1.18 At begin shipout hook (HO)
+)
+\c@abspage=\count300
+Package zref Info: New property: abspage on input line 62.
+) (/usr/share/texlive/texmf-dist/tex/latex/needspace/needspace.sty
+Package: needspace 2010/09/12 v1.3d reserve vertical space
+)
+\mdf@templength=\skip72
+\c@mdf@globalstyle@cnt=\count301
+\mdf@skipabove@length=\skip73
+\mdf@skipbelow@length=\skip74
+\mdf@leftmargin@length=\skip75
+\mdf@rightmargin@length=\skip76
+\mdf@innerleftmargin@length=\skip77
+\mdf@innerrightmargin@length=\skip78
+\mdf@innertopmargin@length=\skip79
+\mdf@innerbottommargin@length=\skip80
+\mdf@splittopskip@length=\skip81
+\mdf@splitbottomskip@length=\skip82
+\mdf@outermargin@length=\skip83
+\mdf@innermargin@length=\skip84
+\mdf@linewidth@length=\skip85
+\mdf@innerlinewidth@length=\skip86
+\mdf@middlelinewidth@length=\skip87
+\mdf@outerlinewidth@length=\skip88
+\mdf@roundcorner@length=\skip89
+\mdf@footenotedistance@length=\skip90
+\mdf@userdefinedwidth@length=\skip91
+\mdf@needspace@length=\skip92
+\mdf@frametitleaboveskip@length=\skip93
+\mdf@frametitlebelowskip@length=\skip94
+\mdf@frametitlerulewidth@length=\skip95
+\mdf@frametitleleftmargin@length=\skip96
+\mdf@frametitlerightmargin@length=\skip97
+\mdf@shadowsize@length=\skip98
+\mdf@extratopheight@length=\skip99
+\mdf@subtitleabovelinewidth@length=\skip100
+\mdf@subtitlebelowlinewidth@length=\skip101
+\mdf@subtitleaboveskip@length=\skip102
+\mdf@subtitlebelowskip@length=\skip103
+\mdf@subtitleinneraboveskip@length=\skip104
+\mdf@subtitleinnerbelowskip@length=\skip105
+\mdf@subsubtitleabovelinewidth@length=\skip106
+\mdf@subsubtitlebelowlinewidth@length=\skip107
+\mdf@subsubtitleaboveskip@length=\skip108
+\mdf@subsubtitlebelowskip@length=\skip109
+\mdf@subsubtitleinneraboveskip@length=\skip110
+\mdf@subsubtitleinnerbelowskip@length=\skip111
+ (/usr/share/texlive/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
+File: md-frame-0.mdf 2013/07/01\ 1.9b: md-frame-0
+)
+\mdf@frametitlebox=\box83
+\mdf@footnotebox=\box84
+\mdf@splitbox@one=\box85
+\mdf@splitbox@two=\box86
+\mdf@splitbox@save=\box87
+\mdfsplitboxwidth=\skip112
+\mdfsplitboxtotalwidth=\skip113
+\mdfsplitboxheight=\skip114
+\mdfsplitboxdepth=\skip115
+\mdfsplitboxtotalheight=\skip116
+\mdfframetitleboxwidth=\skip117
+\mdfframetitleboxtotalwidth=\skip118
+\mdfframetitleboxheight=\skip119
+\mdfframetitleboxdepth=\skip120
+\mdfframetitleboxtotalheight=\skip121
+\mdffootnoteboxwidth=\skip122
+\mdffootnoteboxtotalwidth=\skip123
+\mdffootnoteboxheight=\skip124
+\mdffootnoteboxdepth=\skip125
+\mdffootnoteboxtotalheight=\skip126
+\mdftotallinewidth=\skip127
+\mdfboundingboxwidth=\skip128
+\mdfboundingboxtotalwidth=\skip129
+\mdfboundingboxheight=\skip130
+\mdfboundingboxdepth=\skip131
+\mdfboundingboxtotalheight=\skip132
+\mdf@freevspace@length=\skip133
+\mdf@horizontalwidthofbox@length=\skip134
+\mdf@verticalmarginwhole@length=\skip135
+\mdf@horizontalspaceofbox=\skip136
+\mdfsubtitleheight=\skip137
+\mdfsubsubtitleheight=\skip138
+\c@mdfcountframes=\count302
+
+****** mdframed patching \endmdf@trivlist
+
+****** -- success******
+
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newmdtheoremenv with sig. 'O{} m o m o ' on line 601.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \mdtheorem with sig. ' O{} m o m o ' on line 701.
+.................................................
+\mdf@envdepth=\count303
+\c@mdf@env@i=\count304
+\c@mdf@env@ii=\count305
+\c@mdf@zref@counter=\count306
+Package zref Info: New property: mdf@pagevalue on input line 895.
+) (/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2016/02/21 v3.3-144 Customizing captions (AR)
+ (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2016/05/22 v1.7-166 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 67.
+\captionmargin=\dimen270
+\captionmargin@=\dimen271
+\captionwidth=\dimen272
+\caption@tempdima=\dimen273
+\caption@indent=\dimen274
+\caption@parindent=\dimen275
+\caption@hangindent=\dimen276
+)
+\c@ContinuedFloat=\count307
+Package caption Info: float package is loaded.
+) (/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcolorbox.sty
+Package: tcolorbox 2018/01/12 version 4.12 text color boxes
+ (/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks43
+\verbatim@line=\toks44
+\verbatim@in@stream=\read2
+) (/usr/share/texlive/texmf-dist/tex/latex/environ/environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+ (/usr/share/texlive/texmf-dist/tex/latex/trimspaces/trimspaces.sty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+))
+\tcb@titlebox=\box88
+\tcb@upperbox=\box89
+\tcb@lowerbox=\box90
+\tcb@phantombox=\box91
+\c@tcbbreakpart=\count308
+\c@tcblayer=\count309
+\tcolorbox@number=\count310
+\tcb@temp=\box92
+\tcb@temp=\box93
+\tcb@temp=\box94
+\tcb@temp=\box95
+\tcb@out=\write4
+\tcb@record@out=\write5
+ (/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcbskins.code.tex
+Library (tcolorbox): 'tcbskins.code.tex' version '4.12'
+\tcb@waterbox=\box96
+(/usr/share/texlive/texmf-dist/tex/latex/tcolorbox/tcbskinsjigsaw.code.tex
+Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '4.12'
+))) (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux)
 \openout1 = `article_scientifique.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 44.
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 44.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 44.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 55.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 55.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 44.
-LaTeX Font Info:    Try loading font information for T1+LinuxLibertineT-TLF on input line 44.
+LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Try loading font information for T1+LinuxLibertineT-TLF on input line 55.
  (/usr/share/texlive/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd
 File: T1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 44.
+(Font)              scaled to size 10.0pt on input line 55.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1001,48 +1344,26 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \degres on input line 44.
-LaTeX Info: Redefining \dots on input line 44.
-LaTeX Info: Redefining \up on input line 44.
+LaTeX Info: Redefining \degres on input line 55.
+LaTeX Info: Redefining \dots on input line 55.
+LaTeX Info: Redefining \up on input line 55.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count144
-\scratchdimen=\dimen183
-\scratchbox=\box67
-\nofMPsegments=\count145
-\nofMParguments=\count146
-\everyMPshowfont=\toks43
-\MPscratchCnt=\count147
-\MPscratchDim=\dimen184
-\MPnumerator=\count148
-\makeMPintoPDFobject=\count149
-\everyMPtoPDFconversion=\toks44
+\scratchcounter=\count311
+\scratchdimen=\dimen277
+\scratchbox=\box97
+\nofMPsegments=\count312
+\nofMParguments=\count313
+\everyMPshowfont=\toks45
+\MPscratchCnt=\count314
+\MPscratchDim=\dimen278
+\MPnumerator=\count315
+\makeMPintoPDFobject=\count316
+\everyMPtoPDFconversion=\toks46
 ) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
- (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/infwarerr.sty
-Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
-) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
+ (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/grfext.sty
 Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
- (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
-Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
- (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
-Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
-))) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
-Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
- (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
-Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
- (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/etexcmds.sty
-Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
-Package etexcmds Info: Could not find \expanded.
-(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
-(etexcmds)             that some package has redefined \expanded.
-(etexcmds)             In the latter case, load this package earlier.
-))) (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
-Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO)
-Package pdftexcmds Info: LuaTeX not detected.
-Package pdftexcmds Info: \pdf@primitive is available.
-Package pdftexcmds Info: \pdf@ifprimitive is available.
-Package pdftexcmds Info: \pdfdraftmode found.
 )
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 438.
 Package grfext Info: Graphics extension search list:
@@ -1051,192 +1372,222 @@ Package grfext Info: Graphics extension search list:
  (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 ))
-\c@mv@tabular=\count150
-\c@mv@boldtabular=\count151
+\c@mv@tabular=\count317
+\c@mv@boldtabular=\count318
  ABD: EveryShipout initializing macros
-Underfull \hbox (badness 10000) in paragraph at lines 48--49
+\AtBeginShipoutBox=\box98
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--60
 
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 50.
+(Font)              scaled to size 17.28pt on input line 61.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 17.28pt on input line 50.
+(Font)              scaled to size 17.28pt on input line 61.
 
-Underfull \hbox (badness 10000) in paragraph at lines 50--51
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
 
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 52.
+(Font)              scaled to size 12.0pt on input line 63.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 52.
-LaTeX Font Info:    Try loading font information for U+msa on input line 58.
+(Font)              scaled to size 12.0pt on input line 63.
+LaTeX Font Info:    Try loading font information for U+msa on input line 69.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 58.
+LaTeX Font Info:    Try loading font information for U+msb on input line 69.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 67.
+(Font)              scaled to size 10.0pt on input line 79.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 10.0pt on input line 82.
  (/usr/share/texlive/texmf-dist/tex/generic/pgfornament/vectorian/vectorian84.pgf)
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 79.
+(Font)              scaled to size 14.4pt on input line 93.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 79.
+(Font)              scaled to size 14.4pt on input line 93.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 85.
+(Font)              scaled to size 7.0pt on input line 99.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 85.
+(Font)              scaled to size 8.0pt on input line 99.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.0pt on input line 112.
-
-
-Package multicol Warning: I moved some lines to the next page.
-(multicol)                Footnotes on page 1 might be wrong on input line 131.
-
+(Font)              scaled to size 5.0pt on input line 128.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 10.0pt on input line 131.
+(Font)              scaled to size 10.0pt on input line 145.
 <img/logo_r1n.png, id=4, 895.345pt x 506.89375pt>
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 131.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 145.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+ [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
  </media/psqrt/SquareX/projet_ml/article/img/logo_r1n.png>]
-<img/missing_values.pdf, id=18, 589.20125pt x 433.62pt>
+<img/missing_values.pdf, id=20, 589.20125pt x 433.62pt>
 File: img/missing_values.pdf Graphic file (type pdf)
 <use img/missing_values.pdf>
-Package pdftex.def Info: img/missing_values.pdf  used on input line 136.
+Package pdftex.def Info: img/missing_values.pdf  used on input line 152.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-<img/var_imp_lgb.pdf, id=19, 589.20125pt x 433.62pt>
+<img/var_imp_lgb.pdf, id=21, 589.20125pt x 433.62pt>
 File: img/var_imp_lgb.pdf Graphic file (type pdf)
 <use img/var_imp_lgb.pdf>
-Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 157.
+Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 173.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 161.
+(Font)              scaled to size 8.0pt on input line 177.
 
 
 Package multicol Warning: I moved some lines to the next page.
-(multicol)                Footnotes on page 2 might be wrong on input line 168.
+(multicol)                Footnotes on page 2 might be wrong on input line 182.
 
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 168.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 182.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
 [2 </media/psqrt/SquareX/projet_ml/article/img/missing_values.pdf> </media/psqrt/SquareX/projet_ml/article/img/var_imp_lgb.pdf>]
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 169.
-<img/ex_tabc.pdf, id=34, 589.20125pt x 433.62pt>
+<img/ex_tabc.pdf, id=35, 589.20125pt x 433.62pt>
 File: img/ex_tabc.pdf Graphic file (type pdf)
 <use img/ex_tabc.pdf>
-Package pdftex.def Info: img/ex_tabc.pdf  used on input line 172.
+Package pdftex.def Info: img/ex_tabc.pdf  used on input line 188.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
-<img/ex_normalisation.pdf, id=35, 589.20125pt x 433.62pt>
+<img/ex_normalisation.pdf, id=36, 589.20125pt x 433.62pt>
 File: img/ex_normalisation.pdf Graphic file (type pdf)
 <use img/ex_normalisation.pdf>
-Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 187.
+Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 203.
 (pdftex.def)             Requested size: 248.56543pt x 182.93298pt.
-
-
-Package multicol Warning: I moved some lines to the next page.
-(multicol)                Footnotes on page 3 might be wrong on input line 214.
-
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 214.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 230.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
-[3 </media/psqrt/SquareX/projet_ml/article/img/ex_tabc.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_normalisation.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 236--238
+ [3 </media/psqrt/SquareX/projet_ml/article/img/ex_tabc.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_normalisation.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 256--259
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 246--252
+Underfull \hbox (badness 10000) in paragraph at lines 267--273
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 253--256
-[]\T1/LinuxLibertineT-TLF/m/n/10 Pour dé-ter-mi-ner $\OML/cmm/m/it/10 ^^U$ \T1/LinuxLibertineT-TLF/m/n/10 on pro-cède gé-né-ra-le-ment par
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
+[]\T1/LinuxLibertineT-TLF/m/n/10 Pour choi-sir $\OML/cmm/m/it/10 ^^U$\T1/LinuxLibertineT-TLF/m/n/10 , on pro-cède gé-né-ra-le-ment par
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 253--256
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 258--259
+Underfull \hbox (badness 10000) in paragraph at lines 274--275
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 263--265
+Underfull \hbox (badness 10000) in paragraph at lines 276--277
 
  []
 
-File: img/logo_r1n.png Graphic file (type png)
-<use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 275.
-(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 278--286
+
+Underfull \hbox (badness 10000) in paragraph at lines 294--301
 []\T1/LinuxLibertineT-TLF/m/n/10 L'algorithme XG-boost est l'abré-via-tion de e\T1/LinuxLibertineT-TLF/b/n/10 X\T1/LinuxLibertineT-TLF/m/n/10 treme
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 295--296
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 296--298
-
- []
-
-<img/results.pdf, id=62, 589.20125pt x 412.54124pt>
-File: img/results.pdf Graphic file (type pdf)
-<use img/results.pdf>
-Package pdftex.def Info: img/results.pdf  used on input line 330.
-(pdftex.def)             Requested size: 251.07481pt x 175.79668pt.
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 337.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 301.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
-[5 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>]
-<img/roc_curves.pdf, id=71, 589.20125pt x 411.5375pt>
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 310--313
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 313--317
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 317--322
+
+ []
+
+
+Overfull \hbox (0.45364pt too wide) detected at line 322
+ \OMS/cmsy/m/n/10 L[] ' [] [] \OT1/cmr/m/n/10 + 
+ []
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 324--331
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 343--349
+
+ []
+
+
+Package multicol Warning: I moved some lines to the next page.
+(multicol)                Footnotes on page 5 might be wrong on input line 349.
+
+File: img/logo_r1n.png Graphic file (type png)
+<use img/logo_r1n.png>
+Package pdftex.def Info: img/logo_r1n.png  used on input line 349.
+(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 356--359
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 360--367
+
+ []
+
+<img/results.pdf, id=65, 589.20125pt x 412.54124pt>
+File: img/results.pdf Graphic file (type pdf)
+<use img/results.pdf>
+Package pdftex.def Info: img/results.pdf  used on input line 390.
+(pdftex.def)             Requested size: 251.07481pt x 175.79668pt.
+<img/roc_curves.pdf, id=66, 589.20125pt x 411.5375pt>
 File: img/roc_curves.pdf Graphic file (type pdf)
 <use img/roc_curves.pdf>
-Package pdftex.def Info: img/roc_curves.pdf  used on input line 344.
+Package pdftex.def Info: img/roc_curves.pdf  used on input line 404.
 (pdftex.def)             Requested size: 251.07481pt x 175.36894pt.
+File: img/logo_r1n.png Graphic file (type png)
+<use img/logo_r1n.png>
+Package pdftex.def Info: img/logo_r1n.png  used on input line 407.
+(pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
+[6 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>]
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
+(Font)              scaled to size 8.0pt on input line 410.
 
-Overfull \vbox (26.64995pt too high) detected at line 364
+Overfull \vbox (26.64995pt too high) detected at line 427
  []
 
 (/media/psqrt/SquareX/projet_ml/article/article_scientifique.bbl)
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 376.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 440.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
- [6 </media/psqrt/SquareX/projet_ml/article/img/roc_curves.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
+ [7 </media/psqrt/SquareX/projet_ml/article/img/roc_curves.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
 Here is how much of TeX's memory you used:
- 16921 strings out of 494317
- 315387 string characters out of 6163361
- 471037 words of memory out of 5000000
- 19883 multiletter control sequences out of 15000+600000
- 80477 words of font info for 59 fonts, out of 8000000 for 9000
+ 30033 strings out of 494317
+ 600304 string characters out of 6163361
+ 775950 words of memory out of 5000000
+ 32919 multiletter control sequences out of 15000+600000
+ 612264 words of font info for 72 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
- 62i,17n,59p,1053b,600s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (6 pages, 512123 bytes).
+ 62i,17n,92p,10468b,803s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (7 pages, 529975 bytes).
 PDF statistics:
- 135 PDF objects out of 1000 (max. 8388607)
- 96 compressed objects within 1 object stream
+ 140 PDF objects out of 1000 (max. 8388607)
+ 100 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  48 words of extra memory for PDF output out of 10000 (max. 10000000)
 

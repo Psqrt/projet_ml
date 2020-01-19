@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{twds1}
 {\sc Abu-Rmileh, A.}
@@ -18,10 +18,19 @@
 \newblock Boosting algorithms: Adaboost, gradient boosting and xgboost.
 \newblock Hacknernoon, 5 Mai 2018.
 
+\bibitem{micr}
+{\sc {Guolin Ke et al., Microsoft Research Peking University}}.
+\newblock Lightgbm: A highly efficient gradient boosting decision tree.
+
 \bibitem{twds3}
 {\sc Hale, J.}
 \newblock Smarter ways to encode categorical data for machine learning.
 \newblock Towards data science, 11 Septembre 2018.
+
+\bibitem{fhar}
+{\sc Harrell, F.}
+\newblock Classification vs. prediction.
+\newblock Statistical Thinking, 2019.
 
 \bibitem{art2}
 {\sc {Hastie T., Tibshirani R., and Friedman J.}}
