@@ -228,8 +228,6 @@ df_score_modeles = df_score_modeles %>%
 ```
 
 
-
-
 ```{r}
 df_score_modeles %>% 
   filter(Validation > 0.23) %>% # on retire les modèles trop mauvais

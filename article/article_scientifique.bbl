@@ -5,6 +5,12 @@
 \newblock The multiple faces of ‘feature importance’ in xgboost.
 \newblock Towards data science, 8 Février 2019.
 
+\bibitem{chen2016xgboost}
+{\sc Chen, T., and Guestrin, C.}
+\newblock Xgboost: A scalable tree boosting system.
+\newblock In {\em Proceedings of the 22nd acm sigkdd international conference
+  on knowledge discovery and data mining\/} (2016), ACM, pp.~785--794.
+
 \bibitem{art4}
 {\sc {Chen T., Guestrin C.}}
 \newblock Xgboost: A scalable tree boosting system, university of washington.
@@ -46,9 +52,28 @@
 \newblock Université de {L}yon 2, http://eric.univ-lyon2.fr/\tild
   ricco/cours/slides/regularized\_regression.pdf.
 
+\bibitem{ribeiro2016should}
+{\sc Ribeiro, M.~T., Singh, S., and Guestrin, C.}
+\newblock Why should i trust you?: Explaining the predictions of any
+  classifier.
+\newblock In {\em Proceedings of the 22nd ACM SIGKDD international conference
+  on knowledge discovery and data mining\/} (2016), ACM, pp.~1135--1144.
+
 \bibitem{rb1}
 {\sc {Rstats on pi: predict/infer}}.
 \newblock Be aware of bias in rf variable importance metrics.
 \newblock R-bloggers, 19 Juin 2018.
+
+\bibitem{vstrumbelj2014explaining}
+{\sc {\v{S}}trumbelj, E., and Kononenko, I.}
+\newblock Explaining prediction models and individual predictions with feature
+  contributions.
+\newblock {\em Knowledge and information systems 41}, 3 (2014), 647--665.
+
+\bibitem{wittkowski1986classification}
+{\sc Wittkowski, K.}
+\newblock Classification and regression trees-l. breiman, jh friedman, ra
+  olshen and cj stone.
+\newblock {\em Metrika 33\/} (1986), 128--128.
 
 \end{thebibliography}
