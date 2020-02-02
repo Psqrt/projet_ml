@@ -1,75 +1,75 @@
 \begin{thebibliography}{10}
 
 \bibitem{twds1}
-{\sc Abu-Rmileh, A.}
+Amjad Abu-Rmileh.
 \newblock The multiple faces of ‘feature importance’ in xgboost.
 \newblock Towards data science, 8 Février 2019.
 
-\bibitem{chen2016xgboost}
-{\sc Chen, T., and Guestrin, C.}
-\newblock Xgboost: A scalable tree boosting system.
-\newblock In {\em Proceedings of the 22nd acm sigkdd international conference
-  on knowledge discovery and data mining\/} (2016), ACM, pp.~785--794.
-
-\bibitem{art1}
-{\sc Friedman, J.}
-\newblock Greedy function approximation : A gradient boosting machine, 2001.
-
-\bibitem{hn1}
-{\sc Gandhi, R.}
-\newblock Boosting algorithms: Adaboost, gradient boosting and xgboost.
-\newblock Hacknernoon, 5 Mai 2018.
-
-\bibitem{micr}
-{\sc {Guolin Ke et al., Microsoft Research Peking University}}.
-\newblock Lightgbm: A highly efficient gradient boosting decision tree.
-
-\bibitem{twds3}
-{\sc Hale, J.}
-\newblock Smarter ways to encode categorical data for machine learning.
-\newblock Towards data science, 11 Septembre 2018.
-
-\bibitem{fhar}
-{\sc Harrell, F.}
-\newblock Classification vs. prediction.
-\newblock Statistical Thinking, 2019.
-
-\bibitem{art2}
-{\sc {Hastie T., Tibshirani R., and Friedman J.}}
-\newblock The elements of statistical learning, 2001.
-
-\bibitem{twds2}
-{\sc {Juhi}}.
-\newblock Gini coefficient and lorenz curve explained.
-\newblock Towards data science, 6 Mars 2019.
-
-\bibitem{art3}
-{\sc {Rakotomalala.R}}.
-\newblock Université de {L}yon 2, http://eric.univ-lyon2.fr/\tild
-  ricco/cours/slides/regularized\_regression.pdf.
-
-\bibitem{ribeiro2016should}
-{\sc Ribeiro, M.~T., Singh, S., and Guestrin, C.}
-\newblock Why should i trust you?: Explaining the predictions of any
-  classifier.
-\newblock In {\em Proceedings of the 22nd ACM SIGKDD international conference
-  on knowledge discovery and data mining\/} (2016), ACM, pp.~1135--1144.
+\bibitem{wittkowski1986classification}
+K~Wittkowski.
+\newblock Classification and regression trees-l. breiman, jh friedman, ra
+  olshen and cj stone.
+\newblock {\em Metrika}, 33:128--128, 1986.
 
 \bibitem{rb1}
-{\sc {Rstats on pi: predict/infer}}.
+{Rstats on pi: predict/infer}.
 \newblock Be aware of bias in rf variable importance metrics.
 \newblock R-bloggers, 19 Juin 2018.
 
+\bibitem{art3}
+{Rakotomalala.R}.
+\newblock Université de {L}yon 2, http://eric.univ-lyon2.fr/\tild
+  ricco/cours/slides/regularized\_regression.pdf.
+
+\bibitem{art1}
+J~Friedman.
+\newblock Greedy function approximation : A gradient boosting machine, 2001.
+
+\bibitem{chen2016xgboost}
+Tianqi Chen and Carlos Guestrin.
+\newblock Xgboost: A scalable tree boosting system.
+\newblock In {\em Proceedings of the 22nd acm sigkdd international conference
+  on knowledge discovery and data mining}, pages 785--794. ACM, 2016.
+
+\bibitem{micr}
+{Guolin Ke et al., Microsoft Research Peking University}.
+\newblock Lightgbm: A highly efficient gradient boosting decision tree.
+
+\bibitem{fhar}
+Frank Harrell.
+\newblock Classification vs. prediction.
+\newblock Statistical Thinking, 2019.
+
+\bibitem{ribeiro2016should}
+Marco~Tulio Ribeiro, Sameer Singh, and Carlos Guestrin.
+\newblock Why should i trust you?: Explaining the predictions of any
+  classifier.
+\newblock In {\em Proceedings of the 22nd ACM SIGKDD international conference
+  on knowledge discovery and data mining}, pages 1135--1144. ACM, 2016.
+
 \bibitem{vstrumbelj2014explaining}
-{\sc {\v{S}}trumbelj, E., and Kononenko, I.}
+Erik {\v{S}}trumbelj and Igor Kononenko.
 \newblock Explaining prediction models and individual predictions with feature
   contributions.
-\newblock {\em Knowledge and information systems 41}, 3 (2014), 647--665.
+\newblock {\em Knowledge and information systems}, 41(3):647--665, 2014.
 
-\bibitem{wittkowski1986classification}
-{\sc Wittkowski, K.}
-\newblock Classification and regression trees-l. breiman, jh friedman, ra
-  olshen and cj stone.
-\newblock {\em Metrika 33\/} (1986), 128--128.
+\bibitem{twds2}
+{Juhi}.
+\newblock Gini coefficient and lorenz curve explained.
+\newblock Towards data science, 6 Mars 2019.
+
+\bibitem{twds3}
+Jeff Hale.
+\newblock Smarter ways to encode categorical data for machine learning.
+\newblock Towards data science, 11 Septembre 2018.
+
+\bibitem{hn1}
+Rohith Gandhi.
+\newblock Boosting algorithms: Adaboost, gradient boosting and xgboost.
+\newblock Hacknernoon, 5 Mai 2018.
+
+\bibitem{art2}
+{Hastie T., Tibshirani R., and Friedman J.}
+\newblock The elements of statistical learning, 2001.
 
 \end{thebibliography}

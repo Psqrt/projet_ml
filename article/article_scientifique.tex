@@ -77,9 +77,9 @@
 
 \begin{mybox}
 \begin{abstract}
-Cet article présente l'intérêt des méthodes liées au Machine Learning pour affiner la tarification des contrats d'assurance automobile. Différentes familles d'algorithmes (non-ensembliste, boosting, bagging, stacking) seront confrontées en utilisant des stratégies de reéchantillonnage (SMOTE, down-sampling, up-sampling) utiles en situation de données déséquilibrées pour l'apprentissage de ces modèles. Dans un premier temps, la démarche du projet est présentée afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction. Puis dans un second temps, le fonctionnement de certains modèles (régression logistique pénalisée, extreme gradient boosting et light gradient boosting machine) sera explicité (intuition, mécanisme, avantages et inconvénients) afin de faire le lien entre la démarche effectuée et les performances obtenues. Une partie s'attardant sur les résultats conclura cet article et montrera qu'une hiérarchie entre les différentes familles se dessine pour ce cas de figure.
+Cet article présente l'intérêt des méthodes liées au Machine Learning pour affiner la tarification des contrats d'assurance automobile. Différentes familles d'algorithmes (non-ensembliste, boosting, bagging, stacking) seront confrontées en utilisant des stratégies de reéchantillonnage (SMOTE, down-sampling, up-sampling) utiles en situation de données déséquilibrées pour l'apprentissage de ces modèles. Dans un premier temps, la démarche du projet est présentée afin de justifier les choix effectués dans le traitement et la construction des modèles de prédiction. Puis dans un second temps, certains modèles (régression logistique pénalisée, extreme gradient boosting et light gradient boosting machine) seront détaillés (intuition, mécanisme, avantages et inconvénients) afin de faire le lien entre la démarche effectuée et les performances obtenues. Une partie s'attardant sur les résultats conclura cet article et montrera qu'une hiérarchie entre les différentes familles se dessine pour ce cas de figure.
 
-\noindent \textbf{Mots-clés} : \emph{Machine Learning, Classification Binaire, Scoring, Régression Logistique Pénalisée, XGboost, LightGBM}
+\noindent \textbf{Mots-clés} : \emph{Machine Learning, Classification Binaire, Scoring, Imputation de données manquantes, Données non équilibrées, Régression Logistique Pénalisée, XGboost, LightGBM}
 \end{abstract}
 \end{mybox}
 
@@ -103,8 +103,6 @@ Dans un premier temps, les données seront présentées afin de positionner le c
 \section{Données}
 
 Les données sont fournies par la société d'assurance. Elles comportent une base d'apprentissage et de test. L'apprentissage et la validation des modèles doivent se faire sur la première base tandis que base de test ne sert uniquement à tester la performance du modèle retenu. Des valeurs manquantes sont présentes dans les deux échantillons.
-
-\
 
 \noindent Parmi les prédicteurs, on retrouve :
 \begin{itemize}
@@ -167,7 +165,7 @@ Suite aux imputations faites, le Light GBM de référence renvoie un score de Gi
 
 \subsection{Sélection des variables}
 
-Le Light GBM effectué après les imputations permet également d'identifier l'importance des variables dans le pouvoir prédictif du modèle. L'importance d'une variable peut être mesurée de différentes manières. Celle adoptée ici est le \og Gain \fg \footnote{\cite{twds1} Abu-Rmileh, A. \og The multiple faces of Feature importance in XGboost \fg, 2019}, i.e. la contribution de la variable au modèle.  Cette contribution se décompose comme étant la variation de la fonction d'impureté entre les deux nouveaux nœuds et le nœud initial. Un terme de régularisation intervient dans le calcul et si celui-ci est supérieur en valeur absolu à la variation de la fonction d'impureté, alors il n'y a pas d'intérêt à effectuer le split en question\footnote{\cite{wittkowski1986classification} Wittkowski, K. (1986). Classification and regression trees-L. Breiman, JH Friedman, RA Olshen and CJ Stone. Metrika, 33, 128-128. }.
+Le Light GBM effectué après les imputations permet également d'identifier l'importance des variables dans le pouvoir prédictif du modèle. L'importance d'une variable peut être mesurée de différentes manières. Celle adoptée ici est le \og Gain \fg \cite{twds1}, i.e. la contribution de la variable au modèle.  Cette contribution se décompose comme étant la variation de la fonction d'impureté entre les deux nouveaux nœuds et le nœud initial. Un terme de régularisation intervient dans le calcul et si celui-ci est supérieur en valeur absolu à la variation de la fonction d'impureté, alors il n'y a pas d'intérêt à effectuer le split en question \cite{wittkowski1986classification}.
 
 
 Ainsi, plus une variable contribue au pouvoir prédictif d'un modèle, plus son \og Gain \fg{} associé sera élevé. Arbitrairement, on garde la première moitié des variables les plus contributives au modèle.
@@ -177,7 +175,7 @@ Ainsi, plus une variable contribue au pouvoir prédictif d'un modèle, plus son 
   \caption{Importance des variables}
 \end{figure}
 
-En plus des importances issues du LightGBM, une forêt aléatoire (sans optimisation des hyper-paramètres) est construite pour réaliser une seconde liste d'importance en termes de \og Permutation \fg{} \footnote{\cite{rb1} R-bloggers, \emph{Rstats on Pi : Predict/Infer}, \og Be aware of bias in RF variable importance metrics \fg, 2018}. L'idée de base de cette notion est de considérer une variable importante si elle a un effet positif sur le taux de bonnes prédictions. Ainsi, une seconde liste de variables est identifiée en sélectionnant la moitié des variables les plus importantes au modèle au sens de la notion de \og Permutation \fg. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Cette liste mélange des variables importantes selon la fonction d'impureté choisie (gain) et/ou le taux de bonnes réponses (permutation). Au total, ce sont 35 régresseurs sur les 57 initiaux qui sont retenus.
+En plus des importances issues du LightGBM, une forêt aléatoire (sans optimisation des hyper-paramètres) est construite pour réaliser une seconde liste d'importance en termes de \og Permutation \fg{} \cite{rb1}. Ainsi, une seconde liste de variables est identifiée en sélectionnant la moitié des variables les plus importantes au modèle au sens de la notion de \og Permutation \fg. L'union de ces deux listes constitue la liste finale des variables retenues pour la suite. Cette liste mélange des variables importantes selon la fonction d'impureté choisie (gain) et/ou le taux de bonnes réponses (permutation). Au total, ce sont 35 régresseurs sur les 57 initiaux qui sont retenus.
 
 \subsection{Traitement des données}
 
@@ -225,9 +223,9 @@ Les variables qui dépassent les seuils arbitrairement fixés ou qui ne passent 
 
 \subsection{Paramétrisation des modèles}
 
-Une dizaine d'algorithmes sont testés pour tenter d'avoir le meilleur pouvoir prédictif tels que : l'Analyse Discriminante Linéaire (LDA), les K plus proches voisins (KNN), la régression logistique (pénalisée ou non), la Machine à Vecteurs de Support (SVM)), puis des modèles de bagging (Forêt Aléatoire) et de boosting (ADAboost, GBM, XGBM, LGBM).
+Une dizaine d'algorithmes sont construits afin de s'approcher du meilleur pouvoir prédictif tels que : l'Analyse Discriminante Linéaire (LDA), les K plus proches voisins (KNN), la régression logistique (pénalisée ou non), la Machine à Vecteurs de Support (SVM)), puis des modèles de bagging (Forêt Aléatoire) et de boosting (ADAboost, GBM, XGBM, LGBM).
 
-L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs paramètres de hyper-paramètres\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}. La méthode choisie pour effectuer cette hyper-paramétrisation est celle du \og grid search\fg. L'idée étant d'établir au préalable une liste arbitraire non exhaustive de valeurs des hyper-paramètres puis de retenir la combinaison qui maximise le score de Gini pour chaque modèle. 
+L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs hyper-paramètres\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}. La méthode choisie pour effectuer cette hyper-paramétrisation est celle du \og grid search\fg. L'idée étant d'établir au préalable une liste arbitraire non exhaustive de valeurs des hyper-paramètres puis de retenir la combinaison qui maximise le score de Gini pour chaque modèle. 
 
 Le fait que les données soient déséquilibrées pose la question du ré-échantillonnage. Ainsi, pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du jeu de données d'apprentissage initial. L'hyper-paramétrisation via la méthode du \og grid search \fg est donc effectuée pour ces quatre cas.
 
@@ -249,7 +247,7 @@ En pratique, on cherche le meilleur compromis entre le biais et la variance.\\
 Dans le cadre classique de la discrimination binaire par la régression logistique, on suppose $(x_i,y_i)$ \emph{iid} d'une même distribution inconnue.\\
 On modélise $\mathbb{P}(Y=1|X=x_i)=\frac{1}{1+e^{-\left(\beta^{\prime} x\right)}}=p_i$.
 
-\noindent Une approche\footnote{\cite{art3} Rakotomalala.R. Université de Lyon 2, http://eric.univ-lyon2.fr/\tild ricco/cours/slides/regularized\_regression.pdf} consiste à résoudre le problème suivant : 
+\noindent Une approche \cite{art3} consiste à résoudre le problème suivant : 
 \[ \left| \begin{array}{l}\displaystyle\min_{\beta}-\frac{1}{n} \sum_{i=1}^{n} \left[y_{i} \ln p_{i}+\left(1-y_{i}\right) \ln \left(1-p_{i}\right)\right] + R(\beta) \\
 \text{sous contraintes : } R (\beta) \leq \tau \end{array} \right.\]
 qui s'écrit également : 
@@ -275,17 +273,13 @@ Pour choisir $\lambda$, on procède généralement par apprentissage-test lorsqu
 
 Pour la régression LASSO, il n'y a pas de formulation explicite de $\beta$ (car la fonction valeur absolue n'est pas différentiable) ainsi on procède de manière itérative (LARS, Forward Stagewise). On fait varier de manière sélective les coefficients des variables. En grande dimension, on privilégiera la descente de gradient ou ses variantes pour l'estimation de $\beta$.\\
 
-
-
-
-
 \subsection{Gradient Boosting Machine}
 \subsubsection{XGboost}
 L’algorithme XGboost est l'abréviation de e\textbf{X}treme \textbf{G}radient \textbf{boost}ing, approche introduite par Friedman\footnotemark[11].\\
 Comme la plupart des méthodes basées sur des arbres de décisions, il peut être utilisé en classication comme en régression.\\
 L'approche combine 2 mécanismes : le boosting et la descente de gradient.\\
 Le boosting est une méthode ensembliste qui consiste à agréger des classifieurs élaborés séquentiellement sur un échantillon d’apprentissage dont les poids des individus sont corrigés au fur et à mesure, les individus mal classés se voyant affecter un poids plus important. Les classifieurs sont pondérés selon leurs performances.\\
-D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation\footnote{\cite{art1} Friedman, J. Greedy function approximation : A gradientboosting machine, 2001.}.\\
+D'autre part, la descente du gradient est une technique itérative qui permet d’approcher la solution d’un problème d’optimisation \cite{art1}.\\
 Enfin, outre les deux mécanismes précédents, l’approche possède aussi des paramètres liés à l’utilisation d’arbres comme classifieurs.\\
 Ainsi, l’algorithme XGboost dépend d’un grand nombre d' hyperparamètres: 
 \begin{enumerate}
@@ -298,7 +292,7 @@ d'apprentissage $\eta$
 \item Échantillonnage des variables
 \end{enumerate}
 On optimise les hyperparamètres par grid search.\\
-L'algorithme propose également une gestion efficace de matrices creuses et des valeurs manquantes : \og sparsity-aware split finding\footnote{\cite{chen2016xgboost} Tianqi Chen and Carlos Guestrin. 2016. XGBoost: A Scalable Tree Boosting System} \fg{}. Ces valeurs manquantes sont dirigées vers le noeud qui optimise le gain.
+L'algorithme propose également une gestion efficace de matrices creuses et des valeurs manquantes : \og sparsity-aware split finding \cite{chen2016xgboost} \fg{}. Ces valeurs manquantes sont dirigées vers le noeud qui optimise le gain.
 
 La prévision se base sur K arbres construits de façon itérative. À chaque étape on ajoute celui qui minimise une fonction objectif régularisée $\mathcal{L}$ qui est la somme d'une fonction de perte et d'une fonction de régularisation\footnotemark[11].\\
 \[\ \mathcal{L}=\sum_{i} l\left(\hat{y}_{i}, y_{i}\right)+\sum_{k} \Omega\left(f_{k}\right) \]\\
@@ -334,7 +328,7 @@ adaptables à différents problèmes, permettant de prendre efficacement en comp
 L'algorithme LightGBM est une autre implématation du Gradient Boosting Tree, très efficace en mémoire et en temps de calcul.\\
 Il s'agit également d'un algorithme \og Leaf-wise \fg{}.\\
 Les deux principales différences avec XGboost sont des approches heuristiques pour diminuer drastiquement le temps de calcul tout en restant très performant.\\
-Une première approche pour reduire le nombre d'observations à prendre en compte pour calculer le split est appelée GOSS : \og Gradient-based One-Side Sampling \fg{}\footnote{\cite{micr} Guolin Ke et al., Microsoft Research Peking University. Lightgbm : A highly efficient gradient boosting decision tree.}.\\
+Une première approche pour reduire le nombre d'observations à prendre en compte pour calculer le split est appelée GOSS : \og Gradient-based One-Side Sampling \fg{} \cite{micr}.\\
 L'idée étant que les observations avec un faible gradient sont peu informatives, les a\% premières observations triées par gradient decroissants sont gardées (ensemble $A$) puis on prend aléatoirement b\% du reste (ensemble $B$).\\
 Afin de ne pas trop modifier la distribution des observations, on multiplie les gradients des observations échantillonnées par un facteur $\frac{1-a}{b}$ dans la mesure de gain de variance $\tilde{V}_{j}$.\\
 \[
@@ -402,7 +396,7 @@ Par conséquent, seule les modèles sans reéchantillonnage seront retenus afin 
 
 Finalement, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.2881\footnote{À titre informatif, l'AUROC (Area Under the Receiver Operating Characteristic curve) du modèle sur l'échantillon test est de 0.6440.}.
 
-Pour passer de la prédiction à la classification\footnote{\cite{fhar} \bsc{Harrell}, F. Classification vs. prediction. Statistical Thinking, 2019}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label \og 0  \fg{} pour les individus concernés et \og 1 \fg{} sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test.\\
+Pour passer de la prédiction à la classification \cite{fhar}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label \og 0  \fg{} pour les individus concernés et \og 1 \fg{} sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test.\\
 On obtient les résultats suivants :
 
 
@@ -425,7 +419,7 @@ Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs
   \multirow{2}{*}{\rotatebox{90}{Prédiction \ }} & 0 & 152 542 & 4 827 \\[15pt] \cline{2-4}
   & 1 & 19 596 & 1 599 \\[15pt] \hline \end{tabular} \end{center}}}
   
-  Le passage d'un score à un label reste au choix d'arbitrage du décideur (assureur), basé sur les enseignements tirés de cette matrice de confusion mais également d'autres éléments non étudiés ici : interprétation et explicativité des variables (méthode LIME\footnote{\cite{ribeiro2016should} Ribeiro, M. T., Singh, S., and Guestrin, C. Why shouldi trust you ? : Explaining the predictions of any classifier} ou méthode Shapley\footnote{\cite{vstrumbelj2014explaining} Štrumbelj, E., and Kononenko, I. Explaining predictionmodels and individual predictions with feature contributions}).
+  Le passage d'un score à un label reste au choix d'arbitrage du décideur (assureur), basé sur les enseignements tirés de cette matrice de confusion mais également d'autres éléments non étudiés ici : interprétation et explicativité des variables (méthode LIME\cite{ribeiro2016should} ou méthode Shapley\cite{vstrumbelj2014explaining}).
 
 
 %\vfill\null
@@ -435,7 +429,7 @@ Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs
 % références
 \small
 \nocite{*}
-\bibliographystyle{acm}
+\bibliographystyle{unsrt}
 \bibliography{biblio}
 \end{multicols}
 \end{document}
