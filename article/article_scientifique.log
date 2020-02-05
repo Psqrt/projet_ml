@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  2 FEB 2020 22:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2018.10.12)  5 FEB 2020 18:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1285,30 +1285,30 @@ Library (tcolorbox): 'tcbskinsjigsaw.code.tex' version '4.12'
 ))) (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux)
 \openout1 = `article_scientifique.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 55.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 58.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 58.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 58.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Try loading font information for T1+LinuxLibertineT-TLF on input line 55.
+LaTeX Font Info:    ... okay on input line 58.
+LaTeX Font Info:    Try loading font information for T1+LinuxLibertineT-TLF on input line 58.
  (/usr/share/texlive/texmf-dist/tex/latex/libertine/T1LinuxLibertineT-TLF.fd
 File: T1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 55.
+(Font)              scaled to size 10.0pt on input line 58.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1344,9 +1344,9 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Info: Redefining \degres on input line 55.
-LaTeX Info: Redefining \dots on input line 55.
-LaTeX Info: Redefining \up on input line 55.
+LaTeX Info: Redefining \degres on input line 58.
+LaTeX Info: Redefining \dots on input line 58.
+LaTeX Info: Redefining \up on input line 58.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count311
@@ -1379,52 +1379,52 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 
-Underfull \hbox (badness 10000) in paragraph at lines 59--60
+Underfull \hbox (badness 10000) in paragraph at lines 62--63
 
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 61.
+(Font)              scaled to size 17.28pt on input line 64.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 17.28pt on input line 61.
+(Font)              scaled to size 17.28pt on input line 64.
 
-Underfull \hbox (badness 10000) in paragraph at lines 61--62
+Underfull \hbox (badness 10000) in paragraph at lines 64--65
 
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 63.
+(Font)              scaled to size 12.0pt on input line 66.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 63.
-LaTeX Font Info:    Try loading font information for U+msa on input line 69.
+(Font)              scaled to size 12.0pt on input line 66.
+LaTeX Font Info:    Try loading font information for U+msa on input line 72.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 69.
+LaTeX Font Info:    Try loading font information for U+msb on input line 72.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 79.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 10.0pt on input line 82.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 10.0pt on input line 85.
  (/usr/share/texlive/texmf-dist/tex/generic/pgfornament/vectorian/vectorian84.pgf)
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 93.
+(Font)              scaled to size 14.4pt on input line 96.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 93.
+(Font)              scaled to size 14.4pt on input line 96.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 99.
+(Font)              scaled to size 7.0pt on input line 102.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 99.
+(Font)              scaled to size 8.0pt on input line 102.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.0pt on input line 126.
+(Font)              scaled to size 5.0pt on input line 129.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 10.0pt on input line 143.
+(Font)              scaled to size 10.0pt on input line 146.
 <img/logo_r1n.png, id=4, 895.345pt x 506.89375pt>
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 143.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 146.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
@@ -1432,160 +1432,150 @@ Package pdftex.def Info: img/logo_r1n.png  used on input line 143.
 <img/missing_values.pdf, id=20, 589.20125pt x 433.62pt>
 File: img/missing_values.pdf Graphic file (type pdf)
 <use img/missing_values.pdf>
-Package pdftex.def Info: img/missing_values.pdf  used on input line 150.
+Package pdftex.def Info: img/missing_values.pdf  used on input line 153.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
 <img/var_imp_lgb.pdf, id=21, 589.20125pt x 433.62pt>
 File: img/var_imp_lgb.pdf Graphic file (type pdf)
 <use img/var_imp_lgb.pdf>
-Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 174.
+Package pdftex.def Info: img/var_imp_lgb.pdf  used on input line 177.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
 
 
 Package multicol Warning: I moved some lines to the next page.
-(multicol)                Footnotes on page 2 might be wrong on input line 183.
+(multicol)                Footnotes on page 2 might be wrong on input line 186.
 
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 183.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 186.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
 [2 </media/psqrt/SquareX/projet_ml/article/img/missing_values.pdf> </media/psqrt/SquareX/projet_ml/article/img/var_imp_lgb.pdf>]
 <img/ex_tabc.pdf, id=35, 589.20125pt x 433.62pt>
 File: img/ex_tabc.pdf Graphic file (type pdf)
 <use img/ex_tabc.pdf>
-Package pdftex.def Info: img/ex_tabc.pdf  used on input line 189.
+Package pdftex.def Info: img/ex_tabc.pdf  used on input line 192.
 (pdftex.def)             Requested size: 251.07481pt x 184.77899pt.
 <img/ex_normalisation.pdf, id=36, 589.20125pt x 433.62pt>
 File: img/ex_normalisation.pdf Graphic file (type pdf)
 <use img/ex_normalisation.pdf>
-Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 202.
+Package pdftex.def Info: img/ex_normalisation.pdf  used on input line 205.
 (pdftex.def)             Requested size: 248.56543pt x 182.93298pt.
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 227.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 230.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [3 </media/psqrt/SquareX/projet_ml/article/img/ex_tabc.pdf> </media/psqrt/SquareX/projet_ml/article/img/ex_normalisation.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 228--229
+Underfull \hbox (badness 10000) in paragraph at lines 231--232
 []\T1/LinuxLibertineT-TLF/m/n/10 L'ensemble des mo-dèles en-sem-blistes et la ré-gres-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 254--257
+Underfull \hbox (badness 10000) in paragraph at lines 257--260
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 265--271
+Underfull \hbox (badness 10000) in paragraph at lines 268--274
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 272--273
+Underfull \hbox (badness 10000) in paragraph at lines 275--276
 []\T1/LinuxLibertineT-TLF/m/n/10 Pour choi-sir $\OML/cmm/m/it/10 ^^U$\T1/LinuxLibertineT-TLF/m/n/10 , on pro-cède gé-né-ra-le-ment par
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 272--273
+Underfull \hbox (badness 10000) in paragraph at lines 275--276
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 274--275
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 278--285
+Underfull \hbox (badness 10000) in paragraph at lines 284--291
 []\T1/LinuxLibertineT-TLF/m/n/10 L'algorithme XG-boost est l'abré-via-tion de e\T1/LinuxLibertineT-TLF/b/n/10 X\T1/LinuxLibertineT-TLF/m/n/10 treme
  []
 
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 285.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 291.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 297--298
+Underfull \hbox (badness 10000) in paragraph at lines 303--304
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 298--302
+Underfull \hbox (badness 10000) in paragraph at lines 304--308
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 302--307
+Underfull \hbox (badness 10000) in paragraph at lines 308--313
 
  []
 
 
-Overfull \hbox (0.45364pt too wide) detected at line 307
+Overfull \hbox (0.45364pt too wide) detected at line 313
  \OMS/cmsy/m/n/10 L[] ' [] [] \OT1/cmr/m/n/10 + 
  []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 309--316
+Underfull \hbox (badness 10000) in paragraph at lines 315--322
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 328--334
+Underfull \hbox (badness 10000) in paragraph at lines 334--340
 
  []
 
 
 Package multicol Warning: I moved some lines to the next page.
-(multicol)                Footnotes on page 5 might be wrong on input line 334.
+(multicol)                Footnotes on page 5 might be wrong on input line 340.
 
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 334.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 340.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
 [5]
 <img/results.pdf, id=65, 589.20125pt x 412.54124pt>
 File: img/results.pdf Graphic file (type pdf)
 <use img/results.pdf>
-Package pdftex.def Info: img/results.pdf  used on input line 379.
+Package pdftex.def Info: img/results.pdf  used on input line 385.
 (pdftex.def)             Requested size: 251.07481pt x 175.79668pt.
 <img/roc_curves.pdf, id=66, 589.20125pt x 411.5375pt>
 File: img/roc_curves.pdf Graphic file (type pdf)
 <use img/roc_curves.pdf>
-Package pdftex.def Info: img/roc_curves.pdf  used on input line 393.
+Package pdftex.def Info: img/roc_curves.pdf  used on input line 399.
 (pdftex.def)             Requested size: 251.07481pt x 175.36894pt.
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 396.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 402.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [6 </media/psqrt/SquareX/projet_ml/article/img/results.pdf>]
-Overfull \vbox (21.49002pt too high) detected at line 419
+Overfull \vbox (21.49002pt too high) detected at line 423
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 430.
+(Font)              scaled to size 9.0pt on input line 443.
 (/media/psqrt/SquareX/projet_ml/article/article_scientifique.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 9.0pt on input line 12.
-
-Underfull \hbox (badness 5519) in paragraph at lines 35--37
-[]\T1/LinuxLibertineT-TLF/m/n/9 Guolin Ke et al., Mi-cro-soft Re-search Pe-king Uni-ver-sity.
- []
-
 )
 File: img/logo_r1n.png Graphic file (type png)
 <use img/logo_r1n.png>
-Package pdftex.def Info: img/logo_r1n.png  used on input line 435.
+Package pdftex.def Info: img/logo_r1n.png  used on input line 449.
 (pdftex.def)             Requested size: 89.53973pt x 50.69234pt.
  [7 </media/psqrt/SquareX/projet_ml/article/img/roc_curves.pdf>] (/media/psqrt/SquareX/projet_ml/article/article_scientifique.aux) ) 
 Here is how much of TeX's memory you used:
- 30038 strings out of 494317
- 600387 string characters out of 6163361
- 782965 words of memory out of 5000000
- 32922 multiletter control sequences out of 15000+600000
+ 30041 strings out of 494317
+ 600430 string characters out of 6163361
+ 774965 words of memory out of 5000000
+ 32925 multiletter control sequences out of 15000+600000
  613920 words of font info for 74 fonts, out of 8000000 for 9000
  350 hyphenation exceptions out of 8191
  62i,18n,92p,10429b,803s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_ncsllp.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (7 pages, 533266 bytes).
+Output written on /media/psqrt/SquareX/projet_ml/article/article_scientifique.pdf (7 pages, 535661 bytes).
 PDF statistics:
  140 PDF objects out of 1000 (max. 8388607)
  100 compressed objects within 1 object stream

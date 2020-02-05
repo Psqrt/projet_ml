@@ -51,6 +51,9 @@
     \draw[gray,line width=4pt] (frame.south east) -- ++(-2.3cm,0pt);
 }}
 
+% pour bibliography
+\usepackage{etoolbox}
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
 
 \begin{document}
 
@@ -265,13 +268,16 @@ où l'on aura pris soin de centrer et réduire les variables afin de leur accord
 À noter que $\lambda$ est un paramètre du modèle qu'il faut calibrer également.\\
 On a une relation inverse entre $\tau$ et $\lambda$. Lorsque $\lambda=0$ on retrouve les MCO et plus $\lambda$ est grand, plus les coefficients sont contraints (plus de biais, moins de variance).
 On peut voir les coefficients se déformer en fonction de $\lambda$.\\
-La régularisation dans la régression ridge est plus souple que dans la régression LASSO qui fait converger rapidement les coefficients des variables moins explicatives vers 0.\\ Il peut s'agir d'une procédure de selection de variables.
-En revanche, la regression LASSO choisit arbitrairement une variable parmi un groupe de variables corrélées tandis que la régression ridge permet de pondérer les influences.\\
+La régularisation dans la régression ridge est plus souple que dans la régression LASSO qui force les coefficients des variables moins explicatives à 0.\\ Il peut s'agir d'une procédure de sélection de variables.
+Un des inconvénients de la régression LASSO est qu'elle choisit arbitrairement une variable parmi un groupe de variables corrélées tandis que la régression ridge permet de pondérer les influences.\\
 L'Elastic Net permet de combiner les avantages des deux méthodes en contrepartie d'une complexité accrue.\\
 
 Pour choisir $\lambda$, on procède généralement par apprentissage-test lorsque c'est possible ou par validation croisée K-folds lorsque la base est petite, en minimisant un critère d'erreur. Des formules basées sur des hypothèses simplificatrices existent également.\\
 
-Pour la régression LASSO, il n'y a pas de formulation explicite de $\beta$ (car la fonction valeur absolue n'est pas différentiable) ainsi on procède de manière itérative (LARS, Forward Stagewise). On fait varier de manière sélective les coefficients des variables. En grande dimension, on privilégiera la descente de gradient ou ses variantes pour l'estimation de $\beta$.\\
+\noindent Pour la régression ridge, à $\lambda$ donné on a : $$ \hat{\beta}_{\lambda}^{\text {ridge}}=\left(\mathrm{X}^{\prime} \mathrm{X}+\lambda l_{p}\right)^{-1} \mathrm{X}^{\prime} Y$$
+Pour la régression LASSO (sachant que la fonction $\beta \mapsto\|Y-\mathbb{X} \beta\|_{2}^{2}+\lambda\|\beta\|_{1}$ est convexe mais non différentiable), le minimum global de la fonction objectif existe mais il n'y a pas de stricte convexité, ce qui entraîne la non unicité de la solution optimale $\beta_{\lambda}$.
+On obtient $\beta_{\lambda}$ par optimisation de la fonction objectif par descente de coordonnées (package glmnet sous R).\\
+L'idée est d'optimiser chaque $\beta_j$ un à un \cite{fromont} (on considère les autres coefficients comme constants dans la fonction objectif) en effectuant un certain nombre d'itérations ou jusqu'à obtenir une variation de $\beta_j$ suffisamment faible ($ <\epsilon $ fixé).
 
 \subsection{Gradient Boosting Machine}
 \subsubsection{XGboost}
@@ -393,12 +399,10 @@ Par conséquent, seule les modèles sans reéchantillonnage seront retenus afin 
   \includegraphics[width = \columnwidth]{img/roc_curves}
   \caption{Courbes ROC des modèles sans reéchantillonnage}
 \end{figure}
-
 Finalement, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.2881\footnote{À titre informatif, l'AUROC (Area Under the Receiver Operating Characteristic curve) du modèle sur l'échantillon test est de 0.6440.}.
 
 Pour passer de la prédiction à la classification \cite{fhar}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label \og 0  \fg{} pour les individus concernés et \og 1 \fg{} sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test.\\
-On obtient les résultats suivants :
-
+Les résultats suivants sont obtenus :
 
 \captionof{table}{Performances de classification pour un seuil défini}
 \begin{center}\begin{tabular}{|l|r|r|} \hline
@@ -421,10 +425,19 @@ Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs
   
   Le passage d'un score à un label reste au choix d'arbitrage du décideur (assureur), basé sur les enseignements tirés de cette matrice de confusion mais également d'autres éléments non étudiés ici : interprétation et explicativité des variables (méthode LIME\cite{ribeiro2016should} ou méthode Shapley\cite{vstrumbelj2014explaining}).
 
+\end{multicols}
 
+\vfill\null
+%\noindent \vhrulefill{1.5pt} ~\pgfornament[height = 0.6cm,symmetry=h]{84} ~ \vhrulefill{1.5pt}
+
+\begin{mybox}
+  \section*{Références}
+
+  \vspace{-15pt}
+
+  \begin{multicols}{2}
 %\vfill\null
 %\end{multicols}
-
 
 % références
 \small
@@ -432,5 +445,6 @@ Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs
 \bibliographystyle{unsrt}
 \bibliography{biblio}
 \end{multicols}
+\end{mybox}
 \end{document}
 
