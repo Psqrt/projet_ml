@@ -277,7 +277,7 @@ Pour choisir $\lambda$, on procède généralement par apprentissage-test lorsqu
 \noindent Pour la régression ridge, à $\lambda$ donné on a : $$ \hat{\beta}_{\lambda}^{\text {ridge}}=\left(\mathrm{X}^{\prime} \mathrm{X}+\lambda l_{p}\right)^{-1} \mathrm{X}^{\prime} Y$$
 Pour la régression LASSO (sachant que la fonction $\beta \mapsto\|Y-\mathbb{X} \beta\|_{2}^{2}+\lambda\|\beta\|_{1}$ est convexe mais non différentiable), le minimum global de la fonction objectif existe mais il n'y a pas de stricte convexité, ce qui entraîne la non unicité de la solution optimale $\beta_{\lambda}$.
 On obtient $\beta_{\lambda}$ par optimisation de la fonction objectif par descente de coordonnées (package glmnet sous R).\\
-L'idée est d'optimiser chaque $\beta_j$ un à un \cite{fromont} (on considère les autres coefficients comme constants dans la fonction objectif) en effectuant un certain nombre d'itérations ou jusqu'à obtenir une variation de $\beta_j$ suffisamment faible ($ <\epsilon $ fixé).
+L'idée est d'optimiser chaque $\beta_j$ un à un \cite{fromont} (on considère les autres coefficients comme constants dans la fonction objectif) en effectuant un certain nombre d'itérations ou jusqu'à obtenir une variation de $\beta$ suffisamment faible ($ <\epsilon $ fixé).
 
 \subsection{Gradient Boosting Machine}
 \subsubsection{XGboost}
