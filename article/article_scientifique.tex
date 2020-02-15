@@ -230,12 +230,12 @@ Une dizaine d'algorithmes sont construits afin de s'approcher du meilleur pouvoi
 
 L'ensemble des modèles ensemblistes et la régression logistique pénalisée sont optimisés selon leurs hyper-paramètres\footnote{Les algorithmes KNN et SVM ne sont pas optimisés faute du temps d'exécution nécessaire au calcul de matrices immenses de distance}. La méthode choisie pour effectuer cette hyper-paramétrisation est celle du \og grid search\fg. L'idée étant d'établir au préalable une liste arbitraire non exhaustive de valeurs des hyper-paramètres puis de retenir la combinaison qui maximise le score de Gini pour chaque modèle. 
 
-Le fait que les données soient déséquilibrées pose la question du ré-échantillonnage. Ainsi, pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du jeu de données d'apprentissage initial. L'hyper-paramétrisation via la méthode du \og grid search \fg est donc effectuée pour ces quatre cas.
+Le fait que les données soient déséquilibrées pose la question du ré-échantillonnage. Ainsi, pour l'ensemble des modèles, les stratégies de down-sampling, up-sampling et SMOTE sont testées en plus du jeu de données d'apprentissage initial. L'hyper-paramétrisation via la méthode du \og grid search \fg   \ est donc effectuée pour ces quatre cas.
 
 
 
 \section{Méthodes utilisées}
-L'intuition et le fonctionnement de trois méthodes sont détaillés dans cette section. La régression logistique pénalisée sera présentée en première, suivie de deux méthodes de boosting : le XGboost et le LightGBM. La régression logistique pénalisée a des principes radicalement différents des deux méthodes de boosting.
+L'intuition et le fonctionnement de trois méthodes sont détaillés dans cette section. La régression logistique pénalisée sera présentée en premier, suivie de deux méthodes de boosting : le XGboost et le LightGBM. La régression logistique pénalisée a des principes radicalement différents des deux méthodes de boosting.
 
 
 \subsection{Régression logistique pénalisée}
@@ -335,7 +335,7 @@ L'algorithme LightGBM est une autre implématation du Gradient Boosting Tree, tr
 Il s'agit également d'un algorithme \og Leaf-wise \fg{}.\\
 Les deux principales différences avec XGboost sont des approches heuristiques pour diminuer drastiquement le temps de calcul tout en restant très performant.\\
 Une première approche pour reduire le nombre d'observations à prendre en compte pour calculer le split est appelée GOSS : \og Gradient-based One-Side Sampling \fg{} \cite{micr}.\\
-L'idée étant que les observations avec un faible gradient sont peu informatives, les a\% premières observations triées par gradient decroissants sont gardées (ensemble $A$) puis on prend aléatoirement b\% du reste (ensemble $B$).\\
+L'idée étant que les observations avec un faible gradient sont peu informatives, les a\% premières observations triées par gradient decroissants sont conservées (ensemble $A$) puis on prend aléatoirement b\% du reste (ensemble $B$).\\
 Afin de ne pas trop modifier la distribution des observations, on multiplie les gradients des observations échantillonnées par un facteur $\frac{1-a}{b}$ dans la mesure de gain de variance $\tilde{V}_{j}$.\\
 \[
 \tilde{V}_{j}(d)=\frac{1}{n}\left(\frac{\left(\sum_{x_{i} \in A_{l}} g_{i}+\frac{1-a}{b} \sum_{x_{i} \in B_{l}} g_{i}\right)^{2}}{n_{l}^{j}(d)} \right. \]
@@ -375,7 +375,7 @@ L'approche GOSS du LightGBM explicitée dans la section précédente incite à n
 
 
 
-La régression logistique pénalisée présente des performances inférieures aux deux méthodes de boosting. Ceci peut s'expliquer par son incapacité à expliquer des phénomènes non-linéaires. Les méthodes de boosting apprennent séquentiellement de leurs erreurs et deviennent rapidement des boîtes noires à pouvoir explicatif élevé.
+La régression logistique pénalisée présente des performances inférieures aux deux méthodes de boosting. Ceci peut s'expliquer par son incapacité à expliquer des phénomènes non-linéaires. Les méthodes de boosting apprennent séquentiellement de leurs erreurs et deviennent rapidement des boîtes noires à pouvoir prédictif élevé.
 
 \subsection{Comparaison avec d'autres algorithmes}
 
@@ -393,15 +393,20 @@ Bien que les performances des modèles ayant appris sur des données sur-échant
     \item le sur-échantillonnage engendre une augmentation des temps de calcul (duplication des individus, apprentissage sur quasiment deux fois plus de données)
     \item le meilleur modèle en validation croisée est obtenu sans reéchantillonnage.
 \end{itemize}
-Par conséquent, seule les modèles sans reéchantillonnage seront retenus afin de tracer leur courbe ROC (\emph{Figure 6}).
+Par conséquent, seuls les modèles sans reéchantillonnage seront retenus afin de tracer leur courbe ROC (\emph{Figure 6}).
 
 \begin{figure}[H] \centering
   \includegraphics[width = \columnwidth]{img/roc_curves}
   \caption{Courbes ROC des modèles sans reéchantillonnage}
 \end{figure}
+
 Finalement, le modèle combiné dépasse le reste des modèles avec un coefficient normalisé de Gini en validation croisée de 0.2794. L'application à l'échantillon test renvoie une valeur de 0.2881\footnote{À titre informatif, l'AUROC (Area Under the Receiver Operating Characteristic curve) du modèle sur l'échantillon test est de 0.6440.}.
 
-Pour passer de la prédiction à la classification \cite{fhar}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label \og 0  \fg{} pour les individus concernés et \og 1 \fg{} sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test.\\
+\
+
+Pour passer de la prédiction à la classification \cite{fhar}, il est nécessaire de fixer un seuil pour lequel les scores en-dessous de celui-ci correspondent à un label \og 0  \fg{} pour les individus concernés et \og 1 \fg{} sinon. L'obtention de ce seuil dépend de l'objectif à maximiser (le score F1 semble être le plus approprié dans ce contexte (données déséquilibrées)) et doit se faire sur les prédictions issues de la validation croisée. Le seuil retenu est ensuite utilisé sur l'échantillon test afin de vérifier la stabilité entre la validation et le test.
+\columnbreak
+
 Les résultats suivants sont obtenus :
 
 \captionof{table}{Performances de classification pour un seuil défini}
@@ -411,7 +416,7 @@ Les résultats suivants sont obtenus :
   Échantillon Test & 0.1158 & 0.2488 \\ \hline
 \end{tabular}\end{center}
 
-Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs sur l'ensemble des vrais observés} et de la Précision\footnote{taux de vrais positifs sur l'ensemble des vrais prédits} des prédictions et est une métrique adaptée en situation de déséquilibre de la variable cible. Dans le contexte d'une assurance, le Rappel est plus important que la Précision car une faible valeur du Rappel indiquerait que la tarification appliquée est trop faible par rapport au risque du client. Ici, un client sur quatre labélisé \og 1 \fg{} en réalité est détecté par l'algorithme (\emph{Tables 2 et 3}).
+Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs sur l'ensemble des vrais observés} et de la Précision\footnote{taux de vrais positifs sur l'ensemble des vrais prédits} des prédictions et est une métrique adaptée en situation de déséquilibre de la variable cible. Dans le contexte d'une assurance, le Rappel est plus important que la Précision car une faible valeur du Rappel indiquerait que la tarification appliquée est trop faible par rapport au risque du client. Ici, un client sur quatre labélisé \og 1 \fg{} en réalité est détecté par l'algorithme (\emph{Tables 2 et 3}). Pour aller plus loin, la connaissance métier permettrait d'affiner le score F1 en pondérant correctement la Précision et le Rappel.
 
 %\begin{multicols}{2}
 
@@ -427,7 +432,7 @@ Le F1 (ou score F1) dépend à la fois du Rappel\footnote{taux de vrais positifs
 
 \end{multicols}
 
-\vfill\null
+%\vfill\null
 %\noindent \vhrulefill{1.5pt} ~\pgfornament[height = 0.6cm,symmetry=h]{84} ~ \vhrulefill{1.5pt}
 
 \begin{mybox}
